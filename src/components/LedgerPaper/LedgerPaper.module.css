@@ -1,0 +1,87 @@
+.paper {
+  position: relative;
+  border: 1px solid black;
+  padding: 0 32px;
+  background: white;
+}
+.paper::before,
+.paper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  background:
+    radial-gradient(circle, #fff 0 5px, #000 5px 6.5px, transparent 7px) center
+      3px/30px 34px,
+    var(--yellow-pale);
+}
+.paper::before {
+  left: 0;
+  border-right: 1px dashed black;
+}
+.paper::after {
+  right: 0;
+  border-left: 1px dashed black;
+}
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 17px 20px;
+  margin: 0;
+  border-bottom: 1px solid black;
+  color: black;
+}
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.rows li {
+  display: grid;
+  grid-template-columns: 190px 180px 1fr;
+  gap: 16px;
+  padding: 9px 20px;
+  min-height: 36px;
+  font: 400 13px/1.5 var(--font-typed);
+  border-bottom: 1px solid black;
+}
+.rows li:nth-child(even) {
+  background: var(--yellow-pale);
+}
+.rows li:last-child {
+  border-bottom: 0;
+}
+.rows strong {
+  font-weight: 700;
+}
+.rows .refused {
+  color: var(--refused);
+}
+.empty {
+  padding: 25px;
+  margin: 0;
+}
+@media (max-width: 1024px) {
+  .rows li {
+    grid-template-columns: 170px 1fr;
+  }
+  .rows li > span {
+    grid-column: 1/-1;
+  }
+}
+@media (max-width: 760px) {
+  .rows li {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 15px;
+  }
+  .label {
+    padding: 17px 15px;
+    font-size: 12px;
+  }
+  .rows time {
+    font-size: 12px;
+  }
+}

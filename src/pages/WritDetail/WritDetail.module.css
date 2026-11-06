@@ -1,0 +1,264 @@
+.page {
+  padding-block: 37px 80px;
+  min-height: 65vh;
+}
+.breadcrumb {
+  display: flex;
+  gap: 13px;
+  font-size: 12px;
+  color: var(--quiet);
+  margin-bottom: 35px;
+}
+.layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 65px;
+  align-items: flex-start;
+}
+.aside {
+  flex: 1 1 360px;
+  max-width: 420px;
+  min-width: 0;
+}
+.content {
+  flex: 999 1 560px;
+  min-width: 0;
+}
+.fields {
+  margin-top: 15px;
+}
+.actionsPanel {
+  border: 1px solid black;
+  padding: 22px;
+  margin-top: 30px;
+}
+.actionsPanel > h2 {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+.actionsPanel > p {
+  font-size: 13px;
+}
+.actionButtons {
+  display: grid;
+  gap: 10px;
+}
+.actionButtons > button {
+  font-size: 13px;
+  padding-inline: 12px;
+}
+.pauseNote {
+  font-size: 11px !important;
+  line-height: 1.8;
+  margin: 15px 0 0;
+}
+.statusRows {
+  margin: 0;
+  font-size: 12px;
+}
+.statusRows > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid black;
+}
+.statusRows > div:last-child {
+  border: 0;
+}
+.statusRows dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+}
+.title > h1 {
+  font-size: clamp(38px, 3.7vw, 54px);
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+  margin-bottom: 22px;
+  overflow-wrap: anywhere;
+}
+.title > .lead {
+  font-size: 16px;
+  margin-bottom: 25px;
+}
+.title > .sectionLabel {
+  margin-bottom: 20px;
+}
+.price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 22px 0;
+  border-block: 1px solid black;
+}
+.price > span {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.price small {
+  color: var(--quiet);
+  font-size: 12px;
+}
+.price strong {
+  font-size: 29px;
+}
+.price button {
+  padding-inline: 22px;
+  font-size: 14px;
+}
+.section {
+  padding-block: 36px;
+  border-bottom: 1px solid black;
+}
+.section h2 {
+  font-size: 29px;
+  letter-spacing: -0.035em;
+  margin-bottom: 18px;
+}
+.sectionHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+.sectionHeading h2 {
+  margin-bottom: 9px;
+}
+.sectionHeading p {
+  font-size: 11px;
+  margin: 0;
+  color: var(--quiet);
+}
+.sectionHeading button {
+  min-height: 44px;
+  font-size: 12px;
+  padding-inline: 17px;
+}
+.checkNote {
+  font-size: 11px;
+  margin: 12px 0;
+  color: var(--quiet);
+  min-height: 18px;
+}
+.section .sectionIntro {
+  font-size: 13px;
+  margin-bottom: 22px;
+}
+.lastSection {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.demoControls {
+  border: 1px dashed black;
+  margin-top: 24px;
+  padding: 13px 17px;
+  font-size: 12px;
+}
+.demoControls summary {
+  cursor: pointer;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+}
+.demoControls label {
+  display: grid;
+  gap: 7px;
+}
+.demoControls p {
+  margin: 5px 0 15px;
+}
+.demoControls select {
+  padding: 9px 12px;
+  font-size: 13px;
+  border-width: 1px;
+}
+.loans article {
+  border: 1px solid black;
+  padding: 20px;
+}
+.loans article + article {
+  margin-top: 16px;
+}
+.loans h3 {
+  font-size: 17px;
+}
+.loans p {
+  font-size: 12px;
+  margin: 15px 0;
+}
+.loans button {
+  font-size: 12px;
+  min-height: 44px;
+}
+.content .lastSection :global(ol) > li {
+  grid-template-columns: 1fr 1fr;
+  font-size: 12px;
+}
+.content .lastSection :global(ol) > li > span {
+  grid-column: 1/-1;
+}
+@media (max-width: 1100px) {
+  .layout {
+    gap: 40px;
+  }
+  .aside {
+    max-width: none;
+    flex-basis: 330px;
+  }
+  .content {
+    flex-basis: 520px;
+  }
+}
+@media (max-width: 940px) {
+  .aside {
+    max-width: 420px;
+  }
+  .content {
+    flex-basis: 100%;
+  }
+  .layout {
+    gap: 42px;
+  }
+}
+@media (max-width: 760px) {
+  .page {
+    padding-block: 25px 60px;
+  }
+  .breadcrumb {
+    margin-bottom: 25px;
+  }
+  .aside {
+    flex-basis: 100%;
+    max-width: none;
+  }
+  .aside > img {
+    max-width: 500px;
+  }
+  .title > h1 {
+    font-size: 39px;
+  }
+  .price {
+    gap: 15px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .price > button {
+    width: 100%;
+  }
+  .sectionHeading {
+    align-items: flex-start;
+  }
+  .section h2 {
+    font-size: 28px;
+  }
+  .content .lastSection :global(ol) > li {
+    display: flex;
+  }
+}

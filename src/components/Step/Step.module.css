@@ -1,0 +1,45 @@
+.step {
+  border-top: 2px solid black;
+  padding-top: 23px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.number {
+  width: 40px;
+  height: 40px;
+  background: var(--yellow);
+  border: 1px solid black;
+  display: grid;
+  place-items: center;
+  font: 700 21px var(--font-typed);
+  margin-bottom: 21px;
+}
+.step h3 {
+  font-size: 20px;
+  line-height: 1.3;
+  margin-bottom: 12px;
+}
+.step p {
+  font-size: 14px;
+  line-height: 1.8;
+  max-width: 36ch;
+  margin-bottom: 23px;
+}
+.signer {
+  margin-top: auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 11px;
+}
+.person,
+.contract {
+  border: 1px solid black;
+  padding: 3px 8px;
+  font-weight: 600;
+}
+.contract {
+  background: black;
+  color: var(--yellow);
+}

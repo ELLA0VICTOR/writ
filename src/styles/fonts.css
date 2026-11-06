@@ -1,0 +1,36 @@
+@import "@fontsource/public-sans/latin-400.css";
+@import "@fontsource/public-sans/latin-400-italic.css";
+@import "@fontsource/public-sans/latin-500.css";
+@import "@fontsource/public-sans/latin-600.css";
+@import "@fontsource/public-sans/latin-700.css";
+@import "@fontsource/public-sans/latin-800.css";
+@import "@fontsource/public-sans/latin-900.css";
+@import "@fontsource/courier-prime/latin-400.css";
+@import "@fontsource/courier-prime/latin-700.css";
+/* Measured from the Latin Fontsource subsets and Arial/Courier New. See scripts/font-metrics.py. */
+@font-face {
+  font-family: "Public Sans Fallback";
+  src: local("Arial");
+  size-adjust: 99.7%;
+  ascent-override: 95.286%;
+  descent-override: 22.568%;
+  line-gap-override: 0%;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Courier Prime Fallback";
+  src: local("Courier New");
+  size-adjust: 99.919%;
+  ascent-override: 78.189%;
+  descent-override: 34.208%;
+  line-gap-override: 0%;
+  font-display: swap;
+}
+html {
+  --font-sans:
+    "Public Sans", "Public Sans Fallback", system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-typed:
+    "Courier Prime", "Courier Prime Fallback", "Courier New", ui-monospace,
+    monospace;
+}

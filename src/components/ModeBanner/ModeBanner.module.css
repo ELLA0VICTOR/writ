@@ -1,0 +1,101 @@
+.banner,
+.testnet {
+  border-bottom: 1px solid black;
+  padding: 12px max(20px, calc((100vw - 1320px) / 2));
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.banner {
+  background: var(--yellow-pale);
+  padding-block: 10px;
+}
+.banner > div:first-child {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.banner strong {
+  font-size: 13px;
+  white-space: nowrap;
+}
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.controls label {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  white-space: nowrap;
+  font-size: 12px;
+}
+.controls select {
+  width: auto;
+  padding: 5px 8px;
+  min-height: 36px;
+  border-width: 1px;
+  font-size: 12px;
+  background: white;
+}
+.controls button {
+  font-size: 12px;
+  background: transparent;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0;
+  min-height: 44px;
+}
+.controls a,
+.testnet a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+.testnet {
+  padding-block: 0;
+  background: white;
+  color: var(--quiet);
+  min-height: 40px;
+}
+.testnet a {
+  min-height: 36px;
+  font-weight: 600;
+  color: black;
+}
+@media (max-width: 1024px) {
+  .banner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .banner > div:first-child {
+    gap: 10px;
+  }
+  .controls {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  .testnet {
+    gap: 10px;
+  }
+}
+@media (max-width: 460px) {
+  .banner > div:first-child {
+    display: block;
+  }
+  .banner > div:first-child span {
+    display: block;
+    font-size: 11px;
+  }
+  .controls {
+    gap: 12px;
+  }
+  .testnet {
+    font-size: 11px;
+  }
+}

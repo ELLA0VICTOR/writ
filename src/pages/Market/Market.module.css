@@ -1,0 +1,116 @@
+.page {
+  padding-block: 65px 95px;
+  min-height: calc(100vh - 340px);
+}
+.heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 35px;
+  align-items: center;
+  margin-bottom: 45px;
+}
+.heading h1 {
+  font-size: clamp(44px, 5vw, 64px);
+  letter-spacing: -0.045em;
+  margin-bottom: 18px;
+}
+.heading .lead {
+  font-size: 17px;
+  max-width: 57ch;
+  margin: 0;
+}
+.heading .sectionLabel {
+  margin-bottom: 20px;
+}
+.heading > a {
+  flex-shrink: 0;
+}
+.filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  border-block: 1px solid black;
+  padding: 20px 0;
+  margin-bottom: 38px;
+}
+.filters label {
+  font-size: 12px;
+  display: grid;
+  gap: 8px;
+  min-width: 190px;
+}
+.filters select {
+  padding: 9px 14px;
+  font-size: 14px;
+  border-width: 1px;
+}
+.filters p {
+  margin: 0 0 10px auto;
+  font-size: 12px;
+  color: var(--quiet);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 28px;
+  align-items: start;
+}
+.cardLink {
+  max-width: 420px;
+  text-decoration: none;
+  display: block;
+}
+.cardLink:hover {
+  outline: 3px solid var(--yellow);
+  outline-offset: 5px;
+}
+.cardLink > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 15px 0;
+}
+.cardLink > div > span:first-child {
+  font: 400 14px var(--font-typed);
+  overflow-wrap: anywhere;
+}
+.cardLink > div > span:last-child {
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.emptyTitle {
+  font-size: 30px;
+}
+@media (max-width: 760px) {
+  .page {
+    padding-block: 42px 64px;
+  }
+  .heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 22px;
+    margin-bottom: 30px;
+  }
+  .heading .lead {
+    font-size: 16px;
+  }
+  .filters {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  .filters label {
+    min-width: 0;
+    flex: 1 1 130px;
+  }
+  .filters p {
+    width: 100%;
+    margin: 0;
+  }
+  .grid {
+    gap: 30px;
+  }
+  .cardLink {
+    max-width: none;
+  }
+}

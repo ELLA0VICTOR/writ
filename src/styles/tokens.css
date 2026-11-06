@@ -1,0 +1,15 @@
+:root {
+  --white: #ffffff;
+  --yellow: #ffd400;
+  --yellow-pale: #fff6cc;
+  --ink: #000000;
+  --quiet: #4d4d4d;
+  --body: #3a3a3a;
+  --clean: #0b7a3e;
+  --refused: #c8160f;
+  --listed: #3d1fe0;
+  --line: 2px;
+  --rule: 1px;
+  --font-sans: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-typed: "Courier Prime", "Courier New", ui-monospace, monospace;
+}

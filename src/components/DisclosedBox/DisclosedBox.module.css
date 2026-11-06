@@ -1,0 +1,30 @@
+.box {
+  padding: 24px;
+  background: var(--yellow-pale);
+  border: 1px solid black;
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  margin-block: 25px;
+}
+.box p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.compact {
+  display: block;
+  padding: 22px;
+}
+.compact p {
+  margin-top: 17px;
+}
+@media (max-width: 760px) {
+  .box {
+    display: block;
+    padding: 21px;
+  }
+  .box p {
+    margin-top: 17px;
+  }
+}

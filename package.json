@@ -1,0 +1,42 @@
+{
+  "name": "writ",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "predev": "npm run fonts:svg && node scripts/prepare-public.mjs",
+    "prebuild": "npm run fonts:svg && node scripts/prepare-public.mjs",
+    "pretest": "npm run fonts:svg",
+    "dev": "vite",
+    "build": "tsc -b && vite build && node scripts/check-budgets.mjs",
+    "lint": "oxlint",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "check:secrets": "node scripts/check-secrets.mjs --worktree",
+    "format": "prettier --write src tests scripts/*.mjs docs/*.md README.md",
+    "fonts:svg": "node scripts/build-svg-fonts.mjs"
+  },
+  "dependencies": {
+    "@fontsource/courier-prime": "^5.2.0",
+    "@fontsource/public-sans": "^5.2.0",
+    "@hot-labs/near-connect": "0.12.0",
+    "near-api-js": "7.4.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router-dom": "^7.18.5"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
+    "@playwright/test": "^1.56.0",
+    "@types/node": "^24.19.2",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "oxlint": "^1.90.0",
+    "prettier": "^3.9.10",
+    "typescript": "~7.0.2",
+    "vite": "^8.3.6",
+    "vitest": "^4.0.0"
+  }
+}

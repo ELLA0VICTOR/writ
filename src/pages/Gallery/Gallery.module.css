@@ -1,0 +1,26 @@
+.gallery {
+  padding-block: 60px;
+}
+.gallery > h1 {
+  font-size: 46px;
+  letter-spacing: -0.04em;
+}
+.gallery > section {
+  padding-block: 40px;
+  border-top: 1px solid black;
+}
+.gallery h2 {
+  font-size: 30px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 30px;
+}
+.stamps {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-block: 20px;
+}

@@ -1,0 +1,81 @@
+.dialog {
+  border: 2px solid black;
+  padding: 0;
+  width: min(800px, calc(100% - 40px));
+  max-height: calc(100dvh - 40px);
+  background: white;
+  color: black;
+}
+.dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+.header {
+  background: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 25px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.header h2 {
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  margin: 0;
+}
+.header button {
+  color: white;
+  border: 1px solid white;
+  padding: 0 12px;
+  background: black;
+  font-weight: 600;
+  font-size: 13px;
+  min-height: 40px;
+}
+.header button:hover {
+  background: var(--yellow);
+  color: black;
+}
+.content {
+  padding: 32px;
+}
+.content h3 {
+  font-size: 31px;
+  letter-spacing: -0.035em;
+}
+.content form {
+  display: grid;
+  gap: 19px;
+}
+.content label {
+  display: grid;
+  gap: 8px;
+}
+.content footer {
+  border-top: 1px solid black;
+  margin-top: 25px;
+  padding-top: 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+@media (max-width: 640px) {
+  .dialog {
+    width: calc(100% - 24px);
+    max-height: calc(100dvh - 24px);
+  }
+  .header {
+    padding: 12px 20px;
+  }
+  .content {
+    padding: 24px 20px;
+  }
+  .content h3 {
+    font-size: 27px;
+  }
+}

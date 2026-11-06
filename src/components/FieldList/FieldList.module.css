@@ -1,0 +1,21 @@
+.fields {
+  margin: 0;
+}
+.fields > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 25px;
+  padding: 14px 0;
+  border-bottom: 1px solid black;
+  font-size: 14px;
+}
+.fields dt {
+  color: var(--quiet);
+  flex-shrink: 0;
+}
+.fields dd {
+  text-align: right;
+  margin: 0;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}

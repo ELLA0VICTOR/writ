@@ -1,0 +1,8 @@
+node_modules
+dist
+public/docs
+src/nft/fonts.generated.ts
+tests/unit/__snapshots__
+playwright-report
+test-results
+writ-frontend-codex-prompt.md

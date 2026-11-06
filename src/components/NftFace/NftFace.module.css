@@ -1,0 +1,7 @@
+.face {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 1;
+  background: white;
+}

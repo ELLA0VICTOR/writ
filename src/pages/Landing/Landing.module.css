@@ -1,0 +1,357 @@
+.section {
+  padding-block: 108px;
+}
+.ruled {
+  border-top: 1px solid black;
+}
+.hero {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(500px, 100%), 1fr));
+  gap: 72px;
+  align-items: start;
+  padding-top: 96px;
+  padding-bottom: 104px;
+}
+.hero h1 {
+  font-size: clamp(54px, 6.6vw, 92px);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  margin: 0 0 29px;
+}
+.heroCopy > .lead {
+  max-width: 47ch;
+  margin-bottom: 29px;
+}
+.heroCopy .testnetNote {
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--quiet);
+  margin: 21px 0 0;
+}
+.heroCard {
+  min-width: 0;
+}
+.exampleCaption {
+  font-size: 10px;
+  line-height: 1.7;
+  margin: 12px 0 0;
+  max-width: 62ch;
+  color: var(--quiet);
+}
+.sectionHead {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 70px;
+  align-items: center;
+  margin-bottom: 50px;
+}
+.sectionHead h2 {
+  margin-bottom: 0;
+}
+.sectionHead > .lead {
+  font-size: 17px;
+  max-width: 45ch;
+  margin: 0;
+  justify-self: end;
+}
+.templateGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 35px;
+  margin-top: 45px;
+}
+.templateGrid article {
+  border-top: 6px solid var(--yellow);
+  padding-top: 23px;
+}
+.templateGrid article > span {
+  font-size: 12px;
+}
+.templateGrid h3 {
+  font-size: 27px;
+  margin: 22px 0 14px;
+}
+.templateGrid p {
+  font-size: 14px;
+}
+.templateGrid article > div {
+  background: var(--yellow-pale);
+  padding: 18px;
+  font-size: 12px;
+  display: grid;
+  gap: 9px;
+}
+.validationNote {
+  margin-top: 37px;
+  border-top: 6px solid var(--yellow);
+  padding: 25px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+}
+.validationNote p {
+  font-size: 14px;
+  max-width: 61ch;
+  margin: 8px 0 0;
+}
+.validationNote > a {
+  font-size: 13px;
+  flex: 0 0 240px;
+}
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: 48px 45px;
+}
+.asyncNote {
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 40px 0 0;
+  max-width: 105ch;
+  border-left: 3px solid var(--yellow);
+  padding-left: 15px;
+}
+.tricks {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.8fr) 1.5fr;
+  gap: 80px;
+}
+.tricks > .lead {
+  max-width: 32ch;
+}
+.tricks > div:first-child > a {
+  font-size: 13px;
+  font-weight: 600;
+}
+.trickList article {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr auto;
+  gap: 20px;
+  align-items: center;
+  border-top: 1px solid black;
+  padding: 22px 0;
+}
+.trickList article:last-child {
+  border-bottom: 1px solid black;
+}
+.trickList strong {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.trickList p {
+  font-size: 12px;
+  line-height: 1.7;
+  margin: 0;
+}
+.cta {
+  background: var(--yellow);
+  border-top: 1px solid black;
+}
+.ctaInner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 70px;
+}
+.cta h2 {
+  margin-bottom: 20px;
+}
+.cta .lead {
+  font-size: 16px;
+  max-width: 45ch;
+  margin: 0;
+}
+.cta .sectionLabel::before {
+  background: white;
+}
+.cta form {
+  min-width: 0;
+}
+.cta label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+.lookup {
+  display: flex;
+  gap: 12px;
+}
+.lookup input {
+  min-width: 0;
+  flex: 1 1 100px;
+  font-size: 19px;
+}
+.lookup button {
+  flex-shrink: 0;
+  padding-inline: 20px;
+}
+.cta small {
+  display: block;
+  font-size: 11px;
+  margin-top: 14px;
+}
+.cta form > p {
+  margin-top: 15px;
+  color: black;
+  font-size: 13px;
+}
+@media (min-width: 1280px) {
+  .heroCard {
+    max-width: 536px;
+    justify-self: end;
+    width: 100%;
+  }
+}
+@media (max-width: 1280px) {
+  .hero {
+    gap: 45px;
+    grid-template-columns: repeat(auto-fit, minmax(min(440px, 100%), 1fr));
+  }
+  .tricks {
+    gap: 45px;
+  }
+  .trickList article {
+    grid-template-columns: 1fr 1.4fr;
+  }
+  .trickList article > span {
+    grid-column: 2;
+    justify-self: start;
+    margin-block: 5px;
+  }
+  .ctaInner {
+    gap: 40px;
+  }
+  .lookup {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 1024px) {
+  .section {
+    padding-block: 80px;
+  }
+  .hero {
+    padding-top: 66px;
+    padding-bottom: 80px;
+    gap: 50px;
+  }
+  .heroCopy {
+    max-width: 660px;
+  }
+  .hero h1 {
+    font-size: clamp(54px, 8vw, 78px);
+  }
+  .heroCard {
+    max-width: 600px;
+  }
+  .sectionHead {
+    gap: 35px;
+  }
+  .tricks {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .trickList article {
+    grid-template-columns: 1fr 1.4fr auto;
+  }
+  .trickList article > span {
+    grid-column: auto;
+  }
+  .ctaInner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .lookup {
+    flex-wrap: nowrap;
+  }
+  .cta form {
+    max-width: 600px;
+  }
+  .validationNote {
+    align-items: flex-start;
+  }
+  .steps {
+    gap: 40px 30px;
+  }
+}
+@media (max-width: 760px) {
+  .section {
+    padding-block: 64px;
+  }
+  .hero {
+    padding-block: 52px 64px;
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .hero h1 {
+    font-size: 54px;
+    max-width: 11ch;
+  }
+  .heroCopy > .lead {
+    font-size: 17px;
+  }
+  .heroCopy > .sectionLabel {
+    font-size: 13px;
+    margin-bottom: 23px;
+  }
+  .heroCopy .actions {
+    gap: 10px;
+  }
+  .heroCopy .actions a {
+    padding-inline: 18px;
+    font-size: 14px;
+  }
+  .sectionHead {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-bottom: 34px;
+  }
+  .sectionHead > .lead {
+    justify-self: start;
+    font-size: 16px;
+    max-width: none;
+  }
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+  .trickList article {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding-block: 23px;
+  }
+  .trickList article > span {
+    justify-self: start;
+    margin-top: 7px;
+  }
+  .trickList strong {
+    font-size: 15px;
+  }
+  .trickList p {
+    font-size: 14px;
+  }
+  .tricks {
+    gap: 28px;
+  }
+  .validationNote {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .validationNote > a {
+    flex: auto;
+  }
+  .lookup {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .lookup input {
+    flex: auto;
+  }
+  .cta h2 {
+    font-size: 38px;
+  }
+  .exampleCaption {
+    font-size: 10px;
+  }
+}

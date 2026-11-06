@@ -1,0 +1,68 @@
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 7px;
+}
+.steps li {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 13px;
+  font-size: 13px;
+  font-weight: 600;
+  min-height: 72px;
+}
+.number {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid black;
+  font: 400 23px var(--font-typed);
+}
+.current {
+  background: var(--yellow);
+}
+.current .number {
+  background: black;
+  color: var(--yellow);
+}
+.done .number {
+  background: black;
+  color: white;
+}
+.done small {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--quiet);
+  margin-top: 3px;
+}
+.later {
+  color: var(--quiet);
+}
+@media (max-width: 860px) {
+  .steps {
+    display: flex;
+    gap: 10px;
+    overflow: auto;
+    padding-bottom: 8px;
+  }
+  .steps li {
+    flex: 1 0 140px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    min-height: 120px;
+    padding: 12px;
+    font-size: 12px;
+  }
+  .number {
+    width: 38px;
+    height: 38px;
+    font-size: 20px;
+  }
+}

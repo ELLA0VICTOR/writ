@@ -1,0 +1,128 @@
+.required {
+  border-block: 1px solid black;
+  padding: 23px 0;
+}
+.required h4 {
+  font-size: 14px;
+  margin: 0 0 17px;
+}
+.required ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+.required li {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  font-size: 13px;
+}
+.lock {
+  width: 12px;
+  height: 11px;
+  flex-shrink: 0;
+  border: 1.5px solid black;
+  position: relative;
+  margin-top: 5px;
+}
+.lock::before {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 7px;
+  left: 1.5px;
+  top: -7px;
+  border: 1.5px solid black;
+  border-bottom: 0;
+  border-radius: 4px 4px 0 0;
+}
+.pin {
+  padding: 18px;
+  background: var(--yellow-pale);
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.pin label {
+  display: flex !important;
+  align-items: center;
+  gap: 12px !important;
+  font-size: 13px;
+}
+.pin > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  max-width: 180px;
+}
+.pin input:not([type="checkbox"]) {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: 15px;
+}
+.refundNote {
+  font-size: 12px;
+  line-height: 1.8;
+  margin-bottom: 0;
+}
+.reading {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+.reading > li {
+  border-top: 1px solid black;
+}
+.reading > li > div {
+  padding: 13px 0;
+}
+.stamp {
+  margin: 20px 0 36px;
+  text-align: center;
+  padding: 20px 0;
+}
+.result h3 {
+  font-size: 34px;
+}
+.result > p {
+  font-size: 15px;
+  line-height: 1.8;
+}
+.result footer {
+  justify-content: space-between;
+  align-items: center;
+}
+.result footer a {
+  font-size: 12px;
+}
+.mockNote {
+  font-size: 11px !important;
+  margin: 22px 0 0;
+  color: var(--quiet);
+}
+@media (max-width: 640px) {
+  .pin {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .pin > div {
+    max-width: none;
+    width: 100%;
+  }
+  .result h3 {
+    font-size: 27px;
+  }
+  .result footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .result footer button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "staking-pool-owner",
+  "name": "Staking-pool owner",
+  "kind": "NEAR core staking-pool",
+  "roleTitle": "Pool\nowner",
+  "description": "The executor is the pool's owner account, configured when the pool is created.",
+  "blindSpot": "The standard pool owner is fixed at initialization. An existing pool cannot generally be wrapped or unwrapped by changing that owner. Staking economics and validator behavior are outside these checks.",
+  "checks": [
+    {
+      "id": "owner",
+      "label": "Pool owner is the executor",
+      "method": "get_owner_id",
+      "target": "role",
+      "pointer": "",
+      "operator": "eq",
+      "expected": "$WRIT"
+    }
+  ],
+  "pins": [],
+  "actions": [],
+  "wrapSteps": [],
+  "supportsUnwrap": false
+}

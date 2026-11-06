@@ -1,0 +1,23 @@
+{
+  "id": "dao-council",
+  "name": "DAO council seat",
+  "kind": "Sputnik DAO v2",
+  "roleTitle": "Council\nseat",
+  "description": "A council membership held by the executor. DAO governance remains sovereign.",
+  "blindSpot": "Membership is not exclusive control. The DAO can remove this seat. Queued proposals and governance changes are not ruled out by a membership check.",
+  "checks": [
+    {
+      "id": "council",
+      "label": "Executor is a council member",
+      "method": "get_policy",
+      "target": "role",
+      "pointer": "/roles/0/kind/Group",
+      "operator": "contains",
+      "expected": "$WRIT"
+    }
+  ],
+  "pins": [],
+  "actions": [],
+  "wrapSteps": [],
+  "supportsUnwrap": false
+}

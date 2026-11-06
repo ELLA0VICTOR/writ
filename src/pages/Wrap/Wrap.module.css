@@ -1,0 +1,252 @@
+.page {
+  padding-block: 61px 90px;
+}
+.heading {
+  margin-bottom: 42px;
+}
+.heading h1 {
+  font-size: clamp(45px, 5vw, 64px);
+  letter-spacing: -0.045em;
+  margin-bottom: 18px;
+}
+.heading .lead {
+  font-size: 17px;
+  margin: 0;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 45px;
+  align-items: start;
+}
+.sheet {
+  border: 2px solid black;
+  min-width: 0;
+}
+.sheetHeader {
+  background: black;
+  color: white;
+  padding: 17px 28px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 13px;
+}
+.sheetHeader > span {
+  font-size: 11px;
+  opacity: 0.8;
+}
+.sheetBody {
+  padding: 38px;
+}
+.sheetBody h2 {
+  font-size: 36px;
+  letter-spacing: -0.035em;
+}
+.sheetBody > p {
+  font-size: 15px;
+  line-height: 1.8;
+  max-width: 64ch;
+}
+.sheetBody footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 27px;
+  margin-top: 30px;
+  border-top: 1px solid black;
+  flex-wrap: wrap;
+}
+.options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+  gap: 15px;
+  margin-block: 28px;
+}
+.option {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 25px 20px;
+  border: 1.5px solid black;
+  cursor: pointer;
+}
+.selected {
+  background: var(--yellow);
+}
+.option strong {
+  display: block;
+  font-size: 16px;
+}
+.option small {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  margin-top: 7px;
+}
+.buyerChecks {
+  margin-top: 40px;
+  padding-top: 26px;
+  border-top: 1px solid black;
+}
+.buyerChecks h3 {
+  font-size: 15px;
+  letter-spacing: 0;
+}
+.buyerChecks ul {
+  padding-left: 20px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.9;
+}
+.buyerChecks li > code {
+  display: block;
+  color: var(--quiet);
+}
+.buyerChecks > aside {
+  margin-bottom: 0;
+}
+.sheetBody form {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  margin: 25px 0;
+}
+.sheetBody form label {
+  flex: 1;
+  display: grid;
+  gap: 10px;
+  font-size: 13px;
+  min-width: 0;
+}
+.sheetBody form button {
+  font-size: 13px;
+  white-space: nowrap;
+  padding-inline: 18px;
+}
+.note {
+  font-size: 12px !important;
+  margin: 20px 0 !important;
+  line-height: 1.8;
+}
+.inspection {
+  background: var(--yellow-pale);
+  padding: 20px;
+  margin-top: 20px;
+}
+.inspection p {
+  font-size: 13px;
+  margin: 15px 0 0;
+  overflow-wrap: anywhere;
+}
+.connect {
+  border: 1px solid black;
+  padding: 25px;
+  margin-block: 25px;
+}
+.connect p {
+  font-size: 14px;
+}
+.handover {
+  display: grid;
+  gap: 18px;
+  margin-top: 28px;
+}
+.handover article {
+  border: 1px solid black;
+  padding: 23px;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 13px;
+}
+.handover label {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  font-size: 14px;
+}
+.handover input {
+  opacity: 1;
+}
+.handover code {
+  font-size: 13px;
+  max-width: 100%;
+}
+.handover article > span,
+.handover small,
+.handover a {
+  font-size: 11px;
+}
+.handover article > span {
+  color: var(--quiet);
+  overflow-wrap: anywhere;
+}
+.handover button {
+  font-size: 13px;
+  min-height: 46px;
+  padding-inline: 18px;
+}
+.stamp {
+  text-align: center;
+  padding: 35px 0 40px;
+}
+@media (max-width: 1024px) {
+  .layout {
+    grid-template-columns: 240px 1fr;
+    gap: 25px;
+  }
+  .sheetBody {
+    padding: 28px;
+  }
+  .sheetHeader {
+    padding-inline: 24px;
+  }
+  .sheetBody form {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 860px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .sheetBody {
+    padding: 28px;
+  }
+  .heading .sectionLabel {
+    font-size: 13px;
+  }
+  .heading .lead {
+    font-size: 16px;
+  }
+}
+@media (max-width: 760px) {
+  .page {
+    padding-block: 40px 64px;
+  }
+  .sheetBody {
+    padding: 24px 20px;
+  }
+  .sheetHeader {
+    padding: 15px 20px;
+  }
+  .sheetHeader strong {
+    font-size: 12px;
+  }
+  .sheetBody h2 {
+    font-size: 29px;
+  }
+  .sheetBody form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .sheetBody footer > * {
+    flex: 1 1 auto;
+  }
+  .handover article {
+    padding: 19px;
+  }
+}
+.layout > aside {
+  min-width: 0;
+}

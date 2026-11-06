@@ -1,0 +1,119 @@
+.section {
+  overflow: hidden;
+  padding-top: clamp(40px, 4.5vw, 120px);
+  padding-bottom: 24px;
+  background: var(--white);
+}
+.band {
+  width: calc(100% + 120px);
+  margin-left: -60px;
+  transform: rotate(-3deg);
+  border-block: 2px solid var(--ink);
+  background: var(--yellow);
+  overflow: hidden;
+}
+.track {
+  display: flex;
+  width: max-content;
+  animation: roll 36s linear infinite;
+}
+.track[data-paused="true"],
+.band:hover .track {
+  animation-play-state: paused;
+}
+.group {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex: 0 0 auto;
+  min-width: max(100vw, 1000px);
+  gap: 90px;
+  list-style: none;
+  margin: 0;
+  padding: 29px 55px;
+}
+.group li {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 17px;
+}
+.group img {
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
+.group span {
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+.caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-top: clamp(40px, 4.5vw, 120px);
+}
+.caption p {
+  font-size: 12px;
+  margin: 0;
+  color: var(--quiet);
+}
+.caption button {
+  border: 0;
+  background: transparent;
+  padding: 0 0 0 10px;
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  color: var(--ink);
+}
+@keyframes roll {
+  to {
+    transform: translateX(-33.333333%);
+  }
+}
+@media (max-width: 760px) {
+  .group {
+    min-width: 840px;
+    gap: 55px;
+    padding: 24px 38px;
+  }
+  .group span {
+    font-size: 24px;
+  }
+  .group img {
+    width: 36px;
+    height: 34px;
+  }
+  .caption p {
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .band {
+    width: calc(100% + 40px);
+    margin-left: -20px;
+  }
+  .track {
+    width: 100%;
+  }
+  .group {
+    width: 100%;
+    min-width: 0;
+    padding: 23px 32px;
+    gap: 22px;
+    flex-wrap: wrap;
+  }
+  .group[aria-hidden="true"] {
+    display: none;
+  }
+  .group span {
+    font-size: 20px;
+  }
+  .caption button {
+    display: none;
+  }
+}

@@ -1,0 +1,111 @@
+import type { HistoryEntry, Writ } from "../types";
+import { nearToYocto } from "../../utils/amounts";
+export const EXAMPLE_DATE = "2026-11-06T12:00:00.000Z";
+export const exampleWrit: Writ = {
+  id: "7",
+  collection: "writ-demo.testnet",
+  owner: "ada.testnet",
+  executor: "w7.writ-demo.testnet",
+  target: "lanterns-nft.testnet",
+  templateId: "contract-owner",
+  templateHash: "example-owner-v1",
+  executorCodeHash: "example-executor-v1",
+  epoch: "3",
+  nonce: "12",
+  pendingCalls: 0,
+  status: "listed",
+  price: nearToYocto("40"),
+  balance: nearToYocto("8.5"),
+  withdrawableFees: nearToYocto("2.5"),
+  tokens: [],
+  loans: [],
+  roleOwner: "w7.writ-demo.testnet",
+  proposedOwner: null,
+  accessKeys: [],
+};
+export const exampleLoan = {
+  id: "loan-1",
+  borrower: "sam.testnet",
+  method: "set_price",
+  args: { price: "1" },
+  maxDeposit: "0",
+  expiresAt: "2026-12-01T18:00:00.000Z",
+  epoch: "3",
+};
+export function initialWrits(): Writ[] {
+  return structuredClone([
+    exampleWrit,
+    {
+      ...exampleWrit,
+      id: "12",
+      target: "paper-cranes.testnet",
+      executor: "w12.writ-demo.testnet",
+      roleOwner: "w12.writ-demo.testnet",
+      status: "held",
+      price: null,
+      nonce: "4",
+      epoch: "1",
+      balance: nearToYocto("3"),
+      withdrawableFees: "0",
+    },
+    {
+      ...exampleWrit,
+      id: "21",
+      target: "little-orbits.testnet",
+      executor: "w21.writ-demo.testnet",
+      roleOwner: "w21.writ-demo.testnet",
+      status: "lent",
+      price: null,
+      nonce: "8",
+      loans: [exampleLoan],
+    },
+    {
+      ...exampleWrit,
+      id: "24",
+      target: "field-notes.testnet",
+      executor: "w24.writ-demo.testnet",
+      roleOwner: "w24.writ-demo.testnet",
+      status: "locked",
+      nonce: "6",
+      saleDeadlineBlock: "204",
+    },
+  ]) as Writ[];
+}
+export const exampleHistory: HistoryEntry[] = [
+  {
+    id: "h1",
+    at: "2026-11-06T09:12:00Z",
+    event: "Role wrapped",
+    actor: "ada.testnet",
+    detail: "Executor accepted the owner role",
+  },
+  {
+    id: "h2",
+    at: "2026-11-06T09:18:00Z",
+    event: "Method lent",
+    actor: "ada.testnet",
+    detail: "set_price lent to sam.testnet",
+  },
+  {
+    id: "h3",
+    at: "2026-11-06T09:24:00Z",
+    event: "Purchase refused",
+    actor: "ben.testnet",
+    detail: "A next owner was still proposed",
+    refused: true,
+  },
+  {
+    id: "h4",
+    at: "2026-11-06T09:27:00Z",
+    event: "Proposal cleared",
+    actor: "ada.testnet",
+    detail: "No next owner proposed",
+  },
+  {
+    id: "h5",
+    at: "2026-11-06T09:30:00Z",
+    event: "Listed for sale",
+    actor: "ada.testnet",
+    detail: "Asking price: 40 NEAR",
+  },
+];
