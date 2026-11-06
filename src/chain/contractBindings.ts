@@ -1,5 +1,4 @@
-// Proposed frontend ABI. This is deliberately disabled until a deployment opts in.
-// It does not assert that a matching contract is currently deployed.
+// Versioned ABI; writes require matching deployment and immutable template hashes.
 export const bindings = {
   abiVersion: "writ-ui-v1",
   config: "get_frontend_config",
@@ -18,5 +17,5 @@ export const bindings = {
   withdraw: "withdraw_fees",
   mint: "mint",
   wrap: "wrap_step",
-  unwrap: "unwrap",
+  unwrap: "begin_unwrap",
 } as const;

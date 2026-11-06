@@ -6,7 +6,8 @@ export type JsonValue =
 
 export interface ReadContext {
   blockHeight: string;
-  blockHash: string;
+  blockHash: string | null;
+  phase?: "settlement_callback";
   observedAtMs: number;
   source: "mock" | "testnet";
 }
@@ -16,7 +17,8 @@ export interface CheckDefinition {
   method: string;
   target: "role" | "executor" | "collection";
   pointer: string;
-  operator: "eq" | "null" | "contains";
+  operator: "eq" | "null" | "contains" | "group_member";
+  groupName?: string;
   expected: JsonValue;
 }
 export interface PinDefinition {
@@ -78,6 +80,9 @@ export interface Writ {
   proposedOwner: AccountId | null;
   accessKeys: string[];
   saleDeadlineBlock?: string;
+  provisioned?: boolean;
+  roleConfirmed?: boolean;
+  unwrapPending?: boolean;
 }
 export interface CheckResult {
   id: string;
@@ -144,6 +149,7 @@ export interface TransactionRef {
 export interface PurchaseHandle extends TransactionRef {
   writId: string;
   attemptId: string;
+  buyerId?: AccountId;
 }
 export type RefundStatus = "pending" | "claimable" | "paid";
 export type PurchaseState =
@@ -160,7 +166,7 @@ export type PurchaseState =
       seller: AccountId;
       price: YoctoNear;
       endedLoanIds: string[];
-      sellerPayment: "paid" | "claimable";
+      sellerPayment: "paid" | "claimable" | "credited";
     }
   | { status: "releasable" }
   | { status: "released"; refundStatus: RefundStatus };
@@ -208,6 +214,16 @@ export interface MintResult extends TransactionRef {
 export interface WrapStepRequest {
   writId: string;
   step: number;
+}
+export interface MintQuote {
+  deposit: YoctoNear;
+  executorFunding: YoctoNear;
+  storageDeposit: YoctoNear;
+  nonRefundableStorage: boolean;
+}
+export interface AccountRecovery {
+  credit: YoctoNear;
+  retired: {id: string; executor: AccountId; target: AccountId; available: YoctoNear}[];
 }
 export interface ActionCapabilities {
   execute: boolean;

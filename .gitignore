@@ -65,3 +65,7 @@ coverage/
 *.bak
 *.zip
 *.tgz
+target/
+/artifacts/
+/integration/node_modules/
+/integration/results/

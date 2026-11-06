@@ -50,6 +50,7 @@ export async function walletCall(
         "invalid_input",
         "The transaction failed on chain. Review its receipts before trying again.",
       );
+    if(typeof result.status==="object"&&"SuccessValue" in result.status&&result.status.SuccessValue==="ZmFsc2U="&&["execute","wrap_step","confirm_wrap","begin_unwrap","finish_unwrap","withdraw_fees","withdraw_retired_funds","withdraw_credit","claim_refund"].includes(methodName))throw new ChainError("invalid_input","The contract reported that this action did not complete. Inspect the role and ledger before retrying.");
     return { hash: result.transaction.hash, mock: false };
   } catch (error) {
     if (error instanceof ChainError) throw error;

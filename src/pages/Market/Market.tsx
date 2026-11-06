@@ -8,6 +8,7 @@ import { ErrorSheet } from "../../components/ErrorSheet/ErrorSheet";
 import { getTemplate } from "../../templates/registry";
 import { writNumber } from "../../utils/amounts";
 import s from "./Market.module.css";
+import {RecoveryPanel} from "../../features/actions/RecoveryPanel";
 export default function Market({ mine = false }: { mine?: boolean }) {
   useTitle(mine ? "My Writs" : "The market");
   const adapter = useAdapter();
@@ -67,6 +68,7 @@ export default function Market({ mine = false }: { mine?: boolean }) {
           Wrap a role
         </ButtonLink>
       </div>
+      {mine && <RecoveryPanel/>}
       <div className={s.filters}>
         <label>
           Kind of role

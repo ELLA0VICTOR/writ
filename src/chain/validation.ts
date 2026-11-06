@@ -47,7 +47,7 @@ export function parseWrit(value: unknown): Writ | null {
   if (w.loans.length > 64 || w.tokens.length > 256 || w.accessKeys.length > 100)
     throw invalid();
   if (
-    (w.status === "listed" || w.status === "locked") &&
+    w.status === "listed" &&
     (!integer(w.price) || BigInt(w.price) <= 0n)
   )
     throw invalid();
@@ -99,7 +99,7 @@ function parseCheck(value: unknown): CheckResult {
   const r = record(c.read);
   if (
     !integer(r.blockHeight) ||
-    !text(r.blockHash) ||
+    !(text(r.blockHash) || (r.blockHash === null && r.phase === "settlement_callback")) ||
     typeof r.observedAtMs !== "number" ||
     !Number.isFinite(r.observedAtMs) ||
     r.source !== "testnet"
@@ -126,7 +126,7 @@ export function parsePurchase(value: unknown): PurchaseState {
         !integer(p.price) ||
         !Array.isArray(p.endedLoanIds) ||
         !p.endedLoanIds.every(text) ||
-        !["paid", "claimable"].includes(String(p.sellerPayment))
+        !["paid", "claimable", "credited"].includes(String(p.sellerPayment))
       )
         throw invalid();
       break;

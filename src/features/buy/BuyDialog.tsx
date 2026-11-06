@@ -55,6 +55,7 @@ export function BuyDialog({
   >({});
   const [balance, setBalance] = useState<string | null>(null);
   const [feeAllowance, setFeeAllowance] = useState<string | null>(null);
+  const [storageDeposit, setStorageDeposit] = useState<string | null>(null);
   const [balanceError, setBalanceError] = useState("");
   const [operationError, setOperationError] = useState("");
   const [operationBusy, setOperationBusy] = useState(false);
@@ -69,11 +70,13 @@ export function BuyDialog({
     void Promise.all([
       adapter.getSpendableBalance(session.accountId),
       adapter.getPurchaseFeeAllowance(),
+      adapter.getPurchaseStorageDeposit(),
     ])
-      .then(([value, fee]) => {
+      .then(([value, fee,storage]) => {
         if (active) {
           setBalance(value);
           setFeeAllowance(fee);
+          setStorageDeposit(storage);
         }
       })
       .catch(() => {
@@ -201,7 +204,7 @@ export function BuyDialog({
   const insufficient =
     balance !== null &&
     feeAllowance !== null &&
-    BigInt(balance) < BigInt(writ.price ?? "0") + BigInt(feeAllowance);
+    BigInt(balance) < BigInt(writ.price ?? "0") + BigInt(feeAllowance) + BigInt(storageDeposit ?? "0");
   return (
     <Dialog title={`Purchase Writ ${writNumber(writ.id)}`} onClose={onClose}>
       {(state.step === "pins" || state.step === "signing") && (
@@ -220,6 +223,7 @@ export function BuyDialog({
               <code>{writ.target}</code>. The sale settles only if its required
               on-chain checks pass during this purchase.
             </p>
+            {storageDeposit!==null && storageDeposit!=="0" && <p>Attached payment: <code>{formatNear((BigInt(writ.price??"0")+BigInt(storageDeposit)).toString())} NEAR</code>, including <code>{formatNear(storageDeposit)} NEAR</code> for retained purchase records. That storage charge and network fees are not refunded when conditions fail; the full purchase price remains refundable.</p>}
           </div>
           <div className={s.required}>
             <h4>Always checked for this kind of Writ</h4>
@@ -337,6 +341,7 @@ export function BuyDialog({
                   !adapter ||
                   state.step === "signing" ||
                   balance === null ||
+                  storageDeposit === null ||
                   insufficient ||
                   Boolean(
                     state.step === "pins" &&
@@ -346,7 +351,7 @@ export function BuyDialog({
               >
                 {state.step === "signing"
                   ? "Confirm in your wallet…"
-                  : `Pay ${price} NEAR and check`}
+                  : `Pay ${formatNear((BigInt(writ.price??"0")+BigInt(storageDeposit??"0")).toString())} NEAR and check`}
               </Button>
             ) : (
               <Button variant="primary" onClick={() => void connect()}>
@@ -415,7 +420,9 @@ export function BuyDialog({
               <h3>Writ {writNumber(writ.id)} is yours.</h3>
               <p>
                 You bought from <code>{outcome.seller}</code>.{" "}
-                {outcome.sellerPayment === "claimable"
+                {outcome.sellerPayment === "credited"
+                  ? "The seller’s proceeds were credited to their withdrawal balance."
+                  : outcome.sellerPayment === "claimable"
                   ? "The seller’s proceeds are ready to withdraw."
                   : "The seller has been paid."}{" "}
                 {outcome.endedLoanIds.length

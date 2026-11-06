@@ -99,9 +99,11 @@ describe("real adapter wire contract with controlled RPC responses", () => {
       "unavailable",
     );
   });
-  it("does not expose unimplemented provisioning/retirement actions", () => {
+  it("exposes implemented provisioning/retirement only with deployment configuration", () => {
     const a = createTestnetAdapter();
-    expect(a.capabilities.wrap).toBe(false);
-    expect(a.capabilities.unwrap).toBe(false);
+    expect(a.capabilities.wrap).toBe(true);
+    expect(a.capabilities.unwrap).toBe(true);
+    vi.stubEnv("VITE_WRIT_CONTRACT", "");
+    expect(createTestnetAdapter().capabilities.wrap).toBe(false);
   });
 });

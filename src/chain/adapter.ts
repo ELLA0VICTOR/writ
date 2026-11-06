@@ -32,6 +32,14 @@ export interface WritAdapter {
   disconnect(): Promise<void>;
   getSpendableBalance(accountId: string): Promise<YoctoNear>;
   getPurchaseFeeAllowance(): Promise<YoctoNear>;
+  getPurchaseStorageDeposit(): Promise<YoctoNear>;
+  getMintQuote(request: WrapRequest): Promise<import("./types").MintQuote>;
+  transfer(id: string, receiver: string): Promise<TransactionRef>;
+  fundExecutor(id: string, amount: YoctoNear): Promise<TransactionRef>;
+  confirmWrap(id: string): Promise<TransactionRef>;
+  getAccountRecovery(accountId: string): Promise<import("./types").AccountRecovery>;
+  withdrawCredit(amount: YoctoNear): Promise<TransactionRef>;
+  withdrawRetired(id: string, amount: YoctoNear): Promise<TransactionRef>;
   getTemplates(): Promise<RoleTemplate[]>;
   getWrit(id: string, signal?: AbortSignal): Promise<Writ | null>;
   listWrits(query: WritQuery, signal?: AbortSignal): Promise<WritPage>;

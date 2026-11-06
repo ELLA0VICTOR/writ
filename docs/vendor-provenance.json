@@ -1,0 +1,9 @@
+{
+  "sputnikdao2": {
+    "source": "https://raw.githubusercontent.com/near-daos/sputnik-dao-contract/5434a59dec23ee0c49df8c8c4350c208a7e75b0b/sputnikdao2_original.wasm",
+    "commit": "5434a59dec23ee0c49df8c8c4350c208a7e75b0b",
+    "sha256": "6e3f1814d40769d8f57b9a7af689d22aaab96d3232cec4d861311829c1d2318f",
+    "size": 469723,
+    "description": "Unmodified upstream Sputnik DAO original Wasm; used only in actual integration tests."
+  }
+}

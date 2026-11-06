@@ -169,7 +169,7 @@ export default function WritDetail() {
     );
   const template = getTemplate(writ.templateId);
   const owner = session?.accountId === writ.owner;
-  const paused = writ.status === "listed" || writ.status === "locked";
+  const paused = writ.status === "listed" || writ.status === "locked" || writ.pendingCalls>0 || writ.provisioned===false || writ.unwrapPending===true;
   const loaned = writ.loans.some(
     (l) =>
       l.borrower === session?.accountId &&
@@ -211,6 +211,9 @@ export default function WritDetail() {
             ) : owner ? (
               <>
                 <div className={s.actionButtons}>
+                  {writ.roleConfirmed===false && <ButtonLink to={`/wrap?resume=${writ.id}`}>Complete role handover</ButtonLink>}
+                  <Button disabled={paused} onClick={()=>setAction("transfer")}>Transfer the Writ</Button>
+                  <Button disabled={paused} onClick={()=>setAction("fund")}>Fund the executor</Button>
                   {adapter?.capabilities.execute && (
                     <Button
                       disabled={paused}
@@ -239,7 +242,7 @@ export default function WritDetail() {
                     </Button>
                   )}
                   {adapter?.capabilities.list && (
-                    <Button variant="primary" onClick={() => setAction("list")}>
+                    <Button disabled={writ.unwrapPending || writ.pendingCalls>0 || writ.roleConfirmed===false} variant="primary" onClick={() => setAction("list")}>
                       {writ.status === "listed"
                         ? "Change listing"
                         : "List for sale"}
@@ -250,7 +253,7 @@ export default function WritDetail() {
                   )}
                   {adapter?.capabilities.unwrap && template.supportsUnwrap && (
                     <Button
-                      disabled={paused || writ.loans.length > 0}
+                      disabled={(paused && !writ.unwrapPending) || writ.pendingCalls>0 || writ.loans.length > 0}
                       title={
                         paused
                           ? "Paused while listed"

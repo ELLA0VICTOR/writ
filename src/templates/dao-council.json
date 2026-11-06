@@ -11,13 +11,14 @@
       "label": "Executor is a council member",
       "method": "get_policy",
       "target": "role",
-      "pointer": "/roles/0/kind/Group",
-      "operator": "contains",
+      "pointer": "/roles",
+      "operator": "group_member",
+      "groupName": "council",
       "expected": "$WRIT"
     }
   ],
   "pins": [],
-  "actions": [],
+  "actions": [{"method":"act_proposal","label":"Vote on a proposal","args":{"id":0,"action":"VoteApprove"},"maxDeposit":"0","lendable":true}],
   "wrapSteps": [],
   "supportsUnwrap": false
 }
