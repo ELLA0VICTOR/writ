@@ -168,9 +168,29 @@ export function createMockAdapter(): WritAdapter {
       mutate(w);
       return tx();
     },
+    async fundTarget(id, amount) {
+      const w = holder(id);
+      if (BigInt(amount) <= 0n)
+        throw new ChainError("invalid_input", "Positive funding required.");
+      event(w, "External target funded", `${amount} yoctoNEAR`);
+      return tx();
+    },
     async confirmWrap(id) {
       const w = holder(id);
       w.roleConfirmed = w.roleOwner === w.executor && w.proposedOwner === null;
+      return tx();
+    },
+    async approveExampleDao(id) {
+      const w = holder(id);
+      if (w.templateId !== "dao-council")
+        throw new ChainError("invalid_input", "Choose a DAO council example.");
+      w.roleOwner = w.executor;
+      mutate(w);
+      event(
+        w,
+        "Example governance approved",
+        "Simulated council grant; no real proposal or vote",
+      );
       return tx();
     },
     async getAccountRecovery() {
@@ -186,7 +206,7 @@ export function createMockAdapter(): WritAdapter {
       );
     },
     async getTemplates() {
-      return clone(templates.filter((t) => t.id === "contract-owner"));
+      return clone(templates.filter((t) => t.id !== "staking-pool-owner"));
     },
     async getWrit(id) {
       try {
@@ -433,9 +453,11 @@ export function createMockAdapter(): WritAdapter {
       );
       if (
         !action ||
+        request.borrower === writ.owner ||
         !isAccountId(request.borrower) ||
         Date.parse(request.expiresAt) <= Date.now() ||
-        !Number.isFinite(Date.parse(request.expiresAt))
+        !Number.isFinite(Date.parse(request.expiresAt)) ||
+        Date.parse(request.expiresAt) > Date.now() + 366 * 86400_000
       )
         throw new ChainError(
           "invalid_input",
@@ -531,6 +553,8 @@ export function createMockAdapter(): WritAdapter {
       const executor = `w${id}.writ-demo.testnet`;
       const writ: Writ = {
         ...clone(initialWrits()[0]),
+        templateId: request.templateId,
+        templateHash: `example-${request.templateId}-v1`,
         id,
         target: request.target,
         owner,
@@ -540,6 +564,9 @@ export function createMockAdapter(): WritAdapter {
         price: null,
         nonce: "0",
         epoch: "0",
+        loans: [],
+        roleConfirmed: false,
+        provisioned: true,
         balance: nearToYocto("3"),
         withdrawableFees: "0",
       };

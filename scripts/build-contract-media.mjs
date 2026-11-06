@@ -8,7 +8,7 @@ const amounts = stripTypeScriptTypes(
   await text("src/utils/amounts.ts"),
 ).replaceAll("export ", "");
 const definitions = {};
-for (const id of ["contract-owner", "dao-council"])
+for (const id of JSON.parse(await text("src/templates/catalog.json")))
   definitions[id] = JSON.parse(await text(`src/templates/${id}.json`));
 const source = stripTypeScriptTypes(
   (await text("src/nft/renderWritSvg.ts")).replace(/^import .*?;\r?\n/gm, ""),
@@ -61,5 +61,5 @@ for (const templateId of Object.keys(definitions))
     );
   }
 console.log(
-  "Generated eight contract SVG templates and one shared font subset from the frontend renderer.",
+  `Generated ${Object.keys(definitions).length * 4} contract SVG templates and one shared font subset from the frontend renderer.`,
 );

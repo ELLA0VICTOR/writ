@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { startChain } from "../harness.mjs";
 
 test(
@@ -38,6 +39,7 @@ test(
         nft.metadata.media.split(",")[1],
         "base64",
       ).toString("utf8");
+      assert.equal(nft.metadata.media_hash,createHash('sha256').update(svg).digest('base64'));
       assert(svg.includes("@font-face"));
       assert(svg.includes(`Held by ${alice.accountId}`));
       assert(!/__\w+__/.test(svg));
@@ -96,6 +98,7 @@ test(
       await assert.rejects(() =>
         chain.call(alice, collection, "execute", action),
       );
+      await assert.rejects(() => chain.call(alice, target, "set_price", {price:"99"}));
       await assert.rejects(() =>
         chain.call(alice, writ.executor, "execute", {
           method: "set_price",

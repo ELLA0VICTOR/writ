@@ -1,0 +1,299 @@
+{
+  "network": "testnet",
+  "collection": "writ-collection-mw5cm75f.testnet",
+  "tokenId": "7",
+  "target": "p27.writ-collection-mw5cm75f.testnet",
+  "wallet": "Intear Wallet, through NEAR Connect",
+  "browserActions": [
+    {
+      "hash": "D1WtuGJrhX7QQggG6NkgW7z4Jmtm2ATvfEQUdkqDLTL6",
+      "signer": "writ-alice-mw5cm75f.testnet",
+      "expectedMethod": "mint",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      },
+      "confirmed": true
+    },
+    {
+      "hash": "B2AEQqfH6jbGjk5RLstdoa9m4GuntrCsqnsyuppnYMbu",
+      "signer": "writ-alice-mw5cm75f.testnet",
+      "expectedMethod": "own_propose_owner",
+      "receiver": "p27.writ-collection-mw5cm75f.testnet",
+      "status": {
+        "SuccessValue": ""
+      },
+      "confirmed": true
+    },
+    {
+      "hash": "ER7XRQ4m5cpauztfB2CB595FLY9RHqBQrMCZD789syvG",
+      "signer": "writ-alice-mw5cm75f.testnet",
+      "expectedMethod": "wrap_step",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      },
+      "confirmed": true
+    },
+    {
+      "hash": "5iCkVrCDTKHZbA5yUNcBowVY33Arg2amFuFRVfoiDLk5",
+      "signer": "writ-alice-mw5cm75f.testnet",
+      "expectedMethod": "confirm_wrap",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      },
+      "confirmed": true
+    },
+    {
+      "hash": "3kKivBNbAXA3Diztra5rj5MamVXmKrGsSuRQN98AdMZ8",
+      "signer": "writ-alice-mw5cm75f.testnet",
+      "expectedMethod": "execute",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      },
+      "confirmed": true
+    },
+    {
+      "hash": "CdaxS1FYctMNBKn6qm3GXSBYD641bBYa52YWUdaTFuzh",
+      "signer": "writ-alice-mw5cm75f.testnet",
+      "expectedMethod": "lend",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "status": {
+        "SuccessValue": "IjMxIg=="
+      },
+      "confirmed": true
+    },
+    {
+      "hash": "75MbxFVgd1978c5FNYsoQX7yCvfxePy5gXSohrnaqdM1",
+      "signer": "writ-alice-mw5cm75f.testnet",
+      "expectedMethod": "fund_executor",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      },
+      "confirmed": true
+    },
+    {
+      "hash": "BxZGs7B91tEsUE4Rgw7K8oq9juNZCEhnjp4So3WV3zBZ",
+      "signer": "writ-alice-mw5cm75f.testnet",
+      "expectedMethod": "withdraw_fees",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      },
+      "confirmed": true
+    },
+    {
+      "hash": "AAQKNMu6jHLTKD2nJXmY13o1gCbFWLvGrSq76rk6mXAZ",
+      "signer": "writ-alice-mw5cm75f.testnet",
+      "expectedMethod": "nft_transfer",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "status": {
+        "SuccessValue": ""
+      },
+      "confirmed": true
+    },
+    {
+      "hash": "2XimZUdrdaLUXTKQVY319G7ACu18Vwj81wzZScUqrDpt",
+      "signer": "writ-bob-mw5cm75f.testnet",
+      "at": "2026-11-06T19:49:43.269Z",
+      "expectedMethod": "execute",
+      "application": "Writ frontend",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      },
+      "confirmed": true
+    },
+    {
+      "hash": "BxhtTiGCfRPsC3Ft2xmjNX4Thig213ePMQtPibqAoxAv",
+      "signer": "writ-bob-mw5cm75f.testnet",
+      "at": "2026-11-06T19:54:12.151Z",
+      "expectedMethod": "execute",
+      "application": "separate external application on port 5174",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      },
+      "confirmed": true
+    },
+    {
+      "hash": "9Dfk1VU7jFod9GUBfMd6FzWvpLqX6HkjawDKapiN2t9f",
+      "signer": "writ-bob-mw5cm75f.testnet",
+      "at": "2026-11-06T19:57:33.480Z",
+      "expectedMethod": "buy",
+      "application": "Writ frontend",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      },
+      "confirmed": true,
+      "purchase": {
+        "status": "settled",
+        "holder": "writ-bob-mw5cm75f.testnet",
+        "seller": "writ-alice-mw5cm75f.testnet",
+        "price": "200000000000000000000000",
+        "endedLoanIds": [],
+        "sellerPayment": "credited"
+      }
+    },
+    {
+      "hash": "mpUXu3eVHqpt5uVSkasVhXLQZomR8bhdoci3fFP8QDd",
+      "signer": "writ-bob-mw5cm75f.testnet",
+      "at": "2026-11-06T20:00:26.682Z",
+      "expectedMethod": "buy",
+      "application": "Writ frontend",
+      "expectedResult": false,
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "status": {
+        "SuccessValue": "ZmFsc2U="
+      },
+      "confirmed": true,
+      "purchase": {
+        "status": "refused",
+        "refundStatus": "paid",
+        "checks": [
+          {
+            "id": "owner",
+            "label": "Owner is the Writ account",
+            "method": "own_get_owner",
+            "actual": "w2.writ-collection-mw5cm75f.testnet",
+            "expected": "w2.writ-collection-mw5cm75f.testnet",
+            "result": "pass",
+            "enforcedBy": "sale",
+            "read": {
+              "blockHeight": "276531255",
+              "blockHash": null,
+              "observedAtMs": 1793995221247,
+              "source": "testnet",
+              "phase": "settlement_callback"
+            }
+          },
+          {
+            "id": "proposed",
+            "label": "No next owner proposed",
+            "method": "own_get_proposed_owner",
+            "actual": "writ-alice-mw5cm75f.testnet",
+            "expected": null,
+            "result": "fail",
+            "enforcedBy": "sale",
+            "read": {
+              "blockHeight": "276531255",
+              "blockHash": null,
+              "observedAtMs": 1793995221247,
+              "source": "testnet",
+              "phase": "settlement_callback"
+            }
+          },
+          {
+            "id": "version",
+            "label": "Writ unchanged and no calls in flight",
+            "method": "get_writ",
+            "actual": "4",
+            "expected": "4",
+            "result": "pass",
+            "enforcedBy": "sale",
+            "read": {
+              "blockHeight": "276531255",
+              "blockHash": null,
+              "observedAtMs": 1793995221247,
+              "source": "testnet",
+              "phase": "settlement_callback"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "hash": "BsmvC9t2enYrpdPpPPE1EM8G8FzMJYa1rwDjVkRydTkg",
+      "signer": "writ-bob-mw5cm75f.testnet",
+      "at": "2026-11-06T20:02:11.999Z",
+      "expectedMethod": "claim_refund",
+      "application": "Writ frontend",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      },
+      "confirmed": true
+    },
+    {
+      "hash": "HueEuTnb4ki9LUUZ4526BcdkpgrChe4LjEQa6TjWkvbv",
+      "signer": "writ-bob-mw5cm75f.testnet",
+      "at": "2026-11-06T20:05:19.843Z",
+      "expectedMethod": "begin_unwrap",
+      "application": "Writ frontend",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      },
+      "confirmed": true
+    },
+    {
+      "hash": "8KBz6KnEAaZDHhG8yuc4Macwhs2caS2dmkyv2fxb3EXR",
+      "signer": "writ-bob-mw5cm75f.testnet",
+      "at": "2026-11-06T20:07:17.382Z",
+      "expectedMethod": "own_accept_owner",
+      "application": "Writ frontend",
+      "receiver": "p27.writ-collection-mw5cm75f.testnet",
+      "status": {
+        "SuccessValue": ""
+      },
+      "confirmed": true
+    },
+    {
+      "hash": "6beTHE5VMS62jbiSVTd8F98nHxVbptWncKQeTXVujz38",
+      "signer": "writ-bob-mw5cm75f.testnet",
+      "at": "2026-11-06T20:11:42.152Z",
+      "expectedMethod": "finish_unwrap",
+      "application": "Writ frontend",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      },
+      "confirmed": true
+    },
+    {
+      "hash": "Eg4AtrFF3dP5axKYb4TQ5TB65a2HFrEnvNSWMoucuWv9",
+      "signer": "writ-bob-mw5cm75f.testnet",
+      "at": "2026-11-06T20:11:50.523Z",
+      "expectedMethod": "withdraw_retired_funds",
+      "application": "Writ frontend",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      },
+      "confirmed": true
+    }
+  ],
+  "observedBrowserChecks": {
+    "vendor": "Intear Wallet",
+    "network": "testnet",
+    "mintToGrant": true,
+    "resumedAfterOwnerProposal": true,
+    "currentHolderActions": true,
+    "scopedDelegation": true,
+    "transferEndsLoans": true,
+    "conditionalPurchase": true,
+    "refusedPurchaseRefund": true,
+    "verifiedHandback": true,
+    "retiredFundsRecovery": true,
+    "collectiblesDisplayed": true,
+    "externalApplicationCommand": {
+      "hash": "BxhtTiGCfRPsC3Ft2xmjNX4Thig213ePMQtPibqAoxAv",
+      "method": "set_price",
+      "price": "99",
+      "usesWritReactComponents": false
+    }
+  },
+  "verifiedAt": "2026-11-06T20:15:27.853Z",
+  "currentState": {
+    "holder": null,
+    "loans": null,
+    "targetOwner": "writ-bob-mw5cm75f.testnet",
+    "nftExists": false,
+    "executorAvailable": "0"
+  },
+  "scope": "The listed transactions were approved through Intear Wallet in a real browser using generated testnet accounts. This script independently checks their public final receipts. It cannot independently prove how a signature was produced. Wallet collectible display was inspected separately; screenshots remain local. Mainnet, other wallet vendors and an independent security audit are not claimed."
+}

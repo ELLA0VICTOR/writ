@@ -1,4 +1,5 @@
-import { copyFile, mkdir } from "node:fs/promises";
+import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
+import { stripTypeScriptTypes } from "node:module";
 await mkdir(new URL("../public/docs", import.meta.url), { recursive: true });
 for (const name of [
   "THREAT_MODEL.md",
@@ -13,11 +14,22 @@ for (const name of [
   "storage-verification.json",
   "RELEASE_READINESS.md",
   "mainnet-cost-estimate.json",
+  "INTEGRATION_GUIDE.md",
+  "wallet-verification.json",
+  "published-build-verification.json",
+  "external-app-verification.json",
 ])
   await copyFile(
     new URL(`../docs/${name}`, import.meta.url),
     new URL(`../public/docs/${name}`, import.meta.url),
   );
+await mkdir(new URL("../public/sdk/", import.meta.url), { recursive: true });
+await writeFile(
+  new URL("../public/sdk/writ.js", import.meta.url),
+  stripTypeScriptTypes(
+    await readFile(new URL("../sdk/index.ts", import.meta.url), "utf8"),
+  ),
+);
 try {
   await copyFile(
     new URL("../deployments/testnet.json", import.meta.url),

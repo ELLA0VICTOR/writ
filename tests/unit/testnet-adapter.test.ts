@@ -15,6 +15,10 @@ vi.mock("near-api-js", () => ({
       method === "status" ? statusRpc() : rpc(method, ...args);
   },
 }));
+vi.mock("../../sdk/index", () => ({
+  scheduleRpcRead: async (_endpoint: string, request: () => Promise<unknown>) =>
+    request(),
+}));
 import { createTestnetAdapter } from "../../src/chain/testnetAdapter";
 import { ChainError } from "../../src/chain/errors";
 const encoded = (value: unknown) => ({
@@ -27,6 +31,10 @@ describe("real adapter wire contract with controlled RPC responses", () => {
     vi.stubEnv("VITE_EXECUTOR_CODE_HASH", "published-executor");
     vi.stubEnv("VITE_OWNER_TEMPLATE_HASH", "published-owner");
     vi.stubEnv("VITE_DAO_TEMPLATE_HASH", "");
+    vi.stubEnv("VITE_COLLECTION_CODE_HASH", "");
+    vi.stubEnv("VITE_COLLECTION_TEMPLATE_HASH", "");
+    vi.stubEnv("VITE_ISSUER_TEMPLATE_HASH", "");
+    vi.stubEnv("VITE_TREASURY_TEMPLATE_HASH", "");
     rpc.mockReset();
     statusRpc.mockReset();
     statusRpc.mockResolvedValue({ chain_id: "testnet" });
@@ -72,6 +80,60 @@ describe("real adapter wire contract with controlled RPC responses", () => {
       });
     }
     expect(walletCall).not.toHaveBeenCalled();
+  });
+  it("stops signing when the collection code differs from the pinned release", async () => {
+    vi.stubEnv("VITE_COLLECTION_CODE_HASH", "reviewed-collection");
+    rpc.mockImplementation(
+      async (_method: string, args: Record<string, unknown>) =>
+        args.request_type === "view_account"
+          ? { code_hash: "changed-collection" }
+          : encoded({
+              abi_version: "writ-ui-v1",
+              executor_code_hash: "published-executor",
+              template_hashes: { "contract-owner": "published-owner" },
+            }),
+    );
+    await expect(
+      createTestnetAdapter().fundExecutor("7", "1"),
+    ).rejects.toMatchObject({ code: "not_configured" });
+    expect(walletCall).not.toHaveBeenCalled();
+  });
+  it("requires the exact new integration profile before minting inspection can succeed", async () => {
+    vi.stubEnv("VITE_ISSUER_TEMPLATE_HASH", "published-issuer");
+    rpc.mockImplementation(
+      async (_method: string, args: Record<string, unknown>) => {
+        if (args.request_type === "view_account")
+          return { block_hash: "pinned-block", block_height: 123 };
+        if (args.method_name === "get_integration_profile")
+          return encoded("collection-admin");
+        throw new Error(
+          "Owner must not be checked as if the wrong profile were compatible",
+        );
+      },
+    );
+    await expect(
+      createTestnetAdapter().inspectWrap({
+        templateId: "token-issuer",
+        target: "tokens.testnet",
+      }),
+    ).rejects.toMatchObject({ code: "invalid_input" });
+    expect(walletCall).not.toHaveBeenCalled();
+  });
+  it("does not start another paid practice target while a previous attempt is unresolved", async () => {
+    sessionStorage.setItem(
+      "writ-practice:writ-demo.testnet:ben.testnet:contract-owner",
+      "pending-request",
+    );
+    rpc.mockResolvedValue(encoded({ status: "creating" }));
+    await expect(
+      createTestnetAdapter().createPracticeTarget("contract-owner", true),
+    ).rejects.toMatchObject({ code: "outcome_unknown" });
+    expect(walletCall).not.toHaveBeenCalled();
+    expect(
+      sessionStorage.getItem(
+        "writ-practice:writ-demo.testnet:ben.testnet:contract-owner",
+      ),
+    ).toBe("pending-request");
   });
   it("pins all page observations to the same finalized block hash", async () => {
     const queries: Record<string, unknown>[] = [];

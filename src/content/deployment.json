@@ -1,0 +1,21 @@
+{
+  "network": "testnet",
+  "examples": {
+    "contract-owner": "1",
+    "dao-council": "3",
+    "collection-admin": "4",
+    "token-issuer": "5",
+    "treasury-controller": "6"
+  },
+  "collection": "writ-collection-mw5cm75f.testnet",
+  "abiVersion": "writ-ui-v1",
+  "collectionCodeHash": "77Fo9AcLUZrcoRWgpwC1zXy8WhyxrriF9VfLcomyQQeQ",
+  "executorCodeHash": "527HQCoAa35QqvLW7M2gkEa9c14cj5vG7kkdaetP6VJh",
+  "templateHashes": {
+    "contract-owner": "941584a49cef351238c3f990a72a28c693a3fb5cf7f090319388602f8a51f062",
+    "dao-council": "bb352544c7d0b3b257f286b9d8006b462bdc53ea5739de010391c5e3dc38eb95",
+    "collection-admin": "6b324c52fb05756dda7f78dfa03d96dfd8b8e5e459ea6f2abbc266b5f6e26e1c",
+    "token-issuer": "86704c6bedff75187a125ec9da43a93992c7724c67b9007eb892f4f9e8073dec",
+    "treasury-controller": "56a7ec7dbe7c57b07f9c3b31681dc468b6cbf094c3967b6ac9d0615f27c1f701"
+  }
+}

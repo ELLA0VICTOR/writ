@@ -1,0 +1,49 @@
+.panel {
+  display: grid;
+  gap: 20px;
+}
+.panel h3 {
+  font-size: 23px;
+  margin-top: 12px;
+}
+.panel li {
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+.panel ul {
+  padding-left: 22px;
+}
+.panel code,
+.panel dd {
+  overflow-wrap: anywhere;
+}
+.facts {
+  border: 1px solid var(--ink);
+}
+.facts > div {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.7fr) minmax(0, 1fr);
+  padding: 14px;
+  gap: 12px;
+}
+.facts > div + div {
+  border-top: 1px solid var(--ink);
+}
+.facts dt {
+  color: var(--quiet);
+}
+.facts dd {
+  margin: 0;
+  min-width: 0;
+}
+.panel pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}
+@media (max-width: 600px) {
+  .facts > div {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+}

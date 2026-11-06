@@ -1,23 +1,23 @@
 {
-  "observedAt": "2026-11-06T15:34:05.337Z",
+  "observedAt": "2026-11-06T19:22:03.627Z",
   "network": "mainnet pricing, planning only",
   "storageCostPerByteYocto": "10000000000000000000",
   "gasPriceYoctoPerGas": "100000000",
   "binaryBytes": {
-    "collection": 723253,
+    "collection": 874931,
     "executor": 119671,
-    "owner-fixture": 118632
+    "owner-fixture": 228634
   },
-  "collectionCodeStorageFloorNear": "7.23253",
+  "collectionCodeStorageFloorNear": "8.74931",
   "oneWritQuotedDepositNear": "2.64839",
-  "optionalPracticeQuotedDepositNear": "1.29776",
-  "codeAndDepositsSubtotalNear": "11.17868",
+  "optionalPracticeQuotedDepositNear": "2.54778",
+  "codeAndDepositsSubtotalNear": "13.94548",
   "planningBalanceNear": {
-    "minimum": 12,
-    "maximum": 15
+    "minimum": 15,
+    "maximum": 18
   },
-  "scope": "One small deployment with one Writ and an optional practice target, before a final live quote. Excludes a new Sputnik DAO, additional Writs, market purchase prices and funding multiple demonstration accounts. Not a spending approval or final bill.",
-  "storageTreatment": "Protocol storage stakes are locked while data remains. Application record allocations are retained and are not automatically refundable. Executor operating reserve is not withdrawable through the current implementation.",
+  "scope": "One small release with one Writ and an optional compatible practice target, before final mainnet quotes. Excludes a new Sputnik DAO, additional Writs, market purchase prices and multiple funded demo wallets. Not a spending approval or final bill.",
+  "storageTreatment": "Protocol storage stakes are locked while data remains. Application record allocations are retained and are not automatically refundable. Executor operating reserve is excluded from withdrawals.",
   "sources": [
     "https://docs.near.org/protocol/storage/storage-staking",
     "https://free.rpc.fastnear.com"

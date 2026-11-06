@@ -1,6 +1,12 @@
 # Writ ABI: writ-ui-v1
 
-Implemented in `contracts/collection`, `contracts/executor` and `src/chain/testnetAdapter.ts`. Public deployment metadata is in `deployments/testnet.json`. The adapter checks configured ABI, executor hash and owner/DAO template hashes before writes. Collection upgrades remain a trust assumption.
+Implemented in `contracts/collection`, `contracts/executor` and `src/chain/testnetAdapter.ts`. Public deployment metadata is in `deployments/testnet.json`, with minimal public frontend defaults in `src/content/deployment.json`. The adapter checks ABI, executor hash, every configured template hash, and the published collection code hash before writes. Collection upgrades remain a trust assumption; a hash check does not remove a deployment key.
+
+The five compiled profiles are contract-owner, dao-council, collection-admin, token-issuer and treasury-controller. The last three share upstream Owner plus a fixed profile predicate and compatible application-specific commands. They are not universal token administrative standards. See INTEGRATION_GUIDE.md for external application integration through the standalone SDK and separate example app.
+
+Practice quote/creation accept optional `template_id`, defaulting to contract-owner. DAO practice creation is not supported; membership uses the DAO's existing governance. Fresh frontend practice requests are allowed only after a prior request is known ready/failed, never while its outcome is unresolved. Owner-compatible wrap/unwrap recipes apply to all four Owner profiles; new profiles require full confirmation, including their profile marker, before listing. The example target accepts `fund_treasury` deposits for its storage/treasury budget; this direct target balance is separate from executor funds.
+
+`nft_token` supplies `metadata.media_hash` as base64 SHA-256 of decoded SVG bytes. Dynamic owner/status changes update the media and hash together. Wallet indexing and cached image refresh are not guaranteed. The SDK can read NFT and account evidence at the same finalized block; account-key observations remain page evidence rather than additional on-chain purchase predicates.
 
 ## Read methods
 

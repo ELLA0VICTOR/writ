@@ -55,7 +55,7 @@ export function renderWritSvg(writ: Writ): string {
     { label: "Nonce", value: writ.nonce, x: 305 },
     {
       label: "Template",
-      value: template.id === "contract-owner" ? "Owner v1" : template.name,
+      value: template.shortName ?? template.name,
       x: 531,
     },
   ]

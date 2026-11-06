@@ -11,6 +11,9 @@ use near_sdk::{AccountId, Gas, NearToken, PanicOnDefault, Promise, env, near, re
 const EXECUTOR: &[u8] = include_bytes!("../../../artifacts/executor.wasm");
 const OWNER: &str = include_str!("../../../src/templates/contract-owner.json");
 const DAO: &str = include_str!("../../../src/templates/dao-council.json");
+const COLLECTION_ADMIN: &str = include_str!("../../../src/templates/collection-admin.json");
+const TOKEN_ISSUER: &str = include_str!("../../../src/templates/token-issuer.json");
+const TREASURY: &str = include_str!("../../../src/templates/treasury-controller.json");
 const STORAGE_FEE: u128 = 50_000_000_000_000_000_000_000;
 const MINT_STORAGE_BYTES: u128 = 131_072;
 const DEADLINE: u64 = 200;
@@ -47,7 +50,7 @@ impl Contract {
     }
 
     pub fn get_frontend_config(&self) -> Value {
-        json!({"abi_version":"writ-ui-v1","executor_code_hash":Self::executor_hash(),"template_hashes":{"contract-owner":Self::hash(OWNER.as_bytes()),"dao-council":Self::hash(DAO.as_bytes())},"purchase_storage_deposit":STORAGE_FEE.to_string(),"executor_reserve":"50000000000000000000000","max_loans":8,"max_argument_bytes":4096,"zero_deposit_actions_only":true})
+        json!({"abi_version":"writ-ui-v1","executor_code_hash":Self::executor_hash(),"template_hashes":{"contract-owner":Self::hash(OWNER.as_bytes()),"dao-council":Self::hash(DAO.as_bytes()),"collection-admin":Self::hash(COLLECTION_ADMIN.as_bytes()),"token-issuer":Self::hash(TOKEN_ISSUER.as_bytes()),"treasury-controller":Self::hash(TREASURY.as_bytes())},"purchase_storage_deposit":STORAGE_FEE.to_string(),"executor_reserve":"50000000000000000000000","max_loans":8,"max_argument_bytes":4096,"zero_deposit_actions_only":true})
     }
     pub fn get_template(&self, template_id: String) -> Value {
         near_sdk::serde_json::from_str(Self::template_source(&template_id)).expect("Template")
@@ -369,7 +372,9 @@ impl Contract {
         if !ok && refund.0 > 0 {
             self.credit(&refund_to, refund.0);
         }
-        if ok && kind == "wrap" {
+        // A successful accept alone is not the complete template verification.
+        // confirm_wrap checks the actual owner, pending proposal and profile.
+        if ok && kind == "wrap" && t.template_id == "contract-owner" {
             t.wrapped = true;
         }
         Self::record(
@@ -390,7 +395,7 @@ impl Contract {
         let mut t = self.owned(&token_id);
         Self::unpaused(&t);
         require!(
-            t.template_id == "contract-owner" && step == 1,
+            Self::template(&t.template_id).supports_unwrap && step == 1,
             "Unsupported wrap step"
         );
         t.pending += 1;
@@ -786,6 +791,9 @@ impl Contract {
         match id {
             "contract-owner" => OWNER,
             "dao-council" => DAO,
+            "collection-admin" => COLLECTION_ADMIN,
+            "token-issuer" => TOKEN_ISSUER,
+            "treasury-controller" => TREASURY,
             _ => env::panic_str("Unsupported template"),
         }
     }

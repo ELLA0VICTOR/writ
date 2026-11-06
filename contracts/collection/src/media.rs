@@ -65,6 +65,38 @@ pub fn render(t: &Token) -> String {
         }
         ("dao-council", "lent") => include_str!("../../../artifacts/media/dao-council-lent.svg"),
         ("dao-council", _) => include_str!("../../../artifacts/media/dao-council-held.svg"),
+        ("collection-admin", "listed") => {
+            include_str!("../../../artifacts/media/collection-admin-listed.svg")
+        }
+        ("collection-admin", "locked") => {
+            include_str!("../../../artifacts/media/collection-admin-locked.svg")
+        }
+        ("collection-admin", "lent") => {
+            include_str!("../../../artifacts/media/collection-admin-lent.svg")
+        }
+        ("collection-admin", _) => {
+            include_str!("../../../artifacts/media/collection-admin-held.svg")
+        }
+        ("token-issuer", "listed") => {
+            include_str!("../../../artifacts/media/token-issuer-listed.svg")
+        }
+        ("token-issuer", "locked") => {
+            include_str!("../../../artifacts/media/token-issuer-locked.svg")
+        }
+        ("token-issuer", "lent") => include_str!("../../../artifacts/media/token-issuer-lent.svg"),
+        ("token-issuer", _) => include_str!("../../../artifacts/media/token-issuer-held.svg"),
+        ("treasury-controller", "listed") => {
+            include_str!("../../../artifacts/media/treasury-controller-listed.svg")
+        }
+        ("treasury-controller", "locked") => {
+            include_str!("../../../artifacts/media/treasury-controller-locked.svg")
+        }
+        ("treasury-controller", "lent") => {
+            include_str!("../../../artifacts/media/treasury-controller-lent.svg")
+        }
+        ("treasury-controller", _) => {
+            include_str!("../../../artifacts/media/treasury-controller-held.svg")
+        }
         _ => include_str!("../../../artifacts/media/contract-owner-held.svg"),
     };
     let mut result = svg.replace("__FONTS__", FONTS);

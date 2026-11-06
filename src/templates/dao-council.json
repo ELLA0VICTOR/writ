@@ -18,7 +18,28 @@
     }
   ],
   "pins": [],
-  "actions": [{"method":"act_proposal","label":"Vote on a proposal","args":{"id":0,"action":"VoteApprove"},"maxDeposit":"0","lendable":true}],
+  "actions": [
+    {
+      "method": "act_proposal",
+      "label": "Vote on a proposal",
+      "args": {
+        "id": 0,
+        "action": "VoteApprove"
+      },
+      "maxDeposit": "0",
+      "lendable": true
+    }
+  ],
   "wrapSteps": [],
-  "supportsUnwrap": false
+  "supportsUnwrap": false,
+  "version": 1,
+  "handoverKind": "dao",
+  "shortName": "Council v1",
+  "headline": "Council seat at",
+  "integration": {
+    "permissionModel": "Sputnik DAO v2 council",
+    "implementation": "Unmodified pinned upstream DAO Wasm",
+    "source": "https://github.com/near-daos/sputnik-dao-contract",
+    "practiceSupported": false
+  }
 }

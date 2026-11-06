@@ -21,7 +21,7 @@ const files = [
 const excluded =
   /(^|\/)(node_modules|dist|dist-ssr|target|artifacts|\.local|test-results|playwright-report|coverage|\.near-credentials|\.aws|\.secrets|secrets|credentials|\.vercel|\.netlify)(\/|$)|^integration\/results\/|(^|\/)\.env(?:\..*)?$|\.(pem|key|p12|pfx|keystore|jks|seed|log|tsbuildinfo)$/i;
 const generated =
-  /^(public\/(docs|fonts\/licenses)\/|docs\/screenshots\/|src\/nft\/fonts\.generated\.ts$|docs\/production-verification\.json$|writ-frontend-codex-prompt\.md$)/;
+  /^(public\/(docs|sdk|fonts\/licenses)\/|examples\/external-app\/public\/deployment\.json$|docs\/screenshots\/|src\/nft\/fonts\.generated\.ts$|docs\/production-verification\.json$|writ-frontend-codex-prompt\.md$)/;
 const patterns = [
   ["private key block", /-----BEGIN (?:[A-Z0-9]+ )?PRIVATE KEY-----/g],
   [

@@ -19,6 +19,7 @@ import { LedgerPaper } from "../../components/LedgerPaper/LedgerPaper";
 import { Loading, Skeleton } from "../../components/Loading/Loading";
 import { ErrorSheet } from "../../components/ErrorSheet/ErrorSheet";
 import { BuyDialog } from "../../features/buy/BuyDialog";
+import { AuthorityPanel } from "../../features/authority/AuthorityPanel";
 import {
   ActionDialog,
   type ActionKind,
@@ -177,6 +178,7 @@ export default function WritDetail() {
       </div>
     );
   const template = getTemplate(writ.templateId);
+  const roleReady = writ.roleConfirmed !== false;
   const owner = session?.accountId === writ.owner;
   const paused =
     writ.status === "listed" ||
@@ -219,7 +221,13 @@ export default function WritDetail() {
             />
           </div>
           <div className={s.actionsPanel}>
-            <h2>{owner ? "Your holder actions" : "While it’s listed"}</h2>
+            <h2>
+              {owner
+                ? "Your holder actions"
+                : writ.price
+                  ? "While it’s listed"
+                  : "Holder permissions"}
+            </h2>
             {writ.status === "locked" ? (
               <p>A sale is being checked. Try again in a few seconds.</p>
             ) : owner ? (
@@ -239,24 +247,34 @@ export default function WritDetail() {
                   <Button disabled={paused} onClick={() => setAction("fund")}>
                     Fund the executor
                   </Button>
+                  {template.integration?.practiceSupported &&
+                    template.id !== "contract-owner" && (
+                      <Button
+                        disabled={paused}
+                        onClick={() => setAction("fundTarget")}
+                      >
+                        Fund external application
+                      </Button>
+                    )}
                   {adapter?.capabilities.execute && (
                     <Button
-                      disabled={paused}
+                      disabled={paused || !roleReady}
                       title={paused ? "Paused while listed" : undefined}
                       onClick={() => setAction("use")}
                     >
                       Use the role
                     </Button>
                   )}
-                  {adapter?.capabilities.lend && (
-                    <Button
-                      disabled={paused}
-                      title={paused ? "Paused while listed" : undefined}
-                      onClick={() => setAction("lend")}
-                    >
-                      Lend a method
-                    </Button>
-                  )}
+                  {adapter?.capabilities.lend &&
+                    template.actions.some((a) => a.lendable) && (
+                      <Button
+                        disabled={paused || !roleReady}
+                        title={paused ? "Paused while listed" : undefined}
+                        onClick={() => setAction("lend")}
+                      >
+                        Lend a method
+                      </Button>
+                    )}
                   {adapter?.capabilities.withdraw && (
                     <Button
                       disabled={paused || writ.withdrawableFees === "0"}
@@ -348,9 +366,9 @@ export default function WritDetail() {
           <div className={s.title} data-reveal>
             <p className="sectionLabel">Public Writ record</p>
             <h1>
-              {writ.templateId === "dao-council"
-                ? "Council seat at"
-                : "Owner of"}{" "}
+              {!roleReady
+                ? "Awaiting role at"
+                : (template.headline ?? "Authority at")}{" "}
               {writ.target.replace(/\.testnet$/, "")}.
             </h1>
             <p className="lead">{template.description}</p>
@@ -450,6 +468,9 @@ export default function WritDetail() {
             </DisclosedBox>
           </section>
           <section className={s.section} data-reveal>
+            <AuthorityPanel writ={writ} />
+          </section>
+          <section className={s.section} data-reveal>
             <h2>Inside the Writ.</h2>
             <FieldList
               fields={[
@@ -479,7 +500,7 @@ export default function WritDetail() {
             <h2>Loans.</h2>
             <p className={s.sectionIntro}>
               Scoped actions, bound to this ownership epoch. Every loan ends at
-              any sale.
+              every transfer.
             </p>
             {writ.loans.length ? (
               <div className={s.loans}>

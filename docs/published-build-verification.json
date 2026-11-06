@@ -1,0 +1,9 @@
+{
+  "at": "2026-11-06T20:36:29.661Z",
+  "collection": "writ-collection-mw5cm75f.testnet",
+  "environmentFilesLoaded": false,
+  "livePublicConfiguration": true,
+  "artworkHashVerified": true,
+  "errors": [],
+  "scope": "Fresh static build with an empty env directory; actual testnet reads and NFT media verification. No wallet keys or wallet signatures."
+}

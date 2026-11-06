@@ -1,0 +1,14 @@
+{
+  "at": "2026-11-06T20:36:18.696Z",
+  "origin": "http://127.0.0.1:5174",
+  "collection": "writ-collection-mw5cm75f.testnet",
+  "tokenId": "4",
+  "independentApplication": true,
+  "liveRpc": true,
+  "artworkHashVerified": true,
+  "disconnectedSigningDisabled": true,
+  "localCredentialPathDenied": true,
+  "axeViolations": 0,
+  "errors": [],
+  "walletSignatures": false
+}

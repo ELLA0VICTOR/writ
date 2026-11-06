@@ -138,20 +138,22 @@ await deploy("deploy-dao", dao, "vendor/sputnikdao2", {
   },
   policy: [alice.accountId],
 });
-async function practice(label) {
+async function practice(label, template = "contract-owner") {
   const id = await request(`practice-${label}`);
   let state = await view(collection, "get_practice_target", {
     owner_id: alice.accountId,
     client_request_id: id,
   });
   if (state === null) {
-    const q = await view(collection, "get_practice_quote");
+    const q = await view(collection, "get_practice_quote", {
+      template_id: template,
+    });
     await call(
       `practice-${label}`,
       alice,
       collection,
       "create_practice_target",
-      { client_request_id: id },
+      { client_request_id: id, template_id: template },
       q.deposit,
     );
     state = await view(collection, "get_practice_target", {
@@ -203,6 +205,14 @@ async function wrap(label, w) {
       await call(`${label}-accept`, alice, collection, "wrap_step", {
         token_id: w.id,
         step: 1,
+      })
+    ).value,
+    true,
+  );
+  assert.equal(
+    (
+      await call(`${label}-confirm-role`, alice, collection, "confirm_wrap", {
+        token_id: w.id,
       })
     ).value,
     true,
@@ -387,6 +397,87 @@ await call("dao-new-holder-vote", bob, collection, "execute", {
   deposit: "0",
 });
 const executor = await provider.viewAccount({ accountId: first.executor });
+const profileWrits = {};
+for (const profile of [
+  "collection-admin",
+  "token-issuer",
+  "treasury-controller",
+]) {
+  const w = await mint(profile, await practice(profile, profile), profile);
+  await wrap(profile, w);
+  if (profile === "collection-admin") {
+    await call("collection-publish", alice, collection, "execute", {
+      token_id: w.id,
+      target_method: "mint_collectible",
+      args: {
+        token_id: "first-publication",
+        receiver_id: bob.accountId,
+        title: "Published through a transferable Writ",
+      },
+      deposit: "0",
+    });
+    assert.equal(
+      (await view(w.target, "nft_token", { token_id: "first-publication" }))
+        .owner_id,
+      bob.accountId,
+    );
+  }
+  if (profile === "token-issuer") {
+    await call("issuer-mint", alice, collection, "execute", {
+      token_id: w.id,
+      target_method: "mint_tokens",
+      args: { receiver_id: bob.accountId, amount: "25" },
+      deposit: "0",
+    });
+    assert.equal(
+      await view(w.target, "ft_balance_of", { account_id: bob.accountId }),
+      "25",
+    );
+  }
+  if (profile === "treasury-controller") {
+    await call(
+      "treasury-fund",
+      alice,
+      w.target,
+      "fund_treasury",
+      {},
+      nearToYocto("0.3").toString(),
+    );
+    assert.equal(
+      (
+        await call("treasury-pay", alice, collection, "execute", {
+          token_id: w.id,
+          target_method: "treasury_pay",
+          args: {
+            receiver_id: bob.accountId,
+            amount: nearToYocto("0.1").toString(),
+          },
+          deposit: "0",
+        })
+      ).value,
+      true,
+    );
+  }
+  const currentProfile = await view(collection, "get_writ", { token_id: w.id });
+  await call(`${profile}-list`, alice, collection, "list", {
+    token_id: w.id,
+    price: nearToYocto("0.2").toString(),
+    expected_nonce: currentProfile.nonce,
+  });
+  const metadata = await view(collection, "nft_token", { token_id: w.id });
+  assert.equal(
+    metadata.metadata.media_hash,
+    createHash("sha256")
+      .update(Buffer.from(metadata.metadata.media.split(",")[1], "base64"))
+      .digest("base64"),
+  );
+  profileWrits[profile] = {
+    id: w.id,
+    target: w.target,
+    executor: w.executor,
+    mediaHash: metadata.metadata.media_hash,
+  };
+}
 const keys = await provider.sendJsonRpc("query", {
   request_type: "view_access_key_list",
   account_id: first.executor,
@@ -407,6 +498,7 @@ const deployment = {
     await provider.viewAccount({ accountId: collection.accountId })
   ).code_hash,
   writs: { clean: first.id, proposed: second.id, dao: seat.id },
+  profiles: profileWrits,
   purchases: {
     clean: {
       mock: false,
@@ -446,8 +538,30 @@ await writeFile(
   ) + "\n",
 );
 await writeFile(
+  new URL("src/content/deployment.json", root),
+  JSON.stringify(
+    {
+      network: "testnet",
+      collection: deployment.collection,
+      abiVersion: deployment.abiVersion,
+      collectionCodeHash: deployment.collectionCodeHash,
+      executorCodeHash: deployment.executorCodeHash,
+      templateHashes: deployment.templateHashes,
+      examples: {
+        "contract-owner": first.id,
+        "dao-council": seat.id,
+        ...Object.fromEntries(
+          Object.entries(profileWrits).map(([id, p]) => [id, p.id]),
+        ),
+      },
+    },
+    null,
+    2,
+  ) + "\n",
+);
+await writeFile(
   new URL(".env.local", root),
-  `VITE_NEAR_RPC_URL=https://test.rpc.fastnear.com\nVITE_WRIT_CONTRACT=${collection.accountId}\nVITE_WRIT_ABI_VERSION=${config.abi_version}\nVITE_EXECUTOR_CODE_HASH=${config.executor_code_hash}\nVITE_OWNER_TEMPLATE_HASH=${config.template_hashes["contract-owner"]}\nVITE_DAO_TEMPLATE_HASH=${config.template_hashes["dao-council"]}\n`,
+  `VITE_NEAR_RPC_URL=https://test.rpc.fastnear.com\nVITE_WRIT_CONTRACT=${collection.accountId}\nVITE_WRIT_ABI_VERSION=${config.abi_version}\nVITE_EXECUTOR_CODE_HASH=${config.executor_code_hash}\nVITE_COLLECTION_CODE_HASH=${deployment.collectionCodeHash}\nVITE_OWNER_TEMPLATE_HASH=${config.template_hashes["contract-owner"]}\nVITE_DAO_TEMPLATE_HASH=${config.template_hashes["dao-council"]}\nVITE_COLLECTION_TEMPLATE_HASH=${config.template_hashes["collection-admin"]}\nVITE_ISSUER_TEMPLATE_HASH=${config.template_hashes["token-issuer"]}\nVITE_TREASURY_TEMPLATE_HASH=${config.template_hashes["treasury-controller"]}\n`,
 );
 console.log(
   `Live deployment ready: ${collection.accountId}. Credentials were not exported to frontend files.`,

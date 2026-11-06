@@ -12,7 +12,7 @@ describe("frontend mock behavioral contract (not a blockchain audit)", () => {
       method: "set_price",
       args: { price: "1" },
       maxDeposit: "0",
-      expiresAt: "2099-01-01T00:00:00Z",
+      expiresAt: new Date(Date.now() + 86400_000).toISOString(),
     });
     let w = (await a.getWrit("7"))!;
     await a.setListing({

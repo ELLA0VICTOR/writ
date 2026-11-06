@@ -31,7 +31,11 @@ Hardening now rejects NFT recipients inside the collection namespace in direct t
 
 Mock passes do not prove NEAR receipt execution, solvency, gas viability or secure executor behavior. The actual sandbox suite covers transfers, receiver reentry/rollback, pending locks, provisioning, segregated refunds, failed native payments, deadline release/late callbacks and retirement. Its results do not prove every possible schedule or global solvency.
 
-Account key/code checks are page-only. An on-chain method name does not guarantee read-only behavior; templates need review for side effects, gas, return types and backdoors.
+Account key/code checks are page-only. The authority report discloses target, executor and collection access keys, including restricted permissions, at a finalized block. Code/hash pinning stops the frontend and SDK preparing commands against an unexpected collection release; it does not revoke the collection's retained deployment key or prevent a later upgrade. An on-chain method name does not guarantee read-only behavior; templates need review for side effects, gas, return types and backdoors.
+
+The standalone client does not authenticate HTTP requests or gate a backend by an account name supplied by its caller. It prepares wallet transactions; contracts check their actual callers. Its network reads trust the configured RPC, not a local light-client proof. Expiring exact-arguments delegation is repeatable; template reviewers must consider repeated economic effects. Treasury payments and token issuance are deliberately non-lendable in the added profiles. Collectible delegation binds the exact token ID, whose duplicate issuance is rejected by the upstream NFT implementation.
+
+NFT metadata includes the SHA-256 hash of decoded SVG bytes. The integration client verifies it, and generated text is escaped. This proves correspondence with returned metadata, not independently audited contract behavior or instantaneous wallet indexing. A fresh practice deployment cannot replace an unresolved request and silently initiate another payment.
 
 Wrap supports the demonstrated ownership API. Standard staking-pool ownership is fixed at initialization; DAO membership is not sole control. Minting needs a funding/storage quote. Unwrap needs a verified hand-back before retirement. Both use exact on-chain funding quotes and resumable hand-back transactions.
 

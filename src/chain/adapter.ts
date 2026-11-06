@@ -34,10 +34,14 @@ export interface WritAdapter {
   getPurchaseFeeAllowance(): Promise<YoctoNear>;
   getPurchaseStorageDeposit(): Promise<YoctoNear>;
   getMintQuote(request: WrapRequest): Promise<import("./types").MintQuote>;
-  getPracticeQuote(): Promise<import("./types").MintQuote>;
-  createPracticeTarget(): Promise<string>;
+  getPracticeQuote(templateId?: string): Promise<import("./types").MintQuote>;
+  createPracticeTarget(
+    templateId?: string,
+    newRequest?: boolean,
+  ): Promise<string>;
   transfer(id: string, receiver: string): Promise<TransactionRef>;
   fundExecutor(id: string, amount: YoctoNear): Promise<TransactionRef>;
+  fundTarget(id: string, amount: YoctoNear): Promise<TransactionRef>;
   confirmWrap(id: string): Promise<TransactionRef>;
   getAccountRecovery(
     accountId: string,
@@ -65,4 +69,5 @@ export interface WritAdapter {
   unwrap(id: string): Promise<TransactionRef>;
   setMockScenario?(scenario: MockScenario): void;
   resetMock?(): void;
+  approveExampleDao?(id: string): Promise<TransactionRef>;
 }

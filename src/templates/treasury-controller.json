@@ -1,0 +1,82 @@
+{
+  "id": "treasury-controller",
+  "name": "Treasury controller",
+  "kind": "contract-tools Owner",
+  "roleTitle": "Treasury\ncontrol",
+  "description": "Authorize native NEAR payouts from a compatible external treasury. The treasury remains at the same address when its controlling Writ changes hands.",
+  "blindSpot": "These checks cover the declared owner and proposed owner. They do not discover hidden permissions, upgrade keys or backdoors in the target contract. External state may change after it is read. This is a tested compatible application interface, not a universal administrative API defined by the token standard. Target storage and treasury funds are separate from executor funds.",
+  "checks": [
+    {
+      "id": "owner",
+      "label": "Owner is the Writ account",
+      "method": "own_get_owner",
+      "target": "role",
+      "pointer": "",
+      "operator": "eq",
+      "expected": "$WRIT"
+    },
+    {
+      "id": "proposed",
+      "label": "No next owner proposed",
+      "method": "own_get_proposed_owner",
+      "target": "role",
+      "pointer": "",
+      "operator": "null",
+      "expected": null
+    },
+    {
+      "id": "profile",
+      "label": "Target exposes this integration profile",
+      "method": "get_integration_profile",
+      "target": "role",
+      "pointer": "",
+      "operator": "eq",
+      "expected": "treasury-controller"
+    }
+  ],
+  "pins": [
+    {
+      "id": "minimum_balance",
+      "label": "Minimum executor balance",
+      "method": "get_balance",
+      "target": "executor",
+      "operator": "gte",
+      "unit": "NEAR"
+    }
+  ],
+  "actions": [
+    {
+      "method": "treasury_pay",
+      "label": "Pay from the external treasury",
+      "args": {
+        "receiver_id": "",
+        "amount": "10000000000000000000000"
+      },
+      "maxDeposit": "0",
+      "lendable": false
+    }
+  ],
+  "wrapSteps": [
+    {
+      "label": "Propose the executor as owner",
+      "method": "own_propose_owner",
+      "signer": "holder"
+    },
+    {
+      "label": "Accept from the executor",
+      "method": "own_accept_owner",
+      "signer": "executor"
+    }
+  ],
+  "supportsUnwrap": true,
+  "version": 1,
+  "handoverKind": "owner",
+  "shortName": "Treasury v1",
+  "headline": "Treasury authority at",
+  "integration": {
+    "permissionModel": "contract-tools Owner 4.0.0",
+    "implementation": "Custom native-NEAR treasury with upstream ownership",
+    "source": "https://github.com/near/near-sdk-contract-tools",
+    "practiceSupported": true
+  }
+}

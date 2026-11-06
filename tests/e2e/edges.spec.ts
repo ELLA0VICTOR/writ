@@ -1,5 +1,19 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { mkdir, writeFile, unlink } from "node:fs/promises";
+test("development server refuses ignored local credential storage", async ({
+  request,
+}) => {
+  await mkdir(".local", { recursive: true });
+  const filename = `writ-access-probe-${process.pid}.txt`;
+  const path = `.local/${filename}`;
+  await writeFile(path, "Public test probe. No credentials.");
+  try {
+    expect((await request.get(`/.local/${filename}`)).status()).toBe(403);
+  } finally {
+    await unlink(path);
+  }
+});
 async function prepare(
   page: import("@playwright/test").Page,
   scenario: string,

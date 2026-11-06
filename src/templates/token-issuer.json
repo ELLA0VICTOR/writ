@@ -1,0 +1,82 @@
+{
+  "id": "token-issuer",
+  "name": "Token issuance controller",
+  "kind": "contract-tools Owner",
+  "roleTitle": "Token\nissuer",
+  "description": "Control the mint command of a compatible NEP-141 token contract. Existing token balances remain with their owners; this Writ transfers issuance authority.",
+  "blindSpot": "These checks cover the declared owner and proposed owner. They do not discover hidden permissions, upgrade keys or backdoors in the target contract. External state may change after it is read. This is a tested compatible application interface, not a universal administrative API defined by the token standard. Target storage and treasury funds are separate from executor funds.",
+  "checks": [
+    {
+      "id": "owner",
+      "label": "Owner is the Writ account",
+      "method": "own_get_owner",
+      "target": "role",
+      "pointer": "",
+      "operator": "eq",
+      "expected": "$WRIT"
+    },
+    {
+      "id": "proposed",
+      "label": "No next owner proposed",
+      "method": "own_get_proposed_owner",
+      "target": "role",
+      "pointer": "",
+      "operator": "null",
+      "expected": null
+    },
+    {
+      "id": "profile",
+      "label": "Target exposes this integration profile",
+      "method": "get_integration_profile",
+      "target": "role",
+      "pointer": "",
+      "operator": "eq",
+      "expected": "token-issuer"
+    }
+  ],
+  "pins": [
+    {
+      "id": "minimum_balance",
+      "label": "Minimum executor balance",
+      "method": "get_balance",
+      "target": "executor",
+      "operator": "gte",
+      "unit": "NEAR"
+    }
+  ],
+  "actions": [
+    {
+      "method": "mint_tokens",
+      "label": "Issue fungible tokens",
+      "args": {
+        "receiver_id": "",
+        "amount": "10"
+      },
+      "maxDeposit": "0",
+      "lendable": false
+    }
+  ],
+  "wrapSteps": [
+    {
+      "label": "Propose the executor as owner",
+      "method": "own_propose_owner",
+      "signer": "holder"
+    },
+    {
+      "label": "Accept from the executor",
+      "method": "own_accept_owner",
+      "signer": "executor"
+    }
+  ],
+  "supportsUnwrap": true,
+  "version": 1,
+  "handoverKind": "owner",
+  "shortName": "Issuer v1",
+  "headline": "Token issuance at",
+  "integration": {
+    "permissionModel": "contract-tools Owner 4.0.0",
+    "implementation": "Upstream NEP-141 core and NEP-148 metadata; custom owner-gated mint",
+    "source": "https://github.com/near/near-sdk-contract-tools",
+    "practiceSupported": true
+  }
+}

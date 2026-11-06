@@ -51,6 +51,8 @@ id_ed25519*
 # Reproducible generated files and local QA output
 /src/nft/fonts.generated.ts
 /public/docs/
+/public/sdk/
+/examples/external-app/public/deployment.json
 /public/fonts/licenses/
 /docs/screenshots/
 /docs/production-verification.json

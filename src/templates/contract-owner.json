@@ -39,14 +39,18 @@
     {
       "method": "set_price",
       "label": "Set the service price",
-      "args": { "price": "1" },
+      "args": {
+        "price": "1"
+      },
       "maxDeposit": "0",
       "lendable": true
     },
     {
       "method": "own_propose_owner",
       "label": "Propose a different owner",
-      "args": { "account_id": null },
+      "args": {
+        "account_id": null
+      },
       "maxDeposit": "0",
       "lendable": false
     }
@@ -63,5 +67,15 @@
       "signer": "executor"
     }
   ],
-  "supportsUnwrap": true
+  "supportsUnwrap": true,
+  "version": 1,
+  "handoverKind": "owner",
+  "shortName": "Owner v1",
+  "headline": "Owner of",
+  "integration": {
+    "permissionModel": "contract-tools Owner 4.0.0",
+    "implementation": "Upstream ownership; application-specific service commands",
+    "source": "https://github.com/near/near-sdk-contract-tools",
+    "practiceSupported": true
+  }
 }

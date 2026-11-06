@@ -57,6 +57,10 @@ try {
     "/docs/README.md",
     "/docs/THREAT_MODEL.md",
     "/docs/AI_USE.md",
+    "/docs/INTEGRATION_GUIDE.md",
+    "/docs/wallet-verification.json",
+    "/docs/published-build-verification.json",
+    "/sdk/writ.js",
     "/fonts/licenses/public-sans/LICENSE",
     "/fonts/licenses/courier-prime/LICENSE",
   ]) {

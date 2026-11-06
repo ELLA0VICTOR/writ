@@ -7,13 +7,27 @@ const CODE: &[u8] = include_bytes!("../../../artifacts/owner-fixture.wasm");
 const RECORD_BYTES: u128 = 2048;
 #[near]
 impl Contract {
-    pub fn get_practice_quote(&self) -> Value {
+    pub fn get_practice_quote(&self, template_id: Option<String>) -> Value {
+        let id = template_id.unwrap_or_else(|| "contract-owner".into());
+        require!(
+            Self::template(&id).supports_unwrap,
+            "Use existing DAO governance for this role"
+        );
         let funding = Self::practice_funding();
         let storage = env::storage_byte_cost().as_yoctonear() * RECORD_BYTES;
         json!({"deposit":(funding+storage).to_string(),"executorFunding":funding.to_string(),"storageDeposit":storage.to_string(),"nonRefundableStorage":true})
     }
     #[payable]
-    pub fn create_practice_target(&mut self, client_request_id: String) -> Promise {
+    pub fn create_practice_target(
+        &mut self,
+        client_request_id: String,
+        template_id: Option<String>,
+    ) -> Promise {
+        let profile = template_id.unwrap_or_else(|| "contract-owner".into());
+        require!(
+            Self::template(&profile).supports_unwrap,
+            "Use existing DAO governance for this role"
+        );
         Self::client_id(&client_request_id);
         let owner = env::predecessor_account_id();
         let key = format!("{owner}:{client_request_id}");
@@ -46,7 +60,9 @@ impl Contract {
             .deploy_contract(CODE.to_vec())
             .function_call(
                 "new",
-                json!({"owner_id":owner}).to_string().into_bytes(),
+                json!({"owner_id":owner,"profile":profile})
+                    .to_string()
+                    .into_bytes(),
                 NearToken::from_yoctonear(0),
                 Gas::from_tgas(12),
             )
@@ -79,6 +95,6 @@ impl Contract {
 impl Contract {
     fn practice_funding() -> u128 {
         env::storage_byte_cost().as_yoctonear() * (CODE.len() as u128 + 4096)
-            + 50_000_000_000_000_000_000_000
+            + 200_000_000_000_000_000_000_000
     }
 }

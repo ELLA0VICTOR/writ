@@ -1,13 +1,15 @@
 {
   "network": "local sandbox",
   "sandboxVersion": "2.14.0",
-  "generatedAt": "2026-11-06T15:44:45.814Z",
+  "generatedAt": "2026-11-06T19:13:40.380Z",
   "testFiles": [
     "attacks.test.mjs",
     "capacity.test.mjs",
     "core.test.mjs",
     "dao.test.mjs",
+    "external-client.test.mjs",
     "lifecycle.test.mjs",
+    "profiles.test.mjs",
     "recipient.test.mjs",
     "recovery.test.mjs"
   ],
@@ -17,12 +19,12 @@
       "sha256": "3bb76eb544c6d6faca61a8176b089964440de0e784130d5ac2d86fa43a5e14ba"
     },
     "collection": {
-      "bytes": 723253,
-      "sha256": "bda1fb9b2eff3ca16daafb732a7be22561c8daa573b387b8e8d3cc41982b8d78"
+      "bytes": 874931,
+      "sha256": "5ac055f5315f1513e7962ccd2379477e7cc0dbcac7b2902f776d67ca99f7714d"
     },
     "owner-fixture": {
-      "bytes": 118632,
-      "sha256": "4b3a3365db0698958db38055bfde6ebb6f47476572c19edf9f081d328f699a30"
+      "bytes": 228634,
+      "sha256": "471583d7cc180728d92c0997e8b2070cd02d28f3a9875d407ef4a596c1bfed58"
     },
     "adversary": {
       "bytes": 137748,
@@ -30,105 +32,150 @@
     }
   },
   "methods": {
-    "mint": {
-      "calls": 10,
-      "maxGasBurnt": "30612408959138",
-      "maxReceiptCount": 7
-    },
-    "withdraw_credit": {
+    "create_practice_target": {
       "calls": 4,
-      "maxGasBurnt": "6169960059903",
+      "maxGasBurnt": "43354840836942",
       "maxReceiptCount": 6
     },
+    "mint": {
+      "calls": 17,
+      "maxGasBurnt": "30967477113802",
+      "maxReceiptCount": 7
+    },
+    "list": {
+      "calls": 9,
+      "maxGasBurnt": "11499486115512",
+      "maxReceiptCount": 2
+    },
     "own_propose_owner": {
-      "calls": 6,
-      "maxGasBurnt": "2032903864654",
+      "calls": 11,
+      "maxGasBurnt": "2161005105566",
       "maxReceiptCount": 2
     },
     "wrap_step": {
-      "calls": 6,
-      "maxGasBurnt": "11691338924501",
+      "calls": 11,
+      "maxGasBurnt": "12287586006377",
       "maxReceiptCount": 10
     },
-    "lend": {
-      "calls": 11,
-      "maxGasBurnt": "11764918492829",
+    "confirm_wrap": {
+      "calls": 8,
+      "maxGasBurnt": "14022224025914",
+      "maxReceiptCount": 12
+    },
+    "fund_treasury": {
+      "calls": 1,
+      "maxGasBurnt": "1840092595594",
       "maxReceiptCount": 2
     },
+    "treasury_pay": {
+      "calls": 3,
+      "maxGasBurnt": "2639253171494",
+      "maxReceiptCount": 4
+    },
     "execute": {
-      "calls": 20,
-      "maxGasBurnt": "23755023949344",
+      "calls": 35,
+      "maxGasBurnt": "24099626931368",
       "maxReceiptCount": 12
+    },
+    "lend": {
+      "calls": 14,
+      "maxGasBurnt": "11944384520541",
+      "maxReceiptCount": 2
+    },
+    "nft_transfer": {
+      "calls": 79,
+      "maxGasBurnt": "9573188322216",
+      "maxReceiptCount": 3
+    },
+    "begin_unwrap": {
+      "calls": 4,
+      "maxGasBurnt": "12759172347177",
+      "maxReceiptCount": 10
+    },
+    "own_accept_owner": {
+      "calls": 4,
+      "maxGasBurnt": "2242204835563",
+      "maxReceiptCount": 2
+    },
+    "finish_unwrap": {
+      "calls": 5,
+      "maxGasBurnt": "11064663709580",
+      "maxReceiptCount": 8
     },
     "end_loan": {
       "calls": 1,
-      "maxGasBurnt": "2926859137248",
+      "maxGasBurnt": "3092149513006",
       "maxReceiptCount": 2
     },
     "fund_executor": {
       "calls": 1,
-      "maxGasBurnt": "7063883316184",
+      "maxGasBurnt": "7394394133440",
       "maxReceiptCount": 6
     },
     "withdraw_fees": {
       "calls": 1,
-      "maxGasBurnt": "8739687205128",
+      "maxGasBurnt": "9070198022384",
       "maxReceiptCount": 8
-    },
-    "list": {
-      "calls": 5,
-      "maxGasBurnt": "11334195739754",
-      "maxReceiptCount": 2
-    },
-    "nft_transfer": {
-      "calls": 75,
-      "maxGasBurnt": "9407918390648",
-      "maxReceiptCount": 3
     },
     "buy": {
       "calls": 7,
-      "maxGasBurnt": "28871063306018",
+      "maxGasBurnt": "29472959006898",
       "maxReceiptCount": 10
     },
     "claim_refund": {
       "calls": 5,
-      "maxGasBurnt": "6751896233294",
+      "maxGasBurnt": "7082340407314",
+      "maxReceiptCount": 6
+    },
+    "withdraw_credit": {
+      "calls": 4,
+      "maxGasBurnt": "6500404233923",
       "maxReceiptCount": 6
     },
     "on_checks": {
       "calls": 1,
-      "maxGasBurnt": "2245047349841",
+      "maxGasBurnt": "2410269436851",
       "maxReceiptCount": 2
     },
     "on_credit": {
       "calls": 1,
-      "maxGasBurnt": "2245140607091",
+      "maxGasBurnt": "2410362694101",
       "maxReceiptCount": 2
     },
     "nft_transfer_call": {
       "calls": 6,
-      "maxGasBurnt": "12563519743494",
+      "maxGasBurnt": "13059216446496",
       "maxReceiptCount": 10
-    },
-    "begin_unwrap": {
-      "calls": 1,
-      "maxGasBurnt": "12286762670889",
-      "maxReceiptCount": 10
-    },
-    "finish_unwrap": {
-      "calls": 2,
-      "maxGasBurnt": "10357746496324",
-      "maxReceiptCount": 8
-    },
-    "own_accept_owner": {
-      "calls": 1,
-      "maxGasBurnt": "2109224041411",
-      "maxReceiptCount": 2
     },
     "withdraw_retired_funds": {
       "calls": 2,
-      "maxGasBurnt": "9192789310560",
+      "maxGasBurnt": "9523162727564",
       "maxReceiptCount": 8
+    },
+    "mint_collectible": {
+      "calls": 3,
+      "maxGasBurnt": "3249576945060",
+      "maxReceiptCount": 2
+    },
+    "mint_tokens": {
+      "calls": 3,
+      "maxGasBurnt": "2381804394746",
+      "maxReceiptCount": 2
+    },
+    "add_proposal": {
+      "calls": 4,
+      "maxGasBurnt": "2594691346328",
+      "maxReceiptCount": 2
+    },
+    "act_proposal": {
+      "calls": 2,
+      "maxGasBurnt": "3621386218069",
+      "maxReceiptCount": 4
+    },
+    "set_price": {
+      "calls": 2,
+      "maxGasBurnt": "1851087992667",
+      "maxReceiptCount": 2
     },
     "resume": {
       "calls": 2,
@@ -142,45 +189,25 @@
     },
     "release_stuck": {
       "calls": 2,
-      "maxGasBurnt": "3134977609482",
+      "maxGasBurnt": "3300199696492",
       "maxReceiptCount": 2
     },
     "unlist": {
       "calls": 1,
-      "maxGasBurnt": "2550676481398",
+      "maxGasBurnt": "2715898568408",
       "maxReceiptCount": 2
-    },
-    "create_practice_target": {
-      "calls": 1,
-      "maxGasBurnt": "29668894761050",
-      "maxReceiptCount": 6
     },
     "invoke": {
       "calls": 1,
-      "maxGasBurnt": "4614639103960",
+      "maxGasBurnt": "4779861190970",
       "maxReceiptCount": 4
     },
     "claim_then_delete": {
       "calls": 1,
-      "maxGasBurnt": "9257162749760",
+      "maxGasBurnt": "9587606923780",
       "maxReceiptCount": 12
-    },
-    "add_proposal": {
-      "calls": 4,
-      "maxGasBurnt": "2594691346328",
-      "maxReceiptCount": 2
-    },
-    "act_proposal": {
-      "calls": 2,
-      "maxGasBurnt": "3621386218069",
-      "maxReceiptCount": 4
-    },
-    "confirm_wrap": {
-      "calls": 2,
-      "maxGasBurnt": "10654291815833",
-      "maxReceiptCount": 8
     }
   },
-  "transactionsRecorded": 183,
+  "transactionsRecorded": 256,
   "scope": "Actual Wasm and receipt tests. Gas includes transaction plus all receipts, including refunds. These are local observations, not a mainnet audit or competitor benchmark."
 }

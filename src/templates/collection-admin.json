@@ -1,0 +1,83 @@
+{
+  "id": "collection-admin",
+  "name": "NFT collection administrator",
+  "kind": "contract-tools Owner",
+  "roleTitle": "Collection\nadmin",
+  "description": "Publish NEP-171 collectibles through a compatible collection. The Writ holds the administrative role; minted collectibles belong to their chosen recipients.",
+  "blindSpot": "These checks cover the declared owner and proposed owner. They do not discover hidden permissions, upgrade keys or backdoors in the target contract. External state may change after it is read. This is a tested compatible application interface, not a universal administrative API defined by the token standard. Target storage and treasury funds are separate from executor funds.",
+  "checks": [
+    {
+      "id": "owner",
+      "label": "Owner is the Writ account",
+      "method": "own_get_owner",
+      "target": "role",
+      "pointer": "",
+      "operator": "eq",
+      "expected": "$WRIT"
+    },
+    {
+      "id": "proposed",
+      "label": "No next owner proposed",
+      "method": "own_get_proposed_owner",
+      "target": "role",
+      "pointer": "",
+      "operator": "null",
+      "expected": null
+    },
+    {
+      "id": "profile",
+      "label": "Target exposes this integration profile",
+      "method": "get_integration_profile",
+      "target": "role",
+      "pointer": "",
+      "operator": "eq",
+      "expected": "collection-admin"
+    }
+  ],
+  "pins": [
+    {
+      "id": "minimum_balance",
+      "label": "Minimum executor balance",
+      "method": "get_balance",
+      "target": "executor",
+      "operator": "gte",
+      "unit": "NEAR"
+    }
+  ],
+  "actions": [
+    {
+      "method": "mint_collectible",
+      "label": "Publish a collectible",
+      "args": {
+        "token_id": "collectible-1",
+        "receiver_id": "",
+        "title": "First collectible"
+      },
+      "maxDeposit": "0",
+      "lendable": true
+    }
+  ],
+  "wrapSteps": [
+    {
+      "label": "Propose the executor as owner",
+      "method": "own_propose_owner",
+      "signer": "holder"
+    },
+    {
+      "label": "Accept from the executor",
+      "method": "own_accept_owner",
+      "signer": "executor"
+    }
+  ],
+  "supportsUnwrap": true,
+  "version": 1,
+  "handoverKind": "owner",
+  "shortName": "Collection v1",
+  "headline": "Collection authority at",
+  "integration": {
+    "permissionModel": "contract-tools Owner 4.0.0",
+    "implementation": "Upstream NEP-171 core, metadata and enumeration; custom owner-gated mint",
+    "source": "https://github.com/near/near-sdk-contract-tools",
+    "practiceSupported": true
+  }
+}

@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "predev": "npm run fonts:svg && node scripts/prepare-public.mjs",
     "prebuild": "npm run fonts:svg && node scripts/prepare-public.mjs",
@@ -11,6 +14,9 @@
     "build": "tsc -b && vite build && node scripts/check-budgets.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
+    "example:prepare": "node scripts/prepare-example.mjs",
+    "example": "npm run example:prepare && vite --config examples/external-app/vite.config.ts",
+    "example:build": "npm run example:prepare && tsc -p examples/external-app/tsconfig.json && vite build --config examples/external-app/vite.config.ts",
     "test": "vitest run",
     "test:e2e": "playwright test",
     "check:secrets": "node scripts/check-secrets.mjs --worktree",

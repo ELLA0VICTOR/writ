@@ -9,7 +9,9 @@ test("holder lends exact arguments, lists, unlists and ends the loan", async ({
     .click();
   const dialog = page.getByRole("dialog");
   await dialog.getByLabel("Borrower account").fill("sam.testnet");
-  await dialog.getByLabel("Expiry in UTC").fill("2099-01-01T12:00");
+  await dialog
+    .getByLabel("Expiry in UTC")
+    .fill(new Date(Date.now() + 86400_000).toISOString().slice(0, 16));
   await dialog
     .getByRole("button", { name: "Lend a method", exact: true })
     .click();

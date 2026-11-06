@@ -9,7 +9,14 @@ import { Dialog } from "../../components/Dialog/Dialog";
 import { Button } from "../../components/Button/Button";
 import { DisclosedBox } from "../../components/DisclosedBox/DisclosedBox";
 export type ActionKind =
-  "use" | "lend" | "list" | "withdraw" | "unwrap" | "transfer" | "fund";
+  | "use"
+  | "lend"
+  | "list"
+  | "withdraw"
+  | "unwrap"
+  | "transfer"
+  | "fund"
+  | "fundTarget";
 export function ActionDialog({
   kind,
   writ,
@@ -46,7 +53,9 @@ export function ActionDialog({
   const [borrower, setBorrower] = useState("");
   const [receiver, setReceiver] = useState("");
   const [expiry, setExpiry] = useState("");
-  const [amount, setAmount] = useState(formatNear(writ.withdrawableFees));
+  const [amount, setAmount] = useState(
+    kind === "fundTarget" ? "0.1" : formatNear(writ.withdrawableFees),
+  );
   const [confirmed, setConfirmed] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -58,6 +67,7 @@ export function ActionDialog({
     unwrap: "Unwrap the role",
     transfer: "Transfer the Writ",
     fund: "Fund the executor",
+    fundTarget: "Fund the external application",
   }[kind];
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -75,6 +85,8 @@ export function ActionDialog({
         await adapter.withdrawFees(writ.id, nearToYocto(amount));
       if (kind === "fund")
         await adapter.fundExecutor(writ.id, nearToYocto(amount));
+      if (kind === "fundTarget")
+        await adapter.fundTarget(writ.id, nearToYocto(amount));
       if (kind === "transfer") {
         if (!confirmed || !isAccountId(receiver) || receiver === writ.owner)
           throw new Error("Confirm a different, valid receiving account.");
@@ -101,12 +113,16 @@ export function ActionDialog({
         else {
           if (!isAccountId(borrower))
             throw new Error("Enter a valid borrower account.");
+          if (borrower === writ.owner)
+            throw new Error("Choose a borrower other than the current holder.");
           const expiresAt = new Date(expiry + "Z");
           if (
             !Number.isFinite(expiresAt.getTime()) ||
             expiresAt.getTime() <= Date.now()
           )
             throw new Error("Choose a future expiry in UTC.");
+          if (expiresAt.getTime() > Date.now() + 366 * 86400_000)
+            throw new Error("Choose an expiry within 366 days.");
           await adapter.lend({
             writId: writ.id,
             method,
@@ -227,8 +243,8 @@ export function ActionDialog({
             </label>
             <DisclosedBox compact>
               The borrower can use this method only with the exact arguments and
-              deposit cap shown here. A sale ends the loan. A loan does not
-              grant an access key.
+              deposit cap shown here, repeatedly until expiry or revocation. A
+              transfer ends the loan. A loan does not grant an access key.
             </DisclosedBox>
           </>
         )}
@@ -251,9 +267,11 @@ export function ActionDialog({
             </label>
           </>
         )}
-        {kind === "fund" && (
+        {(kind === "fund" || kind === "fundTarget") && (
           <label>
-            NEAR to add
+            {kind === "fundTarget"
+              ? `NEAR to send to ${writ.target}`
+              : "NEAR to add"}
             <input
               className="typed"
               inputMode="decimal"

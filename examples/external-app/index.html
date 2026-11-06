@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>External application · Writ integration example</title>
+    <style>
+      body {
+        font: 17px/1.6 system-ui;
+        max-width: 850px;
+        margin: 40px auto;
+        padding: 0 20px;
+        color: #111;
+        background: #fff;
+      }
+      h1 {
+        line-height: 1.1;
+      }
+      label {
+        display: block;
+        margin: 20px 0;
+      }
+      input,
+      select,
+      textarea,
+      button {
+        font: inherit;
+        padding: 10px;
+        border: 1px solid #111;
+        background: #fff;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      input,
+      textarea {
+        width: 100%;
+      }
+      button {
+        cursor: pointer;
+        background: #ffd400;
+      }
+      button:disabled {
+        opacity: 0.5;
+      }
+      pre {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+      img {
+        width: 260px;
+        max-width: 100%;
+      }
+      #message {
+        min-height: 26px;
+      }
+      a {
+        color: #111;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+    <p>Separate application · NEAR testnet</p>
+    <h1>Use your Writ here.</h1>
+    <p>
+      This example has its own wallet connection and no Writ React components.
+      It reads the public contracts and sends a permitted command through the
+      standalone integration client.
+    </p>
+    <label
+      >Testnet wallet<select id="wallet">
+        <option value="">Loading available wallets…</option>
+      </select></label
+    ><button id="connect" disabled>Connect wallet</button>
+    <button id="disconnect" disabled>Disconnect</button>
+    <p id="account">No wallet connected.</p>
+    <label
+      >Writ token ID<input id="token" value="1" inputmode="numeric" /></label
+    ><button id="inspect" disabled>Inspect authority and NFT</button>
+    <p id="message" role="status" aria-live="polite"></p>
+    <img id="art" alt="Verified Writ NFT artwork" hidden />
+    <pre id="evidence"></pre>
+    <form id="command">
+      <label
+        >Supported command<select id="method">
+          <option value="">Inspect a Writ first</option>
+        </select></label
+      ><label
+        >Exact JSON arguments<textarea id="args" rows="7">{}</textarea></label
+      ><button id="send" disabled>Approve command in wallet</button>
+    </form>
+    <p>
+      Inspecting a role does not authenticate a person. The chain checks the
+      account that signs the actual transaction. Page observations can become
+      stale.
+    </p>
+    </main>
+    <script type="module" src="/main.ts"></script>
+  </body>
+</html>

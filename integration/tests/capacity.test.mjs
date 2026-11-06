@@ -1,7 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { writeFile } from "node:fs/promises";
-import { createHash } from "node:crypto";
 import { startChain } from "../harness.mjs";
 
 test(

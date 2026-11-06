@@ -48,6 +48,16 @@ export interface RoleTemplate {
   actions: RoleAction[];
   wrapSteps: { label: string; method: string; signer: "holder" | "executor" }[];
   supportsUnwrap: boolean;
+  version?: number;
+  handoverKind?: "owner" | "dao";
+  shortName?: string;
+  headline?: string;
+  integration?: {
+    permissionModel: string;
+    implementation: string;
+    source: string;
+    practiceSupported: boolean;
+  };
 }
 export interface Loan {
   id: string;

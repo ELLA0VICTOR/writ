@@ -13,5 +13,9 @@ This completed feature checklist is not a mainnet security approval. Additional 
 - [x] Second template using unchanged third-party contract behavior.
 - [x] Real sandbox attack/lifecycle suite and measured gas and binary evidence.
 - [x] Testnet deployment, genuine receipts and documented reproduction.
+- [x] Five verified profiles, with practice applications and actual NFT issuance, fungible-token issuance and native treasury payouts.
+- [x] NFT media hash, browser artwork verification, account-permission disclosures and downloadable authority evidence.
+- [x] Standalone integration client, separate external application and public release configuration for static deployment.
+- [x] Actual Intear Wallet lifecycle: mint, grant, resume, use, lend, fund, withdraw, transfer, buy, refused-purchase refund, verified hand-back and recovery. An external application also submitted a successful command through the standalone client. Public receipts are in [wallet-verification.json](wallet-verification.json).
 
 Implementation constraints: private idempotent callbacks; bounded checks/args/history; no executor key/deploy/delete surface; no claim of globally atomic external reads. Unknown action completion cannot be turned into permission to transfer by a frontend timer. Purchase timeout invalidates the attempt before refund credit. Financial transfers debit credits before dispatch and restore them on failure.

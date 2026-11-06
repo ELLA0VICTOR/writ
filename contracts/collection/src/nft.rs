@@ -169,7 +169,7 @@ impl Contract {
         let mut t = self.owned(&token_id);
         Self::unpaused(&t);
         require!(
-            Self::template(&t.template_id).supports_unwrap && t.template_id == "contract-owner",
+            Self::template(&t.template_id).supports_unwrap,
             "No hand-back recipe"
         );
         t.loans
@@ -228,7 +228,7 @@ impl Contract {
         require!(
             (t.state == State::Unwrapping || t.state == State::Idle)
                 && t.pending == 0
-                && t.template_id == "contract-owner",
+                && Self::template(&t.template_id).supports_unwrap,
             "Hand-back cannot be checked now"
         );
         t.state = State::Unwrapping;
@@ -369,12 +369,9 @@ impl Contract {
     }
     fn nft_view(t: &Token) -> Value {
         use near_sdk::base64::{Engine, engine::general_purpose::STANDARD};
-        let title = if t.template_id == "dao-council" {
-            "Council seat"
-        } else {
-            "Contract owner"
-        };
+        let title = Self::template(&t.template_id).name;
         let svg = crate::media::render(t);
-        json!({"token_id":t.id,"owner_id":t.owner,"metadata":{"title":format!("Writ {} — {title}",t.id),"description":"The current NFT holder controls a keyless executor. External role conditions must be inspected separately.","media":format!("data:image/svg+xml;base64,{}",STANDARD.encode(svg)),"copies":1,"extra":json!({"executor":t.executor,"target":t.target,"epoch":t.epoch.to_string(),"nonce":t.nonce.to_string(),"template_hash":t.template_hash}).to_string()}})
+        let media_hash = STANDARD.encode(env::sha256(svg.as_bytes()));
+        json!({"token_id":t.id,"owner_id":t.owner,"metadata":{"title":format!("Writ {} — {title}",t.id),"description":"The current NFT holder controls a keyless executor. External role conditions must be inspected separately.","media":format!("data:image/svg+xml;base64,{}",STANDARD.encode(svg)),"media_hash":media_hash,"copies":1,"extra":json!({"executor":t.executor,"target":t.target,"epoch":t.epoch.to_string(),"nonce":t.nonce.to_string(),"template_hash":t.template_hash,"role_confirmed":t.wrapped}).to_string()}})
     }
 }

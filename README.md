@@ -13,9 +13,9 @@ npm run dev
 
 Use the configured testnet deployment, or add `?mock=1` for labelled examples. `/app` shows your Writs and withdrawal credits; `/market` shows listings; `/wrap` creates a Writ; `/writ/<id>` exposes checks, history and holder actions.
 
-Public identities, hashes and genuine receipts are in [deployments/testnet.json](deployments/testnet.json). On a clean checkout, copy its public values into `.env.local` using [.env.example](.env.example), then restart Vite. Every `VITE_` value is public. Never put a signing key in one.
+Public identities, hashes and genuine receipts are in [deployments/testnet.json](deployments/testnet.json). A clean checkout uses the checked-in, public [release configuration](src/content/deployment.json); local environment files are not required to publish the frontend. To override it, supply the public values from [.env.example](.env.example) and restart Vite. An explicit empty contract disables live transactions. Every `VITE_` value is public. Never put a signing key in one.
 
-Connect a testnet wallet, open **Wrap a role**, and choose **Contract owner**. If you have no compatible contract, **Create or resume practice target** provisions a keyless practice service owned by your wallet. Funding/storage quotes appear before signing. Minting provisions a separate keyless executor; propose that executor as owner, let it accept, and verify the handover. A mint alone does not move the role.
+Connect a testnet wallet, open **Wrap a role**, and select one of five verified profiles. For the four Owner-based profiles, **Create or resume practice target** provisions a compatible keyless application owned by your wallet. Funding/storage quotes appear before signing. Minting provisions a separate keyless executor; propose that executor as owner, let it accept, and verify the handover. A mint alone does not move the role. Interrupted handovers resume from **My Writs**. The public NFT page displays commands, observed account keys, current ownership and verified artwork.
 
 Use the Writ to exercise or lend `set_price`, fund/withdraw native NEAR, transfer directly, or optionally list for sale. Direct transfers have no purchase price or settlement checks. Listing pauses use, lending, withdrawals and transfers. Buyers pin the version, template, price and optional minimum available executor balance. Failed conditions preserve the seller's NFT and make the full purchase price refundable. The disclosed **0.05 NEAR retained record charge** and network fees remain spent. Successful sales credit the seller's withdrawal balance in **My Writs**.
 
@@ -23,11 +23,14 @@ Unwrap uses three transactions: propose the wallet, accept from the wallet, then
 
 ## Role compatibility
 
-| Template       | Integration                                           | Boundary                                                                                                                                   |
-| -------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| Contract owner | Actual upstream `near-sdk-contract-tools` Owner 4.0.0 | `set_price` belongs to the example service, not the generic Owner trait. Targets must expose the declared methods.                         |
-| DAO council    | Pinned, unchanged upstream Sputnik DAO v2 Wasm        | Matches the named council group. DAO governance must approve membership and can later revoke it. A seat does not confer exclusive control. |
-| Staking pool   | Unimplemented draft                                   | Not offered as a supported live template. Immutable standard pool ownership cannot simply be wrapped after creation.                       |
+| Template                     | Integration                                           | Boundary                                                                                                                                   |
+| ---------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Contract owner               | Actual upstream `near-sdk-contract-tools` Owner 4.0.0 | `set_price` belongs to the example service, not the generic Owner trait. Targets must expose the declared methods.                         |
+| DAO council                  | Pinned, unchanged upstream Sputnik DAO v2 Wasm        | Matches the named council group. DAO governance must approve membership and can later revoke it. A seat does not confer exclusive control. |
+| NFT collection administrator | Upstream NEP-171/177/181 with Owner                   | Compatible `mint_collectible`; this command is application-specific, not an NFT-standard administrative API.                               |
+| Token issuance controller    | Upstream NEP-141/148 with Owner                       | Compatible owner-gated `mint_tokens`. Existing holders keep their balances. Issuance cannot be lent by this profile.                       |
+| Treasury controller          | Native-NEAR treasury with upstream Owner              | Compatible `treasury_pay`. Target and executor funds remain separate. Spending cannot be lent by this profile.                             |
+| Staking pool                 | Unimplemented draft                                   | Not offered as a supported live template. Immutable standard pool ownership cannot simply be wrapped after creation.                       |
 
 For DAO wrapping, approve an `AddMemberToRole` proposal through the existing DAO governance interface, adding the displayed executor to `council`, then confirm in Writ. Writ does not bypass approval. Its role action forwards `act_proposal` with exact JSON arguments.
 
@@ -52,11 +55,15 @@ Contracts originate from `cargo near new` scaffolds and use pinned Cargo locks/t
 
 The sandbox suite executes actual Wasm and receipts: upstream Owner handover, direct transfer, receiver rollback/reentry, lending/revocation, sale/refund accounting, spoofed callbacks, yielded calls, deadline release, late callbacks, failed provisioning, real failed native payments, retirement and residual-fund recovery. [Measurements](docs/contract-verification.json) include binary hashes and gas observations. [Verification](docs/VERIFICATION.md) distinguishes local sandbox, browser and public testnet evidence. It is not an audit or competitor benchmark.
 
-`node integration/deploy-testnet.mjs` creates funded **testnet-only** accounts, deploys local artifacts and records real demonstration receipts. Run through the WSL helper with integration dependencies installed. It journals completed steps and refuses silent upgrades. Credentials and journal stay in ignored `.local/deployment/`; only public identities/hashes enter frontend configuration and the deployment manifest. No mainnet deployment is configured.
+`node integration/deploy-testnet.mjs` creates funded **testnet-only** accounts, deploys local artifacts and records real demonstration receipts. Set `WRIT_TESTNET_RELEASE` for a new release; the current release is `expanded-2026-11-06`. It journals completed steps and refuses silent upgrades. Credentials and journal stay in the ignored release directory under `.local/`; only public identities/hashes enter frontend configuration and the deployment manifest. No mainnet deployment is configured. Expanded examples may need additional faucet funding; the capped funding helper requires an explicit release label and stops if the faucet declines.
+
+## Use Writ outside this website
+
+The dependency-free [integration client](sdk/index.ts) reads the real controller, verifies NFT artwork and prepares approved commands for another application's wallet connection. `npm run example` starts a separate application on port 5174, with no Writ React components or shared login. A published build also serves `/sdk/writ.js`. See the [integration guide](docs/INTEGRATION_GUIDE.md) for compatibility, code/hash pinning and the full handover recipe. No npm package is claimed published.
 
 ## Security and limits
 
-The completed functionality checklist is not a mainnet release approval. See [release readiness](docs/RELEASE_READINESS.md) for remaining wallet, authority, compatibility and budget gates, and [mainnet planning estimate](docs/mainnet-cost-estimate.json) before funding anything.
+The completed functionality checklist is not a mainnet release approval. The [actual Intear Wallet rehearsal](docs/wallet-verification.json) covers the complete testnet lifecycle, including an external application's command. See [release readiness](docs/RELEASE_READINESS.md) for remaining mainnet authority, network and budget gates, and [mainnet planning estimate](docs/mainnet-cost-estimate.json) before funding anything.
 
 - Executors have no keys. Only the collection can instruct them. No key, deploy or delete surface exists. Authorization checks the current NFT holder or an exact unexpired loan at the current epoch.
 - Transfers into the collection's own namespace are rejected, preventing NFTs becoming stuck in Writ's keyless infrastructure. External receivers must still be able to control a received NFT.

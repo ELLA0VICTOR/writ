@@ -8,6 +8,7 @@ import { LedgerPaper } from "../../components/LedgerPaper/LedgerPaper";
 import { TechMarquee } from "../../components/TechMarquee/TechMarquee";
 import { exampleWrit, exampleHistory } from "../../chain/fixtures/writs";
 import { validatedTemplates } from "../../templates/registry";
+import release from "../../content/deployment.json";
 import { authoritySteps, sellerTricks } from "../../content/landing";
 import { useChain, useTitle } from "../../hooks/useChain";
 import s from "./Landing.module.css";
@@ -20,7 +21,7 @@ export default function Landing() {
   function check(event: FormEvent) {
     event.preventDefault();
     if (!/^\d{1,12}$/.test(id)) {
-      setError("Enter a Writ number, such as 7.");
+      setError(`Enter a Writ number, such as ${mode === "mock" ? 7 : 1}.`);
       return;
     }
     navigate(`/writ/${Number(id)}${mode === "mock" ? "?mock=1" : ""}`);
@@ -78,6 +79,16 @@ export default function Landing() {
                       <code key={check.id}>{check.method}</code>
                     ))}
                   </div>
+                  {mode !== "mock" &&
+                    release.examples[
+                      template.id as keyof typeof release.examples
+                    ] && (
+                      <ModeLink
+                        to={`/writ/${release.examples[template.id as keyof typeof release.examples]}`}
+                      >
+                        Inspect {template.name} example
+                      </ModeLink>
+                    )}
                 </article>
               ))}
             </div>
@@ -192,7 +203,7 @@ export default function Landing() {
                 id="check-id"
                 inputMode="numeric"
                 className="typed"
-                placeholder="e.g. 0007"
+                placeholder={mode === "mock" ? "e.g. 0007" : "e.g. 0001"}
                 value={id}
                 onChange={(e) => {
                   setId(e.target.value);

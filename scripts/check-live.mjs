@@ -29,15 +29,26 @@ try {
       `/writ/${deployment.writs.clean}`,
       `/writ/${deployment.writs.proposed}`,
       `/writ/${deployment.writs.dao}`,
+      ...Object.values(deployment.profiles ?? {}).map((p) => `/writ/${p.id}`),
       "/wrap",
     ]) {
+      console.log(`Checking live ${route} at ${width}px`);
       const response = await page.goto(origin + route);
       assert.equal(response.status(), 200);
-      await page.getByRole("heading", { level: 1 }).waitFor();
+      await page.getByRole("heading", { level: 1 }).waitFor({ timeout: 60000 });
       if (route.startsWith("/writ/")) {
         await page.getByRole("table").waitFor({ timeout: 60000 });
         await page
           .getByRole("button", { name: "Read again", exact: true })
+          .waitFor();
+        await page
+          .getByText("SHA-256 media hash verified", { exact: true })
+          .waitFor({ timeout: 60000 });
+        await page
+          .getByRole("button", {
+            name: "Download authority evidence",
+            exact: true,
+          })
           .waitFor();
       }
       if (route === "/market")
@@ -92,10 +103,32 @@ try {
     .waitFor({ timeout: 30000 });
   await page.getByRole("button", { name: "Cancel", exact: true }).click();
   assert.equal(report.errors.length, 0, report.errors.join("\n"));
-  const manifest=JSON.parse(await readFile('dist/.vite/manifest.json','utf8'));
-  const states=await page.evaluate(async({file,purchases})=>{const {createTestnetAdapter}=await import('/'+file);const adapter=createTestnetAdapter();return Promise.all([adapter.getPurchase(purchases.clean),adapter.getPurchase(purchases.proposed)]);},{file:manifest['src/chain/testnetAdapter.ts'].file,purchases:deployment.purchases});
-  assert.equal(states[0].status,'settled');assert.equal(states[0].sellerPayment,'credited');assert.equal(states[1].status,'refused');assert.equal(states[1].refundStatus,'paid');
-  report.purchaseReadback={clean:states[0].status,refused:states[1].status,refund:states[1].refundStatus};
+  const manifest = JSON.parse(
+    await readFile("dist/.vite/manifest.json", "utf8"),
+  );
+  const states = await page.evaluate(
+    async ({ file, purchases }) => {
+      const { createTestnetAdapter } = await import("/" + file);
+      const adapter = createTestnetAdapter();
+      return Promise.all([
+        adapter.getPurchase(purchases.clean),
+        adapter.getPurchase(purchases.proposed),
+      ]);
+    },
+    {
+      file: manifest["src/chain/testnetAdapter.ts"].file,
+      purchases: deployment.purchases,
+    },
+  );
+  assert.equal(states[0].status, "settled");
+  assert.equal(states[0].sellerPayment, "credited");
+  assert.equal(states[1].status, "refused");
+  assert.equal(states[1].refundStatus, "paid");
+  report.purchaseReadback = {
+    clean: states[0].status,
+    refused: states[1].status,
+    refund: states[1].refundStatus,
+  };
   await writeFile(
     ".local/live-browser/report.json",
     JSON.stringify(report, null, 2),

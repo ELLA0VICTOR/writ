@@ -1,5 +1,23 @@
 {
-  "contract-owner": { "sandboxPassed": true, "evidence": "docs/contract-verification.json" },
-  "dao-council": { "sandboxPassed": true, "evidence": "docs/contract-verification.json" },
+  "contract-owner": {
+    "sandboxPassed": true,
+    "evidence": "docs/contract-verification.json"
+  },
+  "dao-council": {
+    "sandboxPassed": true,
+    "evidence": "docs/contract-verification.json"
+  },
+  "collection-admin": {
+    "sandboxPassed": true,
+    "evidence": "docs/contract-verification.json"
+  },
+  "token-issuer": {
+    "sandboxPassed": true,
+    "evidence": "docs/contract-verification.json"
+  },
+  "treasury-controller": {
+    "sandboxPassed": true,
+    "evidence": "docs/contract-verification.json"
+  },
   "staking-pool-owner": { "sandboxPassed": false, "evidence": null }
 }

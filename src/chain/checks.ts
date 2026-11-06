@@ -69,7 +69,13 @@ export function mockChecks(
   const rows = template.checks.map((def) =>
     mapCheck(
       def,
-      def.id === "owner" ? writ.roleOwner : writ.proposedOwner,
+      def.id === "owner"
+        ? writ.roleOwner
+        : def.id === "profile"
+          ? writ.templateId
+          : def.id === "council"
+            ? {roles:[{ name: "council", kind: { Group: [writ.roleOwner] } }]}
+            : writ.proposedOwner,
       writ,
       read,
     ),

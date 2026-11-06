@@ -7,9 +7,11 @@ import type {
   WritPage,
 } from "./types";
 import { bindings } from "./contractBindings";
+import { deploymentConfig } from "./deployment";
 import { ChainError, PurchaseSubmissionError } from "./errors";
 import { mapCheck } from "./checks";
 import { templates, getTemplate } from "../templates/registry";
+import { scheduleRpcRead } from "../../sdk/index";
 
 import {
   record as object,
@@ -20,12 +22,14 @@ import {
 } from "./validation";
 type ObjectValue = Record<string, unknown>;
 export function createTestnetAdapter(): WritAdapter {
-  const contractId = (import.meta.env.VITE_WRIT_CONTRACT as string) || "";
+  const deployment = deploymentConfig();
+  const configuredHashes: Record<string, string> = deployment.templateHashes;
+  const contractId = deployment.collection;
   const enabled = Boolean(
     contractId &&
-    import.meta.env.VITE_WRIT_ABI_VERSION === bindings.abiVersion &&
-    import.meta.env.VITE_EXECUTOR_CODE_HASH &&
-    import.meta.env.VITE_OWNER_TEMPLATE_HASH,
+    deployment.abiVersion === bindings.abiVersion &&
+    deployment.executorCodeHash &&
+    configuredHashes["contract-owner"],
   );
   let providerPromise:
     Promise<import("near-api-js").JsonRpcProvider> | undefined;
@@ -33,11 +37,16 @@ export function createTestnetAdapter(): WritAdapter {
     (providerPromise ??= import("near-api-js").then(
       ({ JsonRpcProvider }) =>
         new JsonRpcProvider({
-          url:
-            import.meta.env.VITE_NEAR_RPC_URL ||
-            "https://test.rpc.fastnear.com",
+          url: deployment.rpcUrl,
         }),
     ));
+  const readRpc = (
+    method: "query" | "status" | "EXPERIMENTAL_protocol_config" | "gas_price",
+    params: unknown,
+  ) =>
+    scheduleRpcRead(deployment.rpcUrl, async () =>
+      (await provider()).sendJsonRpc(method, params),
+    );
   function configured() {
     if (!enabled)
       throw new ChainError(
@@ -51,9 +60,7 @@ export function createTestnetAdapter(): WritAdapter {
   ): Promise<ObjectValue> {
     signal?.throwIfAborted();
     try {
-      const result = object(
-        await (await provider()).sendJsonRpc("query", params),
-      );
+      const result = object(await readRpc("query", params));
       signal?.throwIfAborted();
       return result;
     } catch (error) {
@@ -109,8 +116,8 @@ export function createTestnetAdapter(): WritAdapter {
   function ensureConfig(): Promise<void> {
     configured();
     return (configPromise ??= provider()
-      .then(async (rpc) => {
-        const status = object(await rpc.sendJsonRpc("status", []));
+      .then(async () => {
+        const status = object(await readRpc("status", []));
         if (status.chain_id !== "testnet")
           throw new ChainError(
             "not_configured",
@@ -124,12 +131,11 @@ export function createTestnetAdapter(): WritAdapter {
         purchaseStorage = String(config.purchase_storage_deposit);
         if (
           config.abi_version !== bindings.abiVersion ||
-          config.executor_code_hash !==
-            import.meta.env.VITE_EXECUTOR_CODE_HASH ||
-          hashes["contract-owner"] !==
-            import.meta.env.VITE_OWNER_TEMPLATE_HASH ||
-          (import.meta.env.VITE_DAO_TEMPLATE_HASH &&
-            hashes["dao-council"] !== import.meta.env.VITE_DAO_TEMPLATE_HASH)
+          config.executor_code_hash !== deployment.executorCodeHash ||
+          hashes["contract-owner"] !== configuredHashes["contract-owner"] ||
+          Object.entries(configuredHashes).some(
+            ([id, hash]) => hash && hashes[id] !== hash,
+          )
         )
           throw new ChainError(
             "not_configured",
@@ -146,11 +152,8 @@ export function createTestnetAdapter(): WritAdapter {
     if (
       writ &&
       (writ.collection !== contractId ||
-        !["contract-owner", "dao-council"].includes(writ.templateId) ||
-        writ.templateHash !==
-          (writ.templateId === "contract-owner"
-            ? import.meta.env.VITE_OWNER_TEMPLATE_HASH
-            : import.meta.env.VITE_DAO_TEMPLATE_HASH) ||
+        !configuredHashes[writ.templateId] ||
+        writ.templateHash !== configuredHashes[writ.templateId] ||
         (id !== undefined && writ.id !== String(Number(id))))
     )
       throw new ChainError(
@@ -191,7 +194,7 @@ export function createTestnetAdapter(): WritAdapter {
       ? keys.keys.map((k) => String(object(k).public_key))
       : [];
     // Role views are checked separately. Never substitute a fabricated owner when unavailable.
-    if (writ.templateId === "contract-owner") {
+    if (getTemplate(writ.templateId).handoverKind === "owner") {
       try {
         const [owner, proposed] = await Promise.all([
           view(writ.target, "own_get_owner", {}, hash, signal),
@@ -224,6 +227,18 @@ export function createTestnetAdapter(): WritAdapter {
     receiver = contractId,
   ) {
     await ensureConfig();
+    if (deployment.collectionCodeHash) {
+      const code = await query({
+        request_type: "view_account",
+        account_id: contractId,
+        finality: "final",
+      });
+      if (code.code_hash !== deployment.collectionCodeHash)
+        throw new ChainError(
+          "not_configured",
+          "Collection code differs from the published release. Review the deployment before signing.",
+        );
+    }
     return (await import("./wallet")).walletCall(
       receiver,
       method,
@@ -287,9 +302,7 @@ export function createTestnetAdapter(): WritAdapter {
         finality: "final",
       });
       const protocol = object(
-        await (
-          await provider()
-        ).sendJsonRpc("EXPERIMENTAL_protocol_config", { finality: "final" }),
+        await readRpc("EXPERIMENTAL_protocol_config", { finality: "final" }),
       );
       const cost = BigInt(
         String(object(protocol.runtime_config).storage_amount_per_byte),
@@ -300,9 +313,7 @@ export function createTestnetAdapter(): WritAdapter {
       return (available > 0n ? available : 0n).toString();
     },
     async getPurchaseFeeAllowance() {
-      const price = object(
-        await (await provider()).sendJsonRpc("gas_price", [null]),
-      );
+      const price = object(await readRpc("gas_price", [null]));
       const gasPrice = BigInt(String(price.gas_price));
       return ((gasPrice * 250000000000000n * 13n) / 10n).toString();
     },
@@ -336,18 +347,38 @@ export function createTestnetAdapter(): WritAdapter {
         );
       return call("nft_transfer", { token_id: id, receiver_id: receiver }, "1");
     },
-    async getPracticeQuote() {
+    async getPracticeQuote(templateId = "contract-owner") {
       await ensureConfig();
       return object(
-        await view(contractId, "get_practice_quote"),
+        await view(contractId, "get_practice_quote", {
+          template_id: templateId,
+        }),
       ) as unknown as import("./types").MintQuote;
     },
-    async createPracticeTarget() {
+    async createPracticeTarget(
+      templateId = "contract-owner",
+      newRequest = false,
+    ) {
       const session = await this.getSession();
       if (!session)
         throw new ChainError("unauthorized", "Connect your wallet first.");
-      const saved = `writ-practice:${contractId}:${session.accountId}`;
+      const saved = `writ-practice:${contractId}:${session.accountId}:${templateId}`;
       let id = sessionStorage.getItem(saved);
+      if (newRequest && id) {
+        const previous = await view(contractId, "get_practice_target", {
+          owner_id: session.accountId,
+          client_request_id: id,
+        });
+        if (
+          previous === null ||
+          !["ready", "failed"].includes(String(object(previous).status))
+        )
+          throw new ChainError(
+            "outcome_unknown",
+            "Resolve the previous provisioning attempt before paying for another target.",
+          );
+        id = null;
+      }
       if (!id) {
         id = crypto.randomUUID();
         sessionStorage.setItem(saved, id);
@@ -357,10 +388,10 @@ export function createTestnetAdapter(): WritAdapter {
         client_request_id: id,
       });
       if (result === null) {
-        const quote = await this.getPracticeQuote();
+        const quote = await this.getPracticeQuote(templateId);
         await call(
           "create_practice_target",
-          { client_request_id: id },
+          { client_request_id: id, template_id: templateId },
           quote.deposit,
         );
         result = await view(contractId, "get_practice_target", {
@@ -378,6 +409,24 @@ export function createTestnetAdapter(): WritAdapter {
     },
     async fundExecutor(id, amount) {
       return call("fund_executor", { token_id: id }, amount);
+    },
+    async fundTarget(id, amount) {
+      const writ = await this.getWrit(id);
+      if (
+        !writ ||
+        !getTemplate(writ.templateId).integration?.practiceSupported ||
+        writ.templateId === "contract-owner"
+      )
+        throw new ChainError(
+          "invalid_input",
+          "This integration does not expose a target funding command.",
+        );
+      if (!/^[0-9]+$/.test(amount) || BigInt(amount) <= 0n)
+        throw new ChainError(
+          "invalid_input",
+          "Choose a positive funding amount.",
+        );
+      return call("fund_treasury", {}, amount, writ.target);
     },
     async confirmWrap(id) {
       return call("confirm_wrap", { token_id: id });
@@ -419,10 +468,7 @@ export function createTestnetAdapter(): WritAdapter {
     async getTemplates() {
       if (enabled) await ensureConfig();
       return templates.filter(
-        (t) =>
-          t.id === "contract-owner" ||
-          (t.id === "dao-council" &&
-            Boolean(import.meta.env.VITE_DAO_TEMPLATE_HASH)),
+        (t) => t.id === "contract-owner" || Boolean(configuredHashes[t.id]),
       );
     },
     async getWrit(id, signal) {
@@ -552,8 +598,7 @@ export function createTestnetAdapter(): WritAdapter {
             signal,
           );
           const actual = kind === "keys" ? response.keys : response.code_hash;
-          const expected =
-            kind === "keys" ? [] : import.meta.env.VITE_EXECUTOR_CODE_HASH;
+          const expected = kind === "keys" ? [] : deployment.executorCodeHash;
           const available =
             kind === "keys"
               ? Array.isArray(actual)
@@ -727,6 +772,23 @@ export function createTestnetAdapter(): WritAdapter {
         finality: "final",
       });
       let holder: unknown;
+      const template = getTemplate(request.templateId);
+      const profileCheck = template.checks.find(
+        (check) => check.id === "profile",
+      );
+      if (
+        profileCheck &&
+        (await view(
+          request.target,
+          profileCheck.method,
+          {},
+          String(state.block_hash),
+        )) !== profileCheck.expected
+      )
+        throw new ChainError(
+          "invalid_input",
+          "This contract does not match the selected integration profile.",
+        );
       if (request.templateId === "dao-council") {
         const policy = object(
           await view(
@@ -824,6 +886,11 @@ export function createTestnetAdapter(): WritAdapter {
       if (!writ) throw new ChainError("not_found", "This Writ does not exist.");
       if (writ.templateId === "dao-council")
         return call("confirm_wrap", { token_id: writ.id });
+      if (writ.roleOwner === writ.executor) return { mock: false };
+      if (request.step === 0 && writ.proposedOwner === writ.executor)
+        return { mock: false };
+      if (request.step !== 0 && request.step !== 1)
+        throw new ChainError("invalid_input", "Unsupported handover step.");
       if (request.step === 0)
         return call(
           "own_propose_owner",

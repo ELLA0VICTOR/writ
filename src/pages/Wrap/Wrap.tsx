@@ -48,12 +48,13 @@ export default function Wrap() {
     if (
       !adapter?.capabilities.wrap ||
       step !== 1 ||
-      templateId !== "contract-owner"
+      !templates.find((t) => t.id === templateId)?.integration
+        ?.practiceSupported
     )
       return;
     let live = true;
     void adapter
-      .getPracticeQuote()
+      .getPracticeQuote(templateId)
       .then((q) => {
         if (live) setPracticeQuote(q);
       })
@@ -63,7 +64,7 @@ export default function Wrap() {
     return () => {
       live = false;
     };
-  }, [adapter, step, templateId]);
+  }, [adapter, step, templateId, templates]);
   const [search] = useSearchParams();
   const resume = search.get("resume");
   useEffect(() => {
@@ -78,6 +79,13 @@ export default function Wrap() {
         setMint({ writ: w, mock: mode === "mock" });
         setTarget(w.target);
         setTemplate(w.templateId);
+        setCompleted(
+          w.roleOwner === w.executor
+            ? [0, 1]
+            : w.proposedOwner === w.executor
+              ? [0]
+              : [],
+        );
         setStep(3);
       })
       .catch((e) => {
@@ -141,16 +149,19 @@ export default function Wrap() {
       setBusy(false);
     }
   }
-  async function practice() {
+  async function practice(newRequest = false) {
     if (!adapter) return;
     setBusy(true);
     setError("");
     try {
-      const account = await adapter.createPracticeTarget();
+      const account = await adapter.createPracticeTarget(
+        templateId,
+        newRequest,
+      );
       setTarget(account);
       setInspection(
         await adapter.inspectWrap({
-          templateId: "contract-owner",
+          templateId,
           target: account,
         }),
       );
@@ -183,7 +194,7 @@ export default function Wrap() {
     setBusy(true);
     setError("");
     try {
-      if (mode === "testnet") await adapter.confirmWrap(mint.writ.id);
+      await adapter.confirmWrap(mint.writ.id);
       setChecks(await adapter.readChecks(mint.writ.id));
     } catch (reason) {
       setError(messageOf(reason));
@@ -340,14 +351,15 @@ export default function Wrap() {
                   </div>
                 )}
                 {session &&
-                  templateId === "contract-owner" &&
+                  template?.integration?.practiceSupported &&
                   practiceQuote && (
                     <div className={s.inspection}>
                       <h3>Need a contract to try?</h3>
                       <p>
-                        Create a practice service whose Owner role belongs to
-                        your connected wallet. Its account has no keys. This is
-                        optional; existing compatible contracts work too.
+                        Create a compatible practice application whose Owner
+                        role belongs to your connected wallet. Its account has
+                        no keys. This is optional; existing compatible contracts
+                        work too.
                       </p>
                       <p>
                         Attach{" "}
@@ -364,6 +376,21 @@ export default function Wrap() {
                           ? "Provisioning…"
                           : "Create or resume practice target"}
                       </Button>
+                      {inspection && (
+                        <Button
+                          disabled={busy}
+                          onClick={() => void practice(true)}
+                        >
+                          Create another practice target
+                        </Button>
+                      )}
+                      {inspection && (
+                        <p>
+                          Another target requires the displayed quote again. An
+                          unresolved earlier deployment must finish before
+                          starting another.
+                        </p>
+                      )}
                     </div>
                   )}
                 <footer>
@@ -474,6 +501,22 @@ export default function Wrap() {
                     ]}
                   />
                 )}
+                {mode === "mock" && templateId === "dao-council" && (
+                  <Button
+                    disabled={busy}
+                    onClick={() =>
+                      void adapter
+                        ?.approveExampleDao?.(mint.writ.id)
+                        .then(() => {
+                          changed();
+                          setCompleted([0]);
+                        })
+                        .catch((e) => setError(messageOf(e)))
+                    }
+                  >
+                    Simulate DAO approval (example)
+                  </Button>
+                )}
                 <div className={s.handover}>
                   {template?.wrapSteps.map((item, index) => (
                     <article key={item.method}>
@@ -509,7 +552,11 @@ export default function Wrap() {
                             View transaction
                           </a>
                         ) : (
-                          <small>Example step complete</small>
+                          <small>
+                            {mode === "mock"
+                              ? "Example step complete"
+                              : "Confirmed from the current role state"}
+                          </small>
                         )
                       ) : (
                         <Button
