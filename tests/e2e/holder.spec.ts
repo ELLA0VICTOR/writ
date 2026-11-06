@@ -75,3 +75,26 @@ test("a direct transfer moves holder actions without opening a sale", async ({
   ).toBeVisible();
   await expect(page.getByText("No active loans.")).toBeVisible();
 });
+
+test("internal account recipient is rejected without losing NFT ownership", async ({
+  page,
+}) => {
+  await page.goto("/writ/12?mock=1");
+  await page.getByLabel("Example viewer").selectOption("ada.testnet");
+  await page
+    .getByRole("button", { name: "Transfer the Writ", exact: true })
+    .click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByLabel("Receiving account").fill("w12.writ-demo.testnet");
+  await dialog.getByRole("checkbox").check();
+  await dialog
+    .getByRole("button", { name: "Transfer the Writ", exact: true })
+    .click();
+  await expect(dialog.getByRole("alert")).toContainText(
+    "Writ infrastructure cannot receive",
+  );
+  await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "Your holder actions" }),
+  ).toBeVisible();
+});

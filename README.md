@@ -56,7 +56,10 @@ The sandbox suite executes actual Wasm and receipts: upstream Owner handover, di
 
 ## Security and limits
 
+The completed functionality checklist is not a mainnet release approval. See [release readiness](docs/RELEASE_READINESS.md) for remaining wallet, authority, compatibility and budget gates, and [mainnet planning estimate](docs/mainnet-cost-estimate.json) before funding anything.
+
 - Executors have no keys. Only the collection can instruct them. No key, deploy or delete surface exists. Authorization checks the current NFT holder or an exact unexpired loan at the current epoch.
+- Transfers into the collection's own namespace are rejected, preventing NFTs becoming stuck in Writ's keyless infrastructure. External receivers must still be able to control a received NFT.
 - Ordinary role calls attach zero deposit. The executor supplies exactly 1 yoctoNEAR for upstream Owner authentication; those ownership methods cannot be lent.
 - A pending counter is set before dispatch. Listing/transfers wait for completion of returned promises. Browser timers cannot unlock an unknown action.
 - Sales join independent external calls. This is **not a simultaneous global snapshot**. Targets can misreport state or schedule future changes; governance may revoke authority later. Only declared predicates are enforced.

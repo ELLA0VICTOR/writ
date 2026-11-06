@@ -3,9 +3,13 @@ import { actions, nearToYocto } from "near-api-js";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import assert from "node:assert/strict";
-import { provider, testnetAccounts } from "./testnet-accounts.mjs";
+import {
+  provider,
+  testnetAccounts,
+  deploymentDirectory,
+} from "./testnet-accounts.mjs";
 const root = new URL("../", import.meta.url);
-const directory = new URL(".local/deployment/", root);
+const directory = deploymentDirectory;
 const accounts = await testnetAccounts();
 const { collection, alice, bob, target, dao } = accounts;
 const journalFile = new URL("journal.json", directory);

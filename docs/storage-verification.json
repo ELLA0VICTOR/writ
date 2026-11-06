@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-11-06T15:42:42.555Z",
+  "collectionTemplateHash": "87de7f2a73c2d815557183d4e6d10bcb0c6e76816b03cb6245af962091456a24",
+  "collectionCodeHash": "DmFKB1FeenzxtrY2Pzkvx5LNQMLQMADSeQVJ8GkaEbR9",
+  "historyEntries": 64,
+  "utf8BytesPerTransferMemo": 640,
+  "accountIdBytes": 64,
+  "loanCount": 8,
+  "argumentBytesPerLoan": 4091,
+  "allocatedTokenStorageBytes": "131072",
+  "observedCollectionStorageIncreaseBytes": 78617,
+  "observedRefusedPurchaseNetStorageIncreaseBytes": 475,
+  "maximumCapacityPurchaseSettled": true,
+  "scope": "Actual sandbox capacity scenario, not an exhaustive mathematical bound on every possible state."
+}

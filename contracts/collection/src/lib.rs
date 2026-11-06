@@ -494,6 +494,7 @@ impl Contract {
         );
         require!(maximum_price.0 == t.price, "Price changed");
         let buyer = env::predecessor_account_id();
+        Self::require_external_receiver(&buyer);
         require!(buyer != t.owner, "Already the holder");
         require!(
             env::attached_deposit().as_yoctonear() == t.price + STORAGE_FEE,
@@ -719,6 +720,13 @@ impl Contract {
 }
 
 impl Contract {
+    fn require_external_receiver(receiver: &AccountId) {
+        let collection = env::current_account_id();
+        require!(
+            receiver != &collection && !receiver.as_str().ends_with(&format!(".{collection}")),
+            "Writ infrastructure cannot receive its own role NFTs"
+        );
+    }
     fn matches_check(def: &Check, response: Option<&Value>, executor: &AccountId) -> bool {
         let expected = resolve(&def.expected, executor);
         response

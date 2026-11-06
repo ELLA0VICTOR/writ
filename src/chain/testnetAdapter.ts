@@ -108,7 +108,16 @@ export function createTestnetAdapter(): WritAdapter {
   let purchaseStorage = "0";
   function ensureConfig(): Promise<void> {
     configured();
-    return (configPromise ??= view(contractId, bindings.config)
+    return (configPromise ??= provider()
+      .then(async (rpc) => {
+        const status = object(await rpc.sendJsonRpc("status", []));
+        if (status.chain_id !== "testnet")
+          throw new ChainError(
+            "not_configured",
+            "This build is testnet-only. The RPC belongs to a different network; transactions are disabled.",
+          );
+        return view(contractId, bindings.config);
+      })
       .then((value) => {
         const config = object(value);
         const hashes = object(config.template_hashes);
@@ -320,6 +329,11 @@ export function createTestnetAdapter(): WritAdapter {
       };
     },
     async transfer(id, receiver) {
+      if (receiver === contractId || receiver.endsWith(`.${contractId}`))
+        throw new ChainError(
+          "invalid_input",
+          "Writ infrastructure cannot receive its own role NFTs.",
+        );
       return call("nft_transfer", { token_id: id, receiver_id: receiver }, "1");
     },
     async getPracticeQuote() {

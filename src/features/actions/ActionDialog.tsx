@@ -78,6 +78,13 @@ export function ActionDialog({
       if (kind === "transfer") {
         if (!confirmed || !isAccountId(receiver) || receiver === writ.owner)
           throw new Error("Confirm a different, valid receiving account.");
+        if (
+          receiver === writ.collection ||
+          receiver.endsWith(`.${writ.collection}`)
+        )
+          throw new Error(
+            "Choose a wallet or compatible external account. Writ infrastructure cannot receive this NFT.",
+          );
         await adapter.transfer(writ.id, receiver);
       }
       if (kind === "use" || kind === "lend") {

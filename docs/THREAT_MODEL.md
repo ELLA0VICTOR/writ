@@ -27,6 +27,8 @@ Collection code, deployment identity, upgrade authority and the approved templat
 
 ## Remaining boundaries
 
+Hardening now rejects NFT recipients inside the collection namespace in direct transfers, transfer-call and purchases. The adapter and deployment helper also require RPC chain ID `testnet`; this prototype cannot be moved to mainnet by changing only an endpoint. Capacity evidence and unresolved release gates are recorded in [RELEASE_READINESS.md](RELEASE_READINESS.md).
+
 Mock passes do not prove NEAR receipt execution, solvency, gas viability or secure executor behavior. The actual sandbox suite covers transfers, receiver reentry/rollback, pending locks, provisioning, segregated refunds, failed native payments, deadline release/late callbacks and retirement. Its results do not prove every possible schedule or global solvency.
 
 Account key/code checks are page-only. An on-chain method name does not guarantee read-only behavior; templates need review for side effects, gas, return types and backdoors.

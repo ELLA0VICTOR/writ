@@ -10,6 +10,9 @@ for (const name of [
   "vendor-provenance.json",
   "VERIFICATION.md",
   "live-verification.json",
+  "storage-verification.json",
+  "RELEASE_READINESS.md",
+  "mainnet-cost-estimate.json",
 ])
   await copyFile(
     new URL(`../docs/${name}`, import.meta.url),

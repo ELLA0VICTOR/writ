@@ -1,209 +1,225 @@
 {
   "network": "testnet",
-  "generatedAt": "2026-11-06T15:14:04.272Z",
-  "collection": "writ-collection-mw52y1d4.testnet",
-  "dao": "writ-dao-mw52y1d4.testnet",
+  "generatedAt": "2026-11-06T15:51:09.320Z",
+  "collection": "writ-collection-mw55doim.testnet",
+  "dao": "writ-dao-mw55doim.testnet",
   "abiVersion": "writ-ui-v1",
   "executorCodeHash": "527HQCoAa35QqvLW7M2gkEa9c14cj5vG7kkdaetP6VJh",
   "templateHashes": {
     "contract-owner": "87de7f2a73c2d815557183d4e6d10bcb0c6e76816b03cb6245af962091456a24",
     "dao-council": "4b04d0ccac9e1f54705685af5df046d03b725eeddfb5ffb567aa712ab2fe609b"
   },
-  "collectionCodeHash": "5ApFRC6P6FU8mwN7UzbPxeZBhmSfaJRNUBz694fc8RkZ",
+  "collectionCodeHash": "DmFKB1FeenzxtrY2Pzkvx5LNQMLQMADSeQVJ8GkaEbR9",
   "writs": {
     "clean": "1",
     "proposed": "2",
     "dao": "3"
   },
+  "purchases": {
+    "clean": {
+      "mock": false,
+      "writId": "1",
+      "attemptId": "6909803d-5461-4c20-a87f-eb6b9054c5e8",
+      "buyerId": "writ-bob-mw55doim.testnet",
+      "hash": "9KmnM5HvFLADbYxtUu9ycNH3AjxiVnamYEALwZSnypuh"
+    },
+    "proposed": {
+      "mock": false,
+      "writId": "2",
+      "attemptId": "e90fce76-7eb8-4504-b45e-8a953ba2bfd4",
+      "buyerId": "writ-bob-mw55doim.testnet",
+      "hash": "3WrcdqTdQJZtwBUCoTTa2y7zBeHs4JoWJKpTN2cyQubJ"
+    }
+  },
   "purchaseStorageDeposit": "50000000000000000000000",
   "upgradeAuthority": "Collection full-access deployment key retained locally. Testnet prototype; not immutable or audited.",
   "transactions": {
     "deploy-collection": {
-      "hash": "DztMhvFSbkdK7y3koG2MM3Ee4uEaF48wt1sHUXy8vmbm",
-      "signer": "writ-collection-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "8YosGcXperxuNfEX1eXeWXMpJ99GWDDGbubxfbKTBexJ",
+      "signer": "writ-collection-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": ""
       },
       "value": null,
-      "gasBurnt": "54373310356018",
+      "gasBurnt": "54392510354094",
       "receiptIds": [
-        "6oKUxPqvZm9thuAYZG9bGCFanQW9zHzJuPAmTvUPaAUH",
-        "F62X6tqzp4c8w7GLnodjrL4QiEuvso6WUcq9ACJSJdDG"
+        "9brgHo6Y5FGUGe19C7FsdS75LWTPJ52g9du4H3Ky7wJj",
+        "5PMuMdUdR5ibKKkvDVPXQuSBgDwz54Mte1tKp2c586ed"
       ],
-      "sha256": "3df2662c7901c9df10cfcb6356aa0016c955d3fc8d3e5502f449af3623658106"
+      "sha256": "bda1fb9b2eff3ca16daafb732a7be22561c8daa573b387b8e8d3cc41982b8d78"
     },
     "fund-demo-operator": {
-      "hash": "CdtVwQbr69PhFPJKLqSMxYWFHeDZy6euq1HJxLSwb6M6",
-      "signer": "writ-target-mw52y1d4.testnet",
-      "receiver": "writ-alice-mw52y1d4.testnet",
+      "hash": "8ozwhjeh8wUBXqnznH6W7ro8rrbrTgu8XcAkkGBS72wh",
+      "signer": "writ-target-mw55doim.testnet",
+      "receiver": "writ-alice-mw55doim.testnet",
       "status": {
         "SuccessValue": ""
       },
       "value": null,
       "gasBurnt": "669547687500",
       "receiptIds": [
-        "H8gPntG3si2MbrnUmJ8a9NyHS6WzfMzTKXcY1qoQCu4V",
-        "4KNvW6kpoFCGLzxpAHLSAQm23rD2ukYEaJqg6nb6v2Yq"
+        "CHcch7nGc2wWq9VRskzsKgg7gG2sACExsTo9WzDcjPG",
+        "HfC2fuFJZ1Ssnovq33sHiNDeMGrAAcA7zsDZxT9fdS54"
       ]
     },
     "deploy-dao": {
-      "hash": "J8naJRN2WBqVRYaZ9hJLBjhGKtyQzaPP66kdP1q3wV5K",
-      "signer": "writ-dao-mw52y1d4.testnet",
-      "receiver": "writ-dao-mw52y1d4.testnet",
+      "hash": "3bSHRWQSc4R3npJuXTsiJuktBaHwWdS2e7XqWdsPXmoK",
+      "signer": "writ-dao-mw55doim.testnet",
+      "receiver": "writ-dao-mw55doim.testnet",
       "status": {
         "SuccessValue": ""
       },
       "value": null,
-      "gasBurnt": "36332102543637",
+      "gasBurnt": "36338942543637",
       "receiptIds": [
-        "AgcmMXxF9xecK39XVbrAqoPgeKbTYZHzbesciuWp9GWn",
-        "7vQN7GBhokRBjuhxTjenwuTKppqst6fEc3GaG3eQPXtE"
+        "EMEZgYrmesFTxwdrWdaCusEhKgCbT98QfDU4L7Tjjm2T",
+        "7t94Y3L5qTtvDcceH7pjuKt72yJFJiPvxjJzBXUMFVvE"
       ],
       "sha256": "6e3f1814d40769d8f57b9a7af689d22aaab96d3232cec4d861311829c1d2318f"
     },
     "practice-clean": {
-      "hash": "9gnmARAVXqwYG9hc9oGkQMe7enBvfphjBkpYDXEPQBtU",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "6WzWFBzyHnW1ZwjdhhsVhBRHZvofatYfLCfNEJnCZdCP",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": "dHJ1ZQ=="
       },
       "value": true,
-      "gasBurnt": "29900858510754",
+      "gasBurnt": "29930938585934",
       "receiptIds": [
-        "bYVrCNRaTTZLLgxXFbQnYYJaHHY3PN375LvpjhDAjad",
-        "7pLiYMq9jVvbTAxLq8kMhgbFscYy5N528nYwLDxvsdZ4",
-        "25FHQefCtz6iFsGUkd6bdpXLVVSNC77foVuqA1ykhbVr",
-        "5jyKzKyCBQ6FzwHipRywHPU8YKgyN8rwA58F7LTukKV1",
-        "4hCwByYNJz5xbXW7MeqPu9FtomfGa1vpijA3QZaaz35x",
-        "8fDo12HVrAkk3BmTXCHv2qSAsywBzknRUYnwuGySNKyj"
+        "2buNiZrAg8FoPbMMeteEHEpNmQhbavqG2irms6BETHgw",
+        "4kozigy4rP5yCxh1faU84r2PWf51iKD3fMmWDEL1S1v2",
+        "2eYAGe1QHNFrWioRw5vQoUDG2sagsPnktTS6FCNaLZaV",
+        "HyAgZ37cq9bFrQD9wzDhweuJA69rfdEZjWoK7BQRCHk7",
+        "8Bc4KL4CJbC6eRcnWaEi22UND77vnpm1ZPcEo4a36sPL",
+        "5G4auix4K4skD1n3Hi1DK44wGobBDRGeeSHugMGR7DbC"
       ]
     },
     "mint-clean": {
-      "hash": "7pme1WJCMx4rWNybFBMQbyFPqsnXr8MhCN7UPewJV852",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "DYks2J6THbAuXzCgPt8k2ZszUAFxZDnVBb4Pzjn1Y9Wj",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": "dHJ1ZQ=="
       },
       "value": true,
-      "gasBurnt": "30696512504037",
+      "gasBurnt": "30726387712973",
       "receiptIds": [
-        "8Vw6of1okpsK25M8UCPc7biQc5yh4zHZXzLnsUdpw2N3",
-        "9sKXQj65MCfU76VNPQ4WqtRP1jCxZTaqW4THRm7NWAHK",
-        "A2a85F5mUq7PqezS3tmk8DELmuznSdDw2hRMQz3a3YCL",
-        "5kMZMueAk7pR2mU5F2K9Eo1PYYBhYeGeskpFmiGFiNqK",
-        "3DHQKWz3y2DK3wupkvdxQK1QYwXoAc6SbntpEpwfCQaB",
-        "6AuyyL8RrdfL9BJgyeubxxyxQu9snU2gAP8QMvfhv8M8"
+        "51MUHQcfNoKto48Zcf4PWb8xdjubn1g9Sqpv3bhSUxr7",
+        "9rEmovdoCV6VsGUu6Aapg5Mq3gKFo5GRtMZgedGaFh2q",
+        "E1ZXX6EtFBE96GecaitSwq41VTs1berqrmBfoFiZtxzm",
+        "9fR6wfx7PWfuiHhH3X4yJNsKZyiiVAjDnTc614cGuB6x",
+        "3MV8RodWyWWXXZbkLzmfjFrnG1DCpDhJNxmm9KMbR9kN",
+        "3aXAyTcvTie6SJruh1qiJrGXtqSfbgGhxxpJpu2Jur64"
       ]
     },
     "clean-propose": {
-      "hash": "6QLTokifq7LfTpKFEzf9NsB1MkjB2dufoskYs2xSHXJ6",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "p1.writ-collection-mw52y1d4.testnet",
+      "hash": "FAGdmLcdjeEfXZMPygf3AXiCPD8c4EdGgY6twKRB8vFQ",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "p1.writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": ""
       },
       "value": null,
-      "gasBurnt": "2064575162396",
+      "gasBurnt": "2073695162396",
       "receiptIds": [
-        "DjQe3gBnDWXYznohE2D8oPCRtAaLsbBSvW7MQMyjoSuh",
-        "4WnAUSrmooxhdmeyBbwQFZ24nZZzaSuca7PSrhfHbA4V"
+        "BYZ3wUeAJ8eUBwTJXH6o6g5exjV7oeica9unE2C51WVi",
+        "Akrva8jFdvLG6Fky1GHr9S6BW7686XhRd4UtpBz2y8yV"
       ]
     },
     "clean-accept": {
-      "hash": "CmUvANvZCsFLrpqEsrHmdtRdBdy2QgPdL5BnbkRPbHT3",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "76Ccp6PSY6ZGAgQh1Q54bfcq4hg4PfzB32xtk6QFLAjh",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": "dHJ1ZQ=="
       },
       "value": true,
-      "gasBurnt": "11899591978737",
+      "gasBurnt": "11941015283753",
       "receiptIds": [
-        "Br8S7h1WrRiALTF9ysj9BLKt6bky4x8ZLXsAKKCAgoax",
-        "BSW3sQQ5tGLbixBHLFM6MD7REHttohM9MRL5vVQ21Y8u",
-        "54W36JhQZv317WLWm9ycaiNqdQmEQ16qqra5rFSwj78Y",
-        "D7F3DUNDG8iu7sXaWhSjVYKqsyaWvrLMHRZVGPd7YSq8",
-        "Fj2LvxmyEFCJE5zo8p36kqm1PubPpEMkp9GLxcuLaJXm",
-        "68fdC8w8hDg8mYQvCq9eR8WMUHfC9B6Hw11LeNZsrCPV",
-        "22xEq4iahBXMT2xKQmoPkfgjciiVDWZ3FFRRKCGeGVtW",
-        "3yaa1pVvPTSPzU5FaXQfyQmADuw9jdW4EPDho3CjA5Dm",
-        "DnThEgBhcJaySFteGxkjf5iG3BsyjCJCmQL49Vja5jCD",
-        "DKznLsPp5DrSYUjBFBkMDDesLteVA12CQQzAEwsVVJmM"
+        "ANzrxnsNxiXDaL4dfAcXRcKpQ2SR3WEsAp14ddUsA4Gf",
+        "G1UJGSQsoro6UnRcjACsDyYhK4c4qu6cPXnWZ6hZ1S6P",
+        "33sLHGFMpPqoP3vEUtWt1QQ4WmcC62di9WM7wA5ViA8Q",
+        "Cu5wnSS4DbVZzhcT4HrZAN3tEaMDk7aXHBbF9EaKLBPF",
+        "9VRSq3xMyLDYH98ozxacAjofBpVpoweaWYoyGtozL64u",
+        "9JzDjVn2JUjB6RiWeErY94U6om4WEVQwS9UCWiFjCNjY",
+        "UF29ZteoErRkuJfxuLbgPyq6AsQpUWPeM21Whqa1iDR",
+        "79TwDoSRMBhoTGJudqsk3ZWtde4n1a5XwHZUW2213xKr",
+        "GkkX28DpA5wwyAujNBtmDC2q7dGguFf5V31R8yweQLU1",
+        "9jkDVbQpxes8QKeuAukWURjA3kp88gMo1XE6kSzXK7Q2"
       ]
     },
     "clean-service-income": {
-      "hash": "A3Z43YdDqkQK3EWHYPQ3PG45DuojPRxmqjSeEgTtW4vK",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "p1.writ-collection-mw52y1d4.testnet",
+      "hash": "jV4D4QpuvYFfyHRiQ2bWHg6b5QqP7chgRWDK2Gcrt6m",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "p1.writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": ""
       },
       "value": null,
-      "gasBurnt": "2441756455577",
+      "gasBurnt": "2446316455577",
       "receiptIds": [
-        "8UcbErduaRbiG4q9yHyaLtqD7qJk53hBHaKUNqypu1An",
-        "D76bn6mvGYBGYQsEz1onpeRRGCxU3Hkz9DX4em6DoZd2",
-        "ECBAQvPnVY2oPmmArTVuxcLeRUBzTXc34pNktibdn3M4",
-        "S8tTYpGWC8TmAWTHh7kc1XLCeg4c6fZRX5ByLUQTGGD"
+        "Bkm7JiWDpihxYRbiGHCEL98jY6BH7syVn1WN441sSXc7",
+        "Ft7q8SRfJcqNwLcnNUWRKSPZUw3Rc7BP4jMSSL92L3uz",
+        "7PNStmz8xD1dUpVoh9ea88RNtY1EbDCQRo5kjT9pMqbd",
+        "HUE7LpPeo4p3Mo5u9rNUHC6NZAuDsJjdd3ynCYijpPNn"
       ]
     },
     "clean-loan": {
-      "hash": "2oiNRCphFb35xVctraTgYnUYDGJPgy4gsef3LnS289Xx",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "FLGw6caF6yj2VsaBds2qziULDs7gqsiyZLWX4HBdnYb6",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": "IjMi"
       },
       "value": "3",
-      "gasBurnt": "3085588216452",
+      "gasBurnt": "3094939772626",
       "receiptIds": [
-        "Ff78c48ukwWTS4HqHxHP8CcbE8Fhiibgpbta3mpjrHq5",
-        "3BSXmA8XJLurUd6H5t7RMv4PeYGN9je9ku8JgmFB4bFH"
+        "F2Yxv498JEPD7DUJk3WwQNZvCLZeeTthkDpMzRXtPpLZ",
+        "DuWCsfggx1eS6LTeLafqWiUcBBUfJKeC4KBrwDYeHYuF"
       ]
     },
     "clean-list": {
-      "hash": "5ZX1YskUPeKZk39Ga8HVqZZPnHUU9zFgcKHk2CS9YVAa",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "CV54NrNPnRP55de67ZgN3vfn3TEzFR3M5H2HzAucnwXE",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": ""
       },
       "value": null,
-      "gasBurnt": "2988639242890",
+      "gasBurnt": "2998059910568",
       "receiptIds": [
-        "4YVE4NgmcnQ8DxKszQQUkwSnkBc5T6eVYAz3XQgkiw68",
-        "J3WsnwpXwEAGpMv34xP37FU2pjb5HAedWjZkg1xendLS"
+        "9Egcm1nXUbVtGb73gKta4jbfxij1y5jQsJ8kEFmxCpxg",
+        "BZr39cNNWzqssKTNfmmYw5yZnZuiRJrU5pX1FAA2LQKu"
       ]
     },
     "clean-buy": {
-      "hash": "JALB6hyM7giUtcPtWdRwBCYuSmniwHwXwd3zbYEhgQ1f",
-      "signer": "writ-bob-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "9KmnM5HvFLADbYxtUu9ycNH3AjxiVnamYEALwZSnypuh",
+      "signer": "writ-bob-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": "dHJ1ZQ=="
       },
       "value": true,
-      "gasBurnt": "12757135268449",
+      "gasBurnt": "12796222482933",
       "receiptIds": [
-        "EBGoyDTRmg8vrQMqZwkg8JvV7jHunNRdvWFyNEGNYLbp",
-        "FRLCFPqnwed4JF5gcLGgygN22NP8i223Tkj3pjmtx7MX",
-        "6WMtzdKoRfvLU8bXtrDyEVRubrxP8wVV8hLCwJA3syAZ",
-        "9AEn9ymJ5h4qfGwknS6NS4rLEXE8Eni7agM19WBw9Vg1",
-        "Gy7j5QYvPavRg7WukYesaPBok8KEDHSmbf5yZrWDotBV",
-        "msvWXnSZStwMbJRx8ej1vEDHi4bGGx7xsLGYZsFmnp7",
-        "AyVXofrd3xLEhYJQP6YMogPM6C4XmFF7E4Pp6tnrzGu3",
-        "CkWmbiTEP4BYeSX9tPE9ysN7cZPsqZRZmR7ihY5ZmZ2C",
-        "DRZU5VZt8Jwa8uPHNhNJ7RvSLqKbX6xwB4Ts7yCPy6A7",
-        "EsejVAoq1UNiTp5cfLis5FHh83dYkyKBkr8bFLxWvpoB"
+        "4cwtbryRyodfj6UZ824tzBqmFTi817uNArRCFkRo2Mdi",
+        "N573N7BEQfch3qFpRf3QzWBfUtENixtqrd7gfF63Y8q",
+        "E2VDCapbzGGX6XEz7Hva6BbwK5xoKFgC2zH8fiyHS4wy",
+        "4Fq2FU3Q79CoeV8fPoYyZXDQ8bKCfdMRaL9qLN3Mr1su",
+        "GXUvXX7H46Vv9j4q1xN5WdrATKrFcWT4gpUBXxHWr4xN",
+        "TPLoW1HgoXyykzguaeZQZSdNWPra2UuHkdZ5jmAS9gC",
+        "4c6LSXodjgBmdxjDHv1qCnGdBEBpaPKXkfKtUjdFdMtm",
+        "D6ZeU2J7rrhxMFMBYt8VsonN5hM7dTii86RwA3HbkEdM",
+        "C6xjHHkojE2BCuzzHzGckKXXXu7JvmtHLPoev4PVoMxV",
+        "5bQ5AeHTFzMTNNLqNBe46nXbELEhXXWKaoxsoBABVaAM"
       ]
     },
     "clean-old-holder-rejected": {
-      "hash": "5QS1gsoWYhi8wZnKRyxxFJfumSpmcvCB5yNXmR2Hvvuv",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "GJMUHttKLD9RCrX1JaDuXcYLa32wrh6FfUFtCwqX9HQS",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "Failure": {
           "ActionError": {
@@ -217,367 +233,351 @@
         }
       },
       "value": null,
-      "gasBurnt": "2635033392987",
+      "gasBurnt": "2635264949161",
       "receiptIds": [
-        "GLGLDqZvD9GbKdZjEbETjrNuFw7E9xxchkVLxRV3EjSs",
-        "AJYjgyGbZMM4NY6QKDnhs9jLMENRnctj4KCpZqb5rjzZ"
+        "Dvp1UsCxuFPhN3BR7xncKkPDFNstSBTwALPbYz4sh6j7",
+        "E1JHA86WNry63rvCTCWUbH3gQtbKwesWCj2qbC4LNrgV"
       ]
     },
     "clean-new-holder-action": {
-      "hash": "5dQ6wKEP9n3NSbhjv7CwfCDd6zycoKJSF88XAh9W4nEY",
-      "signer": "writ-bob-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "8Ft9mhVL4o1S38onV5QqTKSLiDZBgWL7znvvCKHivH2x",
+      "signer": "writ-bob-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": "dHJ1ZQ=="
       },
       "value": true,
-      "gasBurnt": "12066787298303",
+      "gasBurnt": "12099033833155",
       "receiptIds": [
-        "AKoTdkSouyrPdaLrFGCxAe4a47DBx1DgDVDphFUJe494",
-        "GF9S8YDm4SZ1ypb5ZA4StpCYFseWfTUtAdHzfYzPvY58",
-        "81LaStKFc6sxNWNyQiVh1Q8pB4GZpDt786PZUqPmjFDR",
-        "69pPj6wHZ3NEYXbSdHKncCAykCFTc6TtzkvtciJe4S5a",
-        "3jyzARc6YZewinzmt8yFmRSDmcYdX5M4sgKDBUYS4GJz",
-        "4aQ7cU242g8eVuq8A6zRamkkLCpRkTt9XSmGAfiehahy",
-        "2WEBWCHjRgNB1xzcJRMxkuL4hTr6sYLwgzMHjuw9c8Vm",
-        "5mL5ieCamqCQVA1zSgJEAxXsjCqX8j9PFxegygAfg6vU",
-        "45azX8pmVZKH8grVGabPyv36GeDhgUj2nEj3zragETgQ",
-        "CaeWTWpcQUSiP55j2JiRRpPn1nZ3NmySfMpZW6kYSr4B"
+        "8Rg4gtrFnyZ2WUsNHWcMW7KfFrCqv7M3vN52e9siWqjo",
+        "9gUhfUUajNKUkMH44S8YemdeFCWznvigSvP81JeteDxN",
+        "4onvUVyBfKvBDVc4XVRg3HCzjvaRDHDagP1PqM2C9zdc",
+        "4U3LiBGSg48AZjTaGcT3ung4pvVAHuTJZy5EjrBQxTKq",
+        "7BATSNki5QYmd2SJD7jGer9zfoVN9WRPKFG8xqMYe3oA",
+        "8mJXWDycLb2WhMAfWrv7oM13ss2tj2diKVfJnQ5BDQMe",
+        "CvBiUZzjgyXJf3ESeFc2FZHiPqcfKozbqfTZ1KtHmKhG",
+        "6LehTHpPF8D7dZcWqFf9JwgGFEagzZZX73dsWppp8aPv",
+        "AbsRzMChqrzbkUV3Ha8MFPvFbJtbY38pAdnZJLJ11rEm",
+        "69NTyHFHK994sAUmJZ1CEe8ZE7VyCm9CBgYpNdnUX1oY"
       ]
     },
     "clean-withdraw-income": {
-      "hash": "9dxZexCKG6GPHhGhVNa6uucxw9Y1W91ReTRqxkvUQ525",
-      "signer": "writ-bob-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "6f1a9vWmXVaQQCTjeumU5A9BdXvzonqNcZB9SLftaFbS",
+      "signer": "writ-bob-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": "dHJ1ZQ=="
       },
       "value": true,
-      "gasBurnt": "8912166583448",
+      "gasBurnt": "8939910711220",
       "receiptIds": [
-        "Ecw5ubs7TfR56jnfETQQKvMt3kKQvccQyrcVruzfkPAZ",
-        "9Sax8ifZno65Z9Xz3VMmkE816AcDAQUNntz2gbcMp5KR",
-        "GAqEM4zmVV3A92TU3EkZyzVyJwsg5dL8Rv9U9zg98nDi",
-        "UYMMk6kScBxG4ZSqRBaggjsNj4ibJYecBLW5T3fUvXM",
-        "FxW5HW8yFw2hUPvx7QBEJVo1azNAo1MPAeAsFHSHyxdo",
-        "ASpb1jw8pdbycczwXNhVVga2ja9CUymewSrmXSJNVypY",
-        "AxNEdrCW9NnfMjycidPjsu94L8wntmn539ibJvT82PHZ",
-        "4DFfv6cN51z9yGEctSH4kgWV5LMYM7YYKU6qK5ntXVHD"
+        "6TRywwx9UinGXA7hxpgXxspkEVyTDUeicdRkcNSwFknk",
+        "429vpWdsZ8ic7aDHgXrmedrtLUBZv4a2PEcD4w2Dmu6P",
+        "GMtueDdgPX2NWj3N92E3ESZRK23pwSLmNDZH67p61SJ8",
+        "4W3mM8r4WqVp6n7U8m4ow83HUnVBmmrTZpn4E4ZuyVFD",
+        "CWz14XqJ9VFndsCX5z76DLvszV2jSHVAuuoDPPrMwNpA",
+        "DzQMPgBBBMCwjeRUgU6dYZiH3u393ffRkgCyHvzHzKhY",
+        "HF8L783a7R26FP43RFPMGDeFvzA5w3QrGLpBAkTyXHq3",
+        "6ntwsZFkMJgYehHECL26nPM9cwtTUnq2Tx36VrGrvjA3"
       ]
     },
     "clean-proceeds": {
-      "hash": "BzcfT7xpqNBVuQMevgJbWok1S5YtyFQhp9wjpGQcn3p7",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "35WdJc2ReodBT9VPYtHoJN7XhSjYRFcphpvvzbiiPdUu",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": "dHJ1ZQ=="
       },
       "value": true,
-      "gasBurnt": "6310248868954",
+      "gasBurnt": "6333488944134",
       "receiptIds": [
-        "35zfM7yPVqGp4bkHiKi2XfykPMfixNg8cXBwMrt6tNvk",
-        "EuYbCVLNt32g8DciB1NyRB4CdJfZ9X77nVrN1eLdNCtv",
-        "Cc2UFmNqec5uNBSJbKVNVXJfXU5wMFH6BtwAWrreZJys",
-        "64WWh3jAJjktk61otXC3VmVoAKupV4dYEyzGXAAE8czX",
-        "2sRcbMpxgrgfK21VConbSvqLiAuCMsdLmr1EgiJKkjgF",
-        "4vv2i8nQwXnHjmxebQPRWGb4RedQE879ssdXrmkcHFM3"
+        "DYegbDj4hNdwrLXKoBEHhTsWQaDoU4eCgBn3cDaPf9au",
+        "A3aaUB4H6Aug5EJe1fBaLjmbipJdDUfAGsoUi6td3NNx",
+        "3mMP5VVDyykmNixKNR9uDLo7dQf88SmEwuBPHzNNiQdA",
+        "Fmr9M5n1M1CG7QecXGgXZY28nbRbZgNPVrUwfUmg9V1q",
+        "4oeE23S5w4w4qcyZpPTK7UCfJvobhhx8pwAAMX8kB6M8",
+        "8ot28uYFuBoXWU83Vpc6crHwBfJiqdTs9HpSP3rdnjzM"
       ]
     },
     "clean-relist": {
-      "hash": "5XAaPFxsrEqGaF5FVKcML86i5JwtVAujiBZHusJrG5ED",
-      "signer": "writ-bob-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "G6mWsTmWykvASVxFafKWAwVyoGh1sRfQnL9C4ihWNDKS",
+      "signer": "writ-bob-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": ""
       },
       "value": null,
-      "gasBurnt": "3090553967629",
+      "gasBurnt": "3099837235055",
       "receiptIds": [
-        "6Xfj7GBqDfd47z5QpT33JZwn9X5UmTz2CSPoqNjsysT2",
-        "97QdaJmGbjZj4Je5itBh9AQ3sQAUayP1U3nsYDjWqywB"
+        "7CyicdrRphLr2fKKfjPBCCTUSmtvHUhvYomnEYFmgC7X",
+        "App4U7kvsUsf1a4wgqifDKJWCMJduLa87MAeXCS65ZSY"
       ]
     },
     "practice-proposed": {
-      "hash": "7ckg1h9p9BPYrpVKjdQcKav7RNWVSjEnQFRR9KFi5wah",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "AFT5HYcoNmiPFY3p9KqokQSyLoXBcypZLrP33bHj5w9K",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": "dHJ1ZQ=="
       },
       "value": true,
-      "gasBurnt": "29798922374798",
+      "gasBurnt": "29831282449978",
       "receiptIds": [
-        "47QCJ9vk822Qk6Yp18rkatnFgLVSb2ftAtXogkshhFGo",
-        "3ZmUFMKoHk1XFe6MYR4ZVydvVQje4xKKHb2Fkbz65CJr",
-        "4HNtFPqEwq8ZNTHT7Wc7oGF9EgCKfVXivuPkko69W5FD",
-        "7xjidbwV3Yxf8Lymrhv3c6AT2ww8RaoPWhuvGiUuqCQN",
-        "E2PPioH64eiiavk9f2yf5nmDyCi2Wee7zVVD6eGNkmNB",
-        "43qtKCBtcV5SfmBN72YNnL1KcYrj9fjKCSGnNrvNHrg9"
+        "H8Qt5ig4zQrvEn7rdn69FgdrWgBxwRcQYEvteYNJwdjF",
+        "4RPmtsi34mEtP1GJH6HcG5mFFD4ZLiUto2sBhevmwJNk",
+        "L9sNfvsXVV3StnBEUbDQni1WMm4j14UotWj1B4C68mb",
+        "9HrrJWPpnsfX5GdWg1HrgjhrcSC9Fnp2UTRqvnySZ2Pf",
+        "FjPC9VHw2TEbv7cAAtgayFUgVcBxZZH8bVCpTCy7xzbS",
+        "EPPzKeYdTFiPWC5uD6quLQ9W11SB1SJW9Hnvyrfx6ndS"
       ]
     },
     "mint-proposed": {
-      "hash": "9LY8abY9Tdmvkqr9wg4Rc8vtvvHm6adLYadRQ8my7d6S",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "3uuFngijyMJas1Lp2A5RTdf1oZqCCdXwWdHTZbz2ZVCn",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": "dHJ1ZQ=="
       },
       "value": true,
-      "gasBurnt": "30703147637793",
+      "gasBurnt": "30733296824477",
       "receiptIds": [
-        "ABeW4Fn8KJ67g3N2ms46hrcGv93CAi2pWBwdxV1CmsA8",
-        "ChwpchjcNos5yKe1HWDxCjuhaTKmZRN54Up4qhFp9tup",
-        "9Yxg1HTJmDgeMcGzGdzgxCiwfjmtwj6fHYrKA4Rm8NEA",
-        "4cioHvFiDYFRoZYSBkCkACfTpGvmr5PBpwaWSJrfXfnt",
-        "93RCN5QKVkyGuZmLMfdC8mGLG5YV56jCu98aEFnXVUbP",
-        "P4xrnQEuDEYugXvwBsg4PZVMMFnq8eorBS3EpiCVUNx"
+        "GJXitzniC8w9828gSoHwJUFjfYt1ssxTdpkkeumCmJ76",
+        "2wdHVWa7t116cVVaNxLVTJER7DiSsLBfBeEuzyMhJbef",
+        "Eqo3Xc1m84eY3JoJXQ7o69egWzep525CpT4Jdr3vajBt",
+        "69oD3xhaspr3LxC12E1rwYXbiQxH9cm8s5Scox5iY3zg",
+        "7CZD7Pm7cE7o2bkpEy2v3K26ZyvNCjJSZgyJEXPsAgUZ",
+        "HperHwqszJGKjhZFodjZ6k5ExggnacbpTeVRUYnvDdF8"
       ]
     },
     "proposed-propose": {
-      "hash": "CmDd8E1tcJkAPat1pQA554NsDgum4FGvv6zDUWHhZcsv",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "p7.writ-collection-mw52y1d4.testnet",
+      "hash": "Gox5hPTGNdFXiTrtdPNgn9ysT87WNJ4RXsP31S9zQv4T",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "p7.writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": ""
       },
       "value": null,
-      "gasBurnt": "2060015162396",
+      "gasBurnt": "2069135162396",
       "receiptIds": [
-        "95c1855kpQoGCmVcRhJrDssVyrXsXrPLoz7aGEMfnW3F",
-        "FUjMrEtxmcD3ff3PmRHPMHrpnsGjt79yVi7c3eVoUWjz"
+        "7i4UVvWe1sDXkwucera3mmVfZzZ1yDKSvGs3ASLNTP99",
+        "78GaspJPk15TvXsgs4ymBsmVvcZ8B2fUEDVpMs2YjJF"
       ]
     },
     "proposed-accept": {
-      "hash": "4cs4CBSp2z7d4Cvn4Zv5vGiPhSzgRJD5gPj3FiscLoGi",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "6Z2mDPWAWgc2Y8M2kD7RnbzjvxBhw1NBs9JVRCMjWw2D",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": "dHJ1ZQ=="
       },
       "value": true,
-      "gasBurnt": "11892683689989",
+      "gasBurnt": "11934312684005",
       "receiptIds": [
-        "5ia4PNeatD2VqkqZicCYKMiYRzQ46b3YzevB12Zo8gYR",
-        "T1fyeyMt2k3kUq8KK6rJbwTjP9R7oPnYXvk8jiLK4Vy",
-        "FPwNfbdwohU2FhebP7fdZtva7Vy6ZnzebnrUgW8TDAG2",
-        "7N9hrthvaYEh6fxMY6xphYCUbLStXkrSJHPMJ7iKnyLS",
-        "G56uwxg92LvQSqrLSQiTDBcib1NfDjckHcjSHKBA93UF",
-        "6n7JrVJqR4Emopdjm7roGDDyNrECT6ZKNcG2dhdPy5aL",
-        "788en1LAWKVD2awqxsBSxWLU7y2yiCH7x1pUsKbaSGB1",
-        "FfuejxR6RB6kxK9tHatyso5FJmDnqA187tuZAzka3rg5",
-        "GNYoQYXtRfkJ9gqAVywzjzw3Bvy2DvnXY8F7aAxEmbsy",
-        "24jHJNu82uzmhBfFWDQcrN7SxF8NQiMcoSVWejkYShjL"
+        "EqazQfypRSQNM9HaAGGB2cRnoSECRzLCScJtUBUmuBqt",
+        "8GYSzetciUeuDCoAMK17CDxMJCoh84pb4SgrwfCwLHmD",
+        "FKkMTsvyEuUkgbkCP9sEgSy1dHTbgjSRyJvhp8EU2PRX",
+        "7xLVTXGC2YSFYjJdQz5N2fbekRD7D77NyFm1nGVyMQ8S",
+        "2pudSdbXyoQwQPCF5HjXeXz5Z82i4bwQidfGWM7cwT5X",
+        "HHRNFwDXkaEXsLTYGSBgKb8t9Y2VwQx7NdnP4MBzCax",
+        "8gb6s6aXYgUNZoCngRK2QFm1WSpRfc7F4XR8irtQg9Gq",
+        "BtcApGEAJ7mrMsgDNt3wiMxLk8oXfRb7b2FxWvyUAGWW",
+        "32hvqVS4akfFrAK4BptEHewfVoJNt7aHjaDfoB8wX7QQ",
+        "4jB8mtw2Qge5RdNn94Bgs9tBewAecgCtiH9UKDc4xBwp"
       ]
     },
     "hidden-successor": {
-      "hash": "CrLTXRB24Y5gtK9UfFsVDpu4VdZYw6dGrjd9dKMPmBdU",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "GasEYZ7m8GZQYgaCnzoRXF2d83ZWeT9cE8SuNufdYDAL",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": "dHJ1ZQ=="
       },
       "value": true,
-      "gasBurnt": "12161860169200",
+      "gasBurnt": "12198803281548",
       "receiptIds": [
-        "9uVd95pwAc9uZs53BpQn18X8Xxnwss1a8po9qw2agjzF",
-        "5iwWhtedJZVwDvcVMX77ES8rVuZsaNjXu2hvuzcbxxbB",
-        "9Y8LANCYeinj4Qz2NpsNkDxiJQ89jWt9zYaJoepDXwry",
-        "6nXTFCja4N2CBG5LcvUJYyWmaFoLAm6RbkmZPwTu71kY",
-        "DEjJyzxasvDqHkTRRMUucqbtdWCCDDLnJUPNhWxJjjjZ",
-        "6fVKPLGe8eCWLMDvSUjy5SPHcpaFsDCXJZ6naV18HRFF",
-        "2djz7HRc81u5XWBiyQgrY4us9VizdPgQZKth3kJD6kKk",
-        "AtcJPXbV59acn9Lexb1Dk3W3Cu7iG2ZYJLyNmmvqDzb5",
-        "5TFNbSbEKJspgw2gxBe94WjS67AvA6RsX2PKKMckWpTf",
-        "ZBbSehmyJCV4fKfAk21qgtyHPARb4tGqDtCxULe9FsA"
+        "AAEGUdnzwJNe9KB11UoQrcHPNAzHEd9QX9vSbaEmCip5",
+        "9NNt6dYvGXftotmUeb41BBpAjKCmhoWCuWgEsFssfUsz",
+        "RnAxvxtddsbEd8N968CX4gM7Urzb9MWNe4U4kNQm45n",
+        "9VoBmu5su88kV1C7mrAgfYvGHY8gbpGzoV6Ah9bNZpyy",
+        "GcbRKoajCpxkSCdeyTrarNn5adxJQibGxc2XVa58akwn",
+        "7hEqNRcm4xxdCiaiswgVgS7rF2f8VDDUqAk8WtvCtFZ",
+        "7K1VWRZLQxvhAtreVdDSW2XyAonZ7L4xdZfRasuM31z8",
+        "A12iWH364pYwSH3Zo2bHYRJAVwMrpQd3GpHPUgtEXRwF",
+        "BfbY6Za3mvQafnkehfpKRHEx7RxbRQdj44hKJQsLWPWA",
+        "6LxMy1Xu1tA5p8xRzcDwq9JGKA2fFdW8dWRaTcKfLpK5"
       ]
     },
     "proposed-list": {
-      "hash": "BeUy7AUe69hBc3J8YEeLvjFbwFxzoXJkakStXKqbA6Hb",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "FQV8DySEZ72kr77foAVTzJXFfZaahQUaknMtinYYD6Jj",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": ""
       },
       "value": null,
-      "gasBurnt": "2994313888098",
+      "gasBurnt": "3003665444272",
       "receiptIds": [
-        "iviLc5K5J6yGz6Rs5DsdYSKQWevpQ9rQzSAmaXVwFNp",
-        "8VgSV6cY8kQHqXYsYGmLE7jWJvpP8n9LfPNZz2JbnkSV"
+        "2Lj44WiSQrqu5nWPYCC9Pk1FJpZRAkanHhbAzG4P4vEr",
+        "2jb5fJBAYngkfShQTxnQyLQbCAxfmbWUQJCPJuH3YVcL"
       ]
     },
     "proposed-buy-refused": {
-      "hash": "9i5z5g5GPVX3nL9FBzrcQQJxeRW2Gug7QSYVU5SqFxcf",
-      "signer": "writ-bob-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "3WrcdqTdQJZtwBUCoTTa2y7zBeHs4JoWJKpTN2cyQubJ",
+      "signer": "writ-bob-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": "ZmFsc2U="
       },
       "value": false,
-      "gasBurnt": "12274693748164",
+      "gasBurnt": "12304729251396",
       "receiptIds": [
-        "Acwp4xcSyTHjynh23YRC5bd8Vv6UFkbTrULQ9XcM1D2H",
-        "FPFYP6WA5qVx4oRkYymvKCf26tYyPC1VG7KTG2xEyFrB",
-        "bbFoTVo4TKNmvSMwZ5mCP8sCoh78RKZyRd4rB3v5Ef7",
-        "DBrcwGHqVrJacgPFFj2mBN9urUmDBatwKDLHXBkXznGB",
-        "DxYQ332wXB3aqU17LPtgShAdoZjkdYHaCZRFoQzzF5cy",
-        "6vwmvyjwdsTsxnh7fEBXYQQcEojhUrpuntGV7StmMdZd",
-        "4nhyq1SuWHasAozMexJX7Tzvt6RJ4SXtPwH6R4awc2rB",
-        "DsTWxa2SvjoUGB4EvcvQL3SbxDezZSU7JSaenQCYEMsw",
-        "5Uo3r77gm2Xnh3MAdvVCgo5xhXvuQnJ8bFU8waPm3eQS",
-        "4eQ9VKyYD3KLeD9cWrwuMbHW9jKQwKY3mxyaU9qsSTws"
+        "25t2sM1evkB4gfEQrdW97FfBfSuK7ZKcVWJThEqZ5GRX",
+        "HzvfjgbuMpEgQYppoHmJceNcE91957nfFAcA3ALdUNwh",
+        "C4oKwwPKsVUTnU4LiFPFFmmC1hjr631Z85ZPEi7RUAMw",
+        "E6dSAJmBcLmUNjXnJciGgudN4qtdqKfQ1sp8S1dZaq1i",
+        "C18KnXKLAUoD6BmM8YWvA7QrmqdFhTKoiLngVpDC9qp1",
+        "5WU6QdnKyvRc3QcZ85nAh1wiqoojERoiPZdNNrCty5Zw",
+        "H2YvnJetLqoiLnrZeLd6nCGboHUvGfH5xdcSmkRCXX1J",
+        "CpdmA8bUcAJ4DsrD6tXdA9C3pqkFj7yvWVgkoWvSnMx",
+        "8JpStwVzvdj2tYB3Zv5w8TwEuBxtqGX9L1ntbRuTaysZ",
+        "FTi7414x3E1H6szjpVuWSWw3qJfAdXBVVKvYMzixXWXn"
       ]
     },
     "proposed-refund": {
-      "hash": "EsX8V8kcDto9UTpBnoMtaEbZxwT6kH9gyxVpWjekFoWT",
-      "signer": "writ-bob-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "7m3j6sqAs87rh8iQzfvBgm5QfL2nK6K77PPhCi9E5nUi",
+      "signer": "writ-bob-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": "dHJ1ZQ=="
       },
       "value": true,
-      "gasBurnt": "6877016123844",
+      "gasBurnt": "6904816199024",
       "receiptIds": [
-        "74dqsvZxYKhQBghFNntTX9mKStoksp186Cubss9HgA8z",
-        "2BegRP4iTRowpvBY34UgERSynvc1VKYT5DkwbSMSYGhX",
-        "3hqS1UPyyY3HJE6Z7BJKd65j7mHCBasbr2Z4h4xd4r7r",
-        "3dUZ3ypwr4j33uudF69qaLpYLXuhd63U47tzdJTaX63H",
-        "EpJHAXYbpR1bFnxKENvyUF2XCBwpD6gtuHscBSfYZX5g",
-        "FoFfGpHWociAvmvkKtczuDgGUrtR5Bxag5rXisDP27D9"
+        "4ZBEzU7xyhTccLNqv2QGviABixBWCtjfo4TJX6Uuoh4g",
+        "CrGz73gAHMWc5RStC3RSdcnQR9FUAphxazAvvfcBKFAK",
+        "5qxgcbWUgK4D3j7CT5n9rox4FLcPWZ7epEp8VsK5QE6e",
+        "FDNiJiXpkmnZ1YQ5CSMXxUTM4t5SEoYXAP6ZoZ15b3eo",
+        "EsEGvyoVVoyFiCyAnmkjg6389wUtd4BQjCMJdN3PkVGw",
+        "4p4ya2P8Ua8LeJrsv6FbkWM8NPbwAEhkZ2exXYsJUEMJ"
       ]
     },
     "mint-dao": {
-      "hash": "FQfn2x5RHzYFnv7RxdBwG2HsHpTQo5WvUYecXF9nTLHg",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "GGnPmp8YG5VukEkTUpUAx69dF9MyWdPzjd71nx2jhpGD",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": "dHJ1ZQ=="
       },
       "value": true,
-      "gasBurnt": "30623439226585",
+      "gasBurnt": "30653519301765",
       "receiptIds": [
-        "6a475wpwqphMFBYX1Sjic6mUCLBTUfU2Aa43hKT1VdLF",
-        "EcN67uqF6TwhELeEWqczkKbC7LcgLGAtTFVNuWLXNyZK",
-        "2kxCivDy2rWjqfoMKezLoHEyb7S4vYwQ6umteRddoCHY",
-        "ALbvRUbnVc8Q3T9nzKDFr6SdPvshp6cKUcTXc3g7LHUW",
-        "Fr667yLYxNLT2V9Yff9Y3CzLEFA4mdD7t8P8ZFvx8cx7",
-        "E4UYzuogKo1Louqr9FfzEaMCBeoENgDiCrsmnP7oyHuY"
+        "GRbyMZ4cLgYkRhYp3WhrnuNb2Sn53Hc4pwD2MhQxZsQw",
+        "5zcKFX9auCK9YE5Kmj4gmuTAju34nWKbuRo2fwyZ2wzJ",
+        "EJJkYQunSGrRd55oXMEa7ErTKQUApXWSUm67HA4Vagu3",
+        "4ZmqTmen5vCpinMPj86oPZNmPMLZk19tE9GSy3RFE9Sq",
+        "GYMZW8AzP7T8et5LXPB87kmahJYrsAcnNppX4f2PFc7G",
+        "2yXwAVNB8r15WdyjDyoy1daq348CGQz1D5vkfHrtt64J"
       ]
     },
     "dao-membership-proposal": {
-      "hash": "5ybbT6y2TSrJ18fCXWeQK9BXhxd4a3DPniN5GyMLziEg",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "writ-dao-mw52y1d4.testnet",
+      "hash": "76bqYrF4cGgBsjG6bPhQ1LNuuTF9e1FF1LcZrtddWFrs",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "writ-dao-mw55doim.testnet",
       "status": {
         "SuccessValue": "MA=="
       },
       "value": 0,
-      "gasBurnt": "2641177879047",
+      "gasBurnt": "2650281423927",
       "receiptIds": [
-        "HwJgZtj4KLUTgjx4ZMQ4o1XizxRDxThYVyxabKSC4rj1",
-        "3MMpHRu9rQ5eFK7RHwzse48m6emBwtFdEkrfDMvVz5JK"
+        "HgsUjK3YrcAz8qP6XrRxAycNfbTGJrYFAuissUYXLhCz",
+        "36ADpUGCeg2CgMc8JfVt2TmxCJpZ1S7RP6bcFLnNvW5M"
       ]
     },
     "dao-membership-approved": {
-      "hash": "GycU8jcxSDUakYHVJiuNYkPQSecpXL6FpYCu6R52P3iW",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "writ-dao-mw52y1d4.testnet",
+      "hash": "22zz4xXHJWC6QkhVauwrSedTw74zp672vomDRiQhSD5P",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "writ-dao-mw55doim.testnet",
       "status": {
         "SuccessValue": ""
       },
       "value": null,
-      "gasBurnt": "3707620103832",
+      "gasBurnt": "3721249092960",
       "receiptIds": [
-        "322xKwzBwwhBUgs58VgW1bHhEEnzStjFaXevRMGqyAkL",
-        "GsoLs2h9D6WxtmFhXwNE5YwcVYuC8HhfLDQRHE4KSpKX",
-        "8sD2YeNEBAcKv63TsP3jpDc63itrnoZT5b9dUtzgeCMb",
-        "9aapsqRqUAuwmNUrPnqR4vNpbLGNqVdpdtsM31uLDJA6"
+        "FbcqxC1ur71pPWCPDARxrTMX8zrM1bzNJVRxtitrCWcd",
+        "HrtwbEtDDQQKVU8tqqto8EhJT1GUNogd8avmkDZL5aRb",
+        "7Y2EfGyrKVJKGpPow9wmazX5b9feZ42qSiXpL9z71yPy",
+        "Eg5q2YyKDSn3ckzDh3UAzCSHhyVfe4UspsyqVgTz58C2"
       ]
     },
     "dao-confirm-role": {
-      "hash": "9McTNSrTfgLrzTkZ2onxV23X2wzfzX6XbWKeja6CLngz",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "Fu5kaJUUJUpFsZrgdcEqX7rxX7fxwoFiG6JhxLFGjMfU",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": "dHJ1ZQ=="
       },
       "value": true,
-      "gasBurnt": "10541113549067",
+      "gasBurnt": "10568762237143",
       "receiptIds": [
-        "AbwKSnx1Sunwh9Wn3pzjX9GD4YBAtk4xKqvDgFbRciLp",
-        "21PPQvm1WX9tkuxJwyqrhG39XhbLA8NezCELcqrYktAe",
-        "5JEWRJpbKvAbVEFxv3ns4W9hSNDQs5XXVuqws55KuHA7",
-        "gEkf9VZSPo53nSGiUJwBXX9ZUMAyyoUGQ5FF6YgKexy",
-        "84T9CmoKbEmeq3Mk6St15Vvqw5XcRX87bDpSZzxQCamB",
-        "3iKgcjo6uhcdXiozRStvH4oZF79VYaoAAHS1XHdwVE2R",
-        "HVrJWU1BgfC5ftp2R4BoeAhFemkvz7PRGjjecphA2SGw",
-        "3JAXDb4FX4oakscB7aBGEYvk25cE4ua22mdfCJFpsKSG"
+        "AqYBs6YtLJCMbP6bCQSidsSXpyw7kNj8j8BiHP9gSuFE",
+        "D3eKrfvYpJfoVUCaUVEVKBFGYRms8nDroMJGv6dhdnfH",
+        "465vkKakuQkrJ2S4hTSYztd5UnszrxDCQ8UTQj52MDFk",
+        "3bssinUo9TKPv1PqhT7xyCvTAQL6LKEFBR6nCQ2NPPuR",
+        "6BG4rcqmkBoBAB9nshrMNyBwZ5Xhh7N3StVe6f2bsPqP",
+        "824FwqsXRSw3CM8GopTXDCyL5rqhYse8JvPMj7c1T1Aj",
+        "AACQpL3K9Bnr5MME5JVUjccSCyZ6cjtQTPamVV5adam4",
+        "56UDDVLUAZQXxcKx4ay8YSczGPm6Lx4WzBeqL67r2Hwf"
       ]
     },
     "dao-nft-transfer": {
-      "hash": "D9NKeT8ZUs2YLZoR74c8cKqgAB8YuyL4Nk6cNtLtmuAE",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "AY7nDUWTTt7rmfa8DhbMBXcxopvJ4aRVt4USeaayDSPY",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": ""
       },
       "value": null,
-      "gasBurnt": "3086858259034",
+      "gasBurnt": "3097819125944",
       "receiptIds": [
-        "79uqfkokMz18Rc2QwmyatpLdD27NQYLfhQRhzxcvpg7n",
-        "D25JP8pCVz4t6mAAhZaRUTfp9QwqMebdPBwLmtYnQeQj"
+        "CEzzEAXvvWwGnngwNcNLd8HNArHEEpL3zL5QHKAQKhRM",
+        "13Xj6M8oYPbHyhgAyazhTPufPA2WpyMZwxERCLgRymUX"
       ]
     },
     "dao-vote-proposal": {
-      "hash": "29zfJh2eniHjzkW6AnrxvyFCDKGk239avNP2GvrqS8ir",
-      "signer": "writ-alice-mw52y1d4.testnet",
-      "receiver": "writ-dao-mw52y1d4.testnet",
+      "hash": "DKKYrCsB8hPKWfRqfnvJ39ZGnFVGKGSpJ86SHafTHWTE",
+      "signer": "writ-alice-mw55doim.testnet",
+      "receiver": "writ-dao-mw55doim.testnet",
       "status": {
         "SuccessValue": "MQ=="
       },
       "value": 1,
-      "gasBurnt": "2618873043537",
+      "gasBurnt": "2627883616989",
       "receiptIds": [
-        "9r8Zd3LDtAwD5H5iTvsfNipxrv2FkgmxWBGKZB8bSABQ",
-        "Emf86DHynaLaD7BxMEQyKEpAiRYhvuCAbLP1XUwdvAhX"
+        "98TKYRfgNvsYAaeYQSt4i1gBAe3sKfMTJFwEZnXQiAPW",
+        "J5jwQdx3TMwK4uWPhnESusw4t5gBubw1q5PiCLgC3ZFF"
       ]
     },
     "dao-new-holder-vote": {
-      "hash": "9KGVhhUr7q4k8M5Gm68FK9hgVhEi7ZVD9xUWk6o3eDqU",
-      "signer": "writ-bob-mw52y1d4.testnet",
-      "receiver": "writ-collection-mw52y1d4.testnet",
+      "hash": "GPYg4j2qD8v9XrZKF5cQWpAH3Q92LfTF1ADzd354ZPaT",
+      "signer": "writ-bob-mw55doim.testnet",
+      "receiver": "writ-collection-mw55doim.testnet",
       "status": {
         "SuccessValue": "dHJ1ZQ=="
       },
       "value": true,
-      "gasBurnt": "12928979122853",
+      "gasBurnt": "12965922235201",
       "receiptIds": [
-        "2sxNnHsLfaTcTfbMUqnPHBYdZPJzp7qJ4PJqYzrrAqJL",
-        "5ociUZNCmqhDXDmjzSG6pdywUuFL1aQXChn6UuZv2siJ",
-        "3GZgQENALcvTtfwUgXExba868T86nGgfabzZVQJJdjGQ",
-        "ELZHH2fFEe2AtEwoJQAj9gAeK7PX1Y5zrwaSTbx3QGD",
-        "HJN68bzQ5kkcfTwHiKS6BPnGQSEfYx2pZ94xao7Ms4yX",
-        "7U7q5aXSR6DNEcPYf7j7KbDMB9wCm9e1GihEzM8SRX3J",
-        "GdCD6z7mJBpJWcgdodSrgGq2b1A9QfykDXgUatPUmTpg",
-        "G5f3jsDMBW2YZcQEZUUBq3fRKiGkZVwSQJKUe9NSh6Xb",
-        "Bo1bv7nMN1bDTdQtpRFMj768ZskPgA9yvKddUV1QjMFx",
-        "2VZNKTV1DXJxxj8TYGLvN1dcbDFV54SjCC8R9C1H1FDA"
+        "BHcRreMo9qTGs4kHgjvMQvoKvZQNortYJdCqa8PB17Ex",
+        "74arXya4vdgFaLATESmWeGC7HZo11Negwpbzf8DSS2VF",
+        "8PCEvGuHyc9ow5QgEa1P5YbnAjn35m6NQv4CK16Swwtg",
+        "E9mHbqQESiSWPyg8U5mYzA25w7WbPVnnABxscWTogvpm",
+        "Ccyrp4Jpr18HZM9fa8XA9JY8VZgA5CzDUcwDJbVY7euD",
+        "ECgUxQigtHutad9YKX3uW374iA5ABcMZvrzJkmkHFTCD",
+        "BBo4AS93tEs1fJeyNXuZ1dvSE4qiYzT2y35gzB6fD3No",
+        "Gv1hhFULA6DX8KoK5Mp5B5GFZKeCJUjet2CrprnuLYBc",
+        "GbQmPpawhcvqrgfV1LKXQyhdtj2htzbVc3MvLZDZUDH1",
+        "4AAxdWN51ZkBmFXj3LgwxsJPWP4NJtLNvtjo55cwxo5q"
       ]
-    }
-  },
-  "purchases": {
-    "clean": {
-      "mock": false,
-      "writId": "1",
-      "attemptId": "4ca02c22-8ada-4a05-9efa-1d1f1d49ce4f",
-      "buyerId": "writ-bob-mw52y1d4.testnet",
-      "hash": "JALB6hyM7giUtcPtWdRwBCYuSmniwHwXwd3zbYEhgQ1f"
-    },
-    "proposed": {
-      "mock": false,
-      "writId": "2",
-      "attemptId": "20e90e61-9cf3-4da1-8ddd-6ba06156bcc9",
-      "buyerId": "writ-bob-mw52y1d4.testnet",
-      "hash": "9i5z5g5GPVX3nL9FBzrcQQJxeRW2Gug7QSYVU5SqFxcf"
     }
   }
 }

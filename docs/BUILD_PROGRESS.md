@@ -2,6 +2,8 @@
 
 Authorized: implement the remaining Writ functionality. Do not stage, commit or push. Testnet only; keep credentials outside tracked files.
 
+This completed feature checklist is not a mainnet security approval. Additional open release gates are tracked in [RELEASE_READINESS.md](RELEASE_READINESS.md).
+
 - [x] Collection and keyless executor; direct NFT transfer and receiver resolution.
 - [x] Actual contract-tools Owner role handover and old-holder rejection in sandbox.
 - [x] Scoped zero-deposit loans, revocation, epoch invalidation, pending-call locks.

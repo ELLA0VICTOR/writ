@@ -341,10 +341,7 @@ impl Contract {
 impl Contract {
     fn move_token(&mut self, t: &mut Token, receiver: AccountId, memo: &str) {
         require!(receiver != t.owner, "Receiver already holds Writ");
-        require!(
-            receiver != env::current_account_id(),
-            "Collection cannot hold its own role NFT"
-        );
+        Self::require_external_receiver(&receiver);
         t.owner = receiver;
         t.epoch += 1;
         t.nonce += 1;

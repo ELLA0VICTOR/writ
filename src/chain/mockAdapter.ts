@@ -144,6 +144,11 @@ export function createMockAdapter(): WritAdapter {
           "invalid_input",
           "Choose a different valid receiver.",
         );
+      if (receiver === w.collection || receiver.endsWith(`.${w.collection}`))
+        throw new ChainError(
+          "invalid_input",
+          "Writ infrastructure cannot receive its own role NFTs.",
+        );
       w.owner = receiver;
       w.epoch = String(BigInt(w.epoch) + 1n);
       w.loans = [];

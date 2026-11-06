@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, describe, it, expect, vi } from "vitest";
 import { exampleWrit } from "../../src/chain/fixtures/writs";
 const rpc = vi.hoisted(() => vi.fn());
+const statusRpc = vi.hoisted(() => vi.fn());
 const walletCall = vi.hoisted(() =>
   vi.fn(async () => ({ mock: false, hash: "actual-wallet-result" })),
 );
@@ -10,7 +11,8 @@ vi.mock("../../src/chain/wallet", () => ({
 }));
 vi.mock("near-api-js", () => ({
   JsonRpcProvider: class {
-    sendJsonRpc = rpc;
+    sendJsonRpc = (method: string, ...args: unknown[]) =>
+      method === "status" ? statusRpc() : rpc(method, ...args);
   },
 }));
 import { createTestnetAdapter } from "../../src/chain/testnetAdapter";
@@ -26,6 +28,8 @@ describe("real adapter wire contract with controlled RPC responses", () => {
     vi.stubEnv("VITE_OWNER_TEMPLATE_HASH", "published-owner");
     vi.stubEnv("VITE_DAO_TEMPLATE_HASH", "");
     rpc.mockReset();
+    statusRpc.mockReset();
+    statusRpc.mockResolvedValue({ chain_id: "testnet" });
     walletCall.mockReset();
     walletCall.mockResolvedValue({ mock: false, hash: "actual-wallet-result" });
     const saved = new Map<string, string>();
@@ -47,6 +51,27 @@ describe("real adapter wire contract with controlled RPC responses", () => {
     await expect(createTestnetAdapter().getWrit("7")).rejects.toMatchObject({
       code: "not_configured",
     });
+  });
+  it("refuses a mainnet RPC even with testnet build settings", async () => {
+    statusRpc.mockResolvedValue({ chain_id: "mainnet" });
+    await expect(createTestnetAdapter().getWrit("7")).rejects.toMatchObject({
+      code: "not_configured",
+    });
+    expect(walletCall).not.toHaveBeenCalled();
+    expect(rpc).not.toHaveBeenCalled();
+  });
+  it("rejects transfers into the collection namespace before asking for a wallet signature", async () => {
+    const a = createTestnetAdapter();
+    for (const receiver of [
+      "writ-demo.testnet",
+      "w7.writ-demo.testnet",
+      "nested.w7.writ-demo.testnet",
+    ]) {
+      await expect(a.transfer("7", receiver)).rejects.toMatchObject({
+        code: "invalid_input",
+      });
+    }
+    expect(walletCall).not.toHaveBeenCalled();
   });
   it("pins all page observations to the same finalized block hash", async () => {
     const queries: Record<string, unknown>[] = [];

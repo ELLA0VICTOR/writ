@@ -3,8 +3,20 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 export const provider = new JsonRpcProvider({
   url: process.env.WRIT_TESTNET_RPC || "https://test.rpc.fastnear.com",
 });
-const folder = new URL("../.local/deployment/", import.meta.url);
+const releaseName = process.env.WRIT_TESTNET_RELEASE || "deployment";
+if (!/^[a-z0-9-]{1,48}$/.test(releaseName))
+  throw new Error("Invalid testnet release label.");
+export const deploymentDirectory = new URL(
+  `../.local/${releaseName}/`,
+  import.meta.url,
+);
+const folder = deploymentDirectory;
 export async function testnetAccounts() {
+  const network = await provider.sendJsonRpc("status", []);
+  if (network.chain_id !== "testnet")
+    throw new Error(
+      "Testnet deployment refused: RPC is not NEAR testnet. No accounts or transactions were created.",
+    );
   await mkdir(folder, { recursive: true });
   const filename = new URL("accounts.json", folder);
   let saved;
@@ -49,7 +61,7 @@ export async function testnetAccounts() {
       });
       if (!response.ok)
         throw new Error(
-          `Testnet faucet refused ${role}: HTTP ${response.status}. Keys remain in ignored .local/deployment.`,
+          `Testnet faucet refused ${role}: HTTP ${response.status}. Keys remain in the ignored local release directory.`,
         );
       await provider.viewAccount({ accountId: credentials.accountId });
     }
