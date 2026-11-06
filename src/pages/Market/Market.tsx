@@ -8,7 +8,7 @@ import { ErrorSheet } from "../../components/ErrorSheet/ErrorSheet";
 import { getTemplate } from "../../templates/registry";
 import { writNumber } from "../../utils/amounts";
 import s from "./Market.module.css";
-import {RecoveryPanel} from "../../features/actions/RecoveryPanel";
+import { RecoveryPanel } from "../../features/actions/RecoveryPanel";
 export default function Market({ mine = false }: { mine?: boolean }) {
   useTitle(mine ? "My Writs" : "The market");
   const adapter = useAdapter();
@@ -19,6 +19,8 @@ export default function Market({ mine = false }: { mine?: boolean }) {
   const [kind, setKind] = useState("all");
   const [status, setStatus] = useState("all");
   const [retry, setRetry] = useState(0);
+  const [cursor, setCursor] = useState<string | undefined>();
+  const [moreBusy, setMoreBusy] = useState(false);
   useEffect(() => {
     if (!adapter) return;
     const abort = new AbortController();
@@ -35,7 +37,10 @@ export default function Market({ mine = false }: { mine?: boolean }) {
         abort.signal,
       )
       .then((result) => {
-        if (!abort.signal.aborted) setItems(result.items);
+        if (!abort.signal.aborted) {
+          setItems(result.items);
+          setCursor(result.nextCursor ?? undefined);
+        }
       })
       .catch((reason) => {
         if (!abort.signal.aborted) setError(reason);
@@ -50,6 +55,25 @@ export default function Market({ mine = false }: { mine?: boolean }) {
       (kind === "all" || w.templateId === kind) &&
       (status === "all" || w.status === status),
   );
+  async function more() {
+    if (!adapter || !cursor) return;
+    setMoreBusy(true);
+    try {
+      const page = await adapter.listWrits({
+        ...(mine ? { owner: session!.accountId } : { listedOnly: true }),
+        cursor,
+      });
+      setItems((old) => [
+        ...old,
+        ...page.items.filter((w) => !old.some((o) => o.id === w.id)),
+      ]);
+      setCursor(page.nextCursor ?? undefined);
+    } catch (e) {
+      setError(e);
+    } finally {
+      setMoreBusy(false);
+    }
+  }
   return (
     <div className={`${s.page} appContainer`}>
       <div className={s.heading} data-reveal>
@@ -68,7 +92,7 @@ export default function Market({ mine = false }: { mine?: boolean }) {
           Wrap a role
         </ButtonLink>
       </div>
-      {mine && <RecoveryPanel/>}
+      {mine && <RecoveryPanel />}
       <div className={s.filters}>
         <label>
           Kind of role
@@ -157,6 +181,17 @@ export default function Market({ mine = false }: { mine?: boolean }) {
             {mine && <ButtonLink to="/market">Browse the market</ButtonLink>}
           </div>
         </div>
+      )}
+      {cursor && !busy && !error && (
+        <ButtonLink
+          to="#"
+          onClick={(e) => {
+            e.preventDefault();
+            if (!moreBusy) void more();
+          }}
+        >
+          {moreBusy ? "Reading…" : "Load more Writs"}
+        </ButtonLink>
       )}
     </div>
   );

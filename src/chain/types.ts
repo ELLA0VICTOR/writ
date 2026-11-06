@@ -223,7 +223,12 @@ export interface MintQuote {
 }
 export interface AccountRecovery {
   credit: YoctoNear;
-  retired: {id: string; executor: AccountId; target: AccountId; available: YoctoNear}[];
+  retired: {
+    id: string;
+    executor: AccountId;
+    target: AccountId;
+    available: YoctoNear;
+  }[];
 }
 export interface ActionCapabilities {
   execute: boolean;

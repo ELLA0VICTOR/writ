@@ -6,6 +6,6 @@ Held: white stub. Listed: yellow stub, violet LISTED stamp/price. Locked: black/
 
 `npm run fonts:svg` regenerates the embedded fonts after dependency updates. Licenses are copied to `public/fonts/licenses`. SVGs do not require remote fonts.
 
-The contract team must implement equivalent rendering/media delivery for NEP-177; TypeScript cannot execute inside a Rust contract. A URI created only at mint will not update on later prices/transfers/loans. Choose dynamic metadata views or an explicitly refreshed mechanism and measure response/storage costs before embedding fonts on chain.
+`scripts/build-contract-media.mjs` compiles eight lightweight owner/DAO status templates from this exact frontend renderer, plus one shared embedded font subset. `contracts/collection/src/media.rs` fills bounded dynamic values and `nft_token` returns a base64 standalone SVG data URI. Nothing is frozen at mint: holder, epoch, nonce, price and loans are read from current state. Long protocol account labels receive a bounded text width. Marketplaces can still cache earlier metadata.
 
-This generator and its four normalized snapshots are a reference specification, not a claim that a deployed NFT contract already serves the images.
+The sandbox core test reads actual Wasm-generated metadata before/after transfer, checks embedded fonts and current holder, and rejects unresolved template markers. Source snapshots remain the frontend reference. Media bytes increase view responses, not per-token storage; account code stores the shared templates/fonts once. The build and deployed binary hashes identify this implementation.

@@ -72,7 +72,7 @@ export function BuyDialog({
       adapter.getPurchaseFeeAllowance(),
       adapter.getPurchaseStorageDeposit(),
     ])
-      .then(([value, fee,storage]) => {
+      .then(([value, fee, storage]) => {
         if (active) {
           setBalance(value);
           setFeeAllowance(fee);
@@ -204,7 +204,10 @@ export function BuyDialog({
   const insufficient =
     balance !== null &&
     feeAllowance !== null &&
-    BigInt(balance) < BigInt(writ.price ?? "0") + BigInt(feeAllowance) + BigInt(storageDeposit ?? "0");
+    BigInt(balance) <
+      BigInt(writ.price ?? "0") +
+        BigInt(feeAllowance) +
+        BigInt(storageDeposit ?? "0");
   return (
     <Dialog title={`Purchase Writ ${writNumber(writ.id)}`} onClose={onClose}>
       {(state.step === "pins" || state.step === "signing") && (
@@ -219,11 +222,28 @@ export function BuyDialog({
               Name your conditions.
             </h3>
             <p>
-              You pay <code>{price} NEAR</code> for the owner role on{" "}
-              <code>{writ.target}</code>. The sale settles only if its required
-              on-chain checks pass during this purchase.
+              You pay <code>{price} NEAR</code> for the{" "}
+              {template.name.toLowerCase()} role on <code>{writ.target}</code>.
+              The sale settles only if its required on-chain checks pass during
+              this purchase.
             </p>
-            {storageDeposit!==null && storageDeposit!=="0" && <p>Attached payment: <code>{formatNear((BigInt(writ.price??"0")+BigInt(storageDeposit)).toString())} NEAR</code>, including <code>{formatNear(storageDeposit)} NEAR</code> for retained purchase records. That storage charge and network fees are not refunded when conditions fail; the full purchase price remains refundable.</p>}
+            {storageDeposit !== null && storageDeposit !== "0" && (
+              <p>
+                Attached payment:{" "}
+                <code>
+                  {formatNear(
+                    (
+                      BigInt(writ.price ?? "0") + BigInt(storageDeposit)
+                    ).toString(),
+                  )}{" "}
+                  NEAR
+                </code>
+                , including <code>{formatNear(storageDeposit)} NEAR</code> for
+                retained purchase records. That storage charge and network fees
+                are not refunded when conditions fail; the full purchase price
+                remains refundable.
+              </p>
+            )}
           </div>
           <div className={s.required}>
             <h4>Always checked for this kind of Writ</h4>
@@ -351,7 +371,7 @@ export function BuyDialog({
               >
                 {state.step === "signing"
                   ? "Confirm in your wallet…"
-                  : `Pay ${formatNear((BigInt(writ.price??"0")+BigInt(storageDeposit??"0")).toString())} NEAR and check`}
+                  : `Pay ${formatNear((BigInt(writ.price ?? "0") + BigInt(storageDeposit ?? "0")).toString())} NEAR and check`}
               </Button>
             ) : (
               <Button variant="primary" onClick={() => void connect()}>
@@ -423,8 +443,8 @@ export function BuyDialog({
                 {outcome.sellerPayment === "credited"
                   ? "The seller’s proceeds were credited to their withdrawal balance."
                   : outcome.sellerPayment === "claimable"
-                  ? "The seller’s proceeds are ready to withdraw."
-                  : "The seller has been paid."}{" "}
+                    ? "The seller’s proceeds are ready to withdraw."
+                    : "The seller has been paid."}{" "}
                 {outcome.endedLoanIds.length
                   ? "Earlier loans ended at this sale."
                   : "No earlier loans remain."}

@@ -46,10 +46,7 @@ export function parseWrit(value: unknown): Writ | null {
     throw invalid();
   if (w.loans.length > 64 || w.tokens.length > 256 || w.accessKeys.length > 100)
     throw invalid();
-  if (
-    w.status === "listed" &&
-    (!integer(w.price) || BigInt(w.price) <= 0n)
-  )
+  if (w.status === "listed" && (!integer(w.price) || BigInt(w.price) <= 0n))
     throw invalid();
   if (BigInt(w.withdrawableFees as string) > BigInt(w.balance as string))
     throw invalid();
@@ -99,7 +96,10 @@ function parseCheck(value: unknown): CheckResult {
   const r = record(c.read);
   if (
     !integer(r.blockHeight) ||
-    !(text(r.blockHash) || (r.blockHash === null && r.phase === "settlement_callback")) ||
+    !(
+      text(r.blockHash) ||
+      (r.blockHash === null && r.phase === "settlement_callback")
+    ) ||
     typeof r.observedAtMs !== "number" ||
     !Number.isFinite(r.observedAtMs) ||
     r.source !== "testnet"

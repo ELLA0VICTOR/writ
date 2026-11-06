@@ -8,7 +8,8 @@ import { messageOf } from "../../chain/errors";
 import { Dialog } from "../../components/Dialog/Dialog";
 import { Button } from "../../components/Button/Button";
 import { DisclosedBox } from "../../components/DisclosedBox/DisclosedBox";
-export type ActionKind = "use" | "lend" | "list" | "withdraw" | "unwrap" | "transfer" | "fund";
+export type ActionKind =
+  "use" | "lend" | "list" | "withdraw" | "unwrap" | "transfer" | "fund";
 export function ActionDialog({
   kind,
   writ,
@@ -72,10 +73,12 @@ export function ActionDialog({
         });
       if (kind === "withdraw")
         await adapter.withdrawFees(writ.id, nearToYocto(amount));
-      if(kind==="fund") await adapter.fundExecutor(writ.id,nearToYocto(amount));
-      if(kind==="transfer") {
-        if(!confirmed||!isAccountId(receiver)||receiver===writ.owner)throw new Error("Confirm a different, valid receiving account.");
-        await adapter.transfer(writ.id,receiver);
+      if (kind === "fund")
+        await adapter.fundExecutor(writ.id, nearToYocto(amount));
+      if (kind === "transfer") {
+        if (!confirmed || !isAccountId(receiver) || receiver === writ.owner)
+          throw new Error("Confirm a different, valid receiving account.");
+        await adapter.transfer(writ.id, receiver);
       }
       if (kind === "use" || kind === "lend") {
         const parsed = JSON.parse(args) as unknown;
@@ -241,19 +244,57 @@ export function ActionDialog({
             </label>
           </>
         )}
-        {kind === "fund" && <label>NEAR to add<input className="typed" inputMode="decimal" required value={amount} onChange={e=>setAmount(e.target.value)}/></label>}
-        {kind === "transfer" && <>
-          <label>Receiving account<input className="typed" required autoComplete="off" placeholder="sam.testnet" value={receiver} onChange={e=>setReceiver(e.target.value)}/></label>
-          <DisclosedBox compact>The NFT, executor control and its remaining balance move together. Every existing loan ends. This direct transfer has no purchase price or buyer settlement checks. The receiving account must exist.</DisclosedBox>
-          <label><input type="checkbox" required checked={confirmed} onChange={e=>setConfirmed(e.target.checked)}/> Transfer control to this account.</label>
-        </>}
+        {kind === "fund" && (
+          <label>
+            NEAR to add
+            <input
+              className="typed"
+              inputMode="decimal"
+              required
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+            />
+          </label>
+        )}
+        {kind === "transfer" && (
+          <>
+            <label>
+              Receiving account
+              <input
+                className="typed"
+                required
+                autoComplete="off"
+                placeholder="sam.testnet"
+                value={receiver}
+                onChange={(e) => setReceiver(e.target.value)}
+              />
+            </label>
+            <DisclosedBox compact>
+              The NFT, executor control and its remaining balance move together.
+              Every existing loan ends. This direct transfer has no purchase
+              price or buyer settlement checks. The receiving account must
+              exist.
+            </DisclosedBox>
+            <label>
+              <input
+                type="checkbox"
+                required
+                checked={confirmed}
+                onChange={(e) => setConfirmed(e.target.checked)}
+              />{" "}
+              Transfer control to this account.
+            </label>
+          </>
+        )}
         {kind === "unwrap" && (
           <>
             <DisclosedBox compact>
               Unwrapping is supported only by a template-specific hand-back
               recipe. It must verify the external role moved before retiring the
-              NFT. End outstanding loans first.
-              Your wallet will approve the hand-back, accept the role, then verify retirement. If interrupted, reopen Unwrap to resume. Remaining executor funds can be recovered from My Writs after retirement.
+              NFT. End outstanding loans first. Your wallet will approve the
+              hand-back, accept the role, then verify retirement. If
+              interrupted, reopen Unwrap to resume. Remaining executor funds can
+              be recovered from My Writs after retirement.
             </DisclosedBox>
             <label
               style={{

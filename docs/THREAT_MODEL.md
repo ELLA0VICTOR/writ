@@ -1,6 +1,6 @@
-# Writ frontend threat model
+# Writ threat model
 
-Scope: frontend, behavioral mock and proposed integration adapter. This repository does not implement or audit a deployed collection/executor.
+Scope: collection, keyless executor, practice-target factory, frontend and adapter. Sandbox evidence is in contract-verification.json; public testnet identities and receipts are in ../deployments/testnet.json. This is an implementation threat model, not an independent audit.
 
 ## Meaning of checks
 
@@ -8,7 +8,7 @@ The public page reports declared template calls and separate RPC observations at
 
 Collection code, deployment identity, upgrade authority and the approved template are trust assumptions. A keyless executor alone does not establish safe collection behavior. External governance may remove an acquired role. Targets may omit relevant permissions from their views.
 
-| Threat                            | Frontend defense                                                                       | Required contract defense                                                                          |
+| Threat                            | Frontend defense                                                                       | Implemented contract defense                                                                       |
 | --------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | Seller changes listing/template   | Pin observed nonce, template hash and maximum price; require review on mismatch.       | Recheck pins and active attempt before settlement.                                                 |
 | Next owner left waiting           | Show declared proposed-owner check, requiring null.                                    | Run check; reject failed/malformed responses.                                                      |
@@ -21,16 +21,16 @@ Collection code, deployment identity, upgrade authority and the approved templat
 | Malformed RPC data                | Bound JSON, validate fields, unavailable never becomes Pass.                           | Document ABI and bound results.                                                                    |
 | Unexpected executor/template      | Compare configured hashes/deployment metadata.                                         | Publish reviewed hashes and protect upgrades.                                                      |
 | Unexpected signing authority      | Construct function calls only; no app-generated access keys, deploy or delete actions. | Minimal executor surface authenticates collection.                                                 |
-| False evidence                    | Persistent example label, no fake hashes, sandbox gates false.                         | Supply real sandbox results/testnet receipts.                                                      |
+| False evidence                    | Persistent example label; genuine sandbox/testnet evidence distinguished.              | Supply real sandbox results/testnet receipts.                                                      |
 | Injected NFT text                 | XML-escape SVG text; React-escape UI.                                                  | Bound metadata and validate accounts.                                                              |
 | Modal keyboard escape             | Modal, explicit Tab loop, Escape, focus restoration and scroll lock.                   | Not applicable.                                                                                    |
 
 ## Remaining boundaries
 
-Mock passes do not prove NEAR receipt execution, solvency, gas viability or secure executor behavior. Contract tests must cover ordinary transfers, transfer-call resolver races, withdrawal failures, provisioning and retirement.
+Mock passes do not prove NEAR receipt execution, solvency, gas viability or secure executor behavior. The actual sandbox suite covers transfers, receiver reentry/rollback, pending locks, provisioning, segregated refunds, failed native payments, deadline release/late callbacks and retirement. Its results do not prove every possible schedule or global solvency.
 
 Account key/code checks are page-only. An on-chain method name does not guarantee read-only behavior; templates need review for side effects, gas, return types and backdoors.
 
-Wrap supports the demonstrated ownership API. Standard staking-pool ownership is fixed at initialization; DAO membership is not sole control. Minting needs a funding/storage quote. Unwrap needs a verified hand-back before retirement. Both stay disabled in testnet mode here.
+Wrap supports the demonstrated ownership API. Standard staking-pool ownership is fixed at initialization; DAO membership is not sole control. Minting needs a funding/storage quote. Unwrap needs a verified hand-back before retirement. Both use exact on-chain funding quotes and resumable hand-back transactions.
 
-No indexer, live Writ deployment, sandbox validation or testnet sale evidence is claimed by this frontend build.
+No production indexer or independent audit is configured. The collection deployment key remains a full-access upgrade authority; changing collection code could change executor permissions. Testnet keys stay in ignored local storage. Native-NEAR-only withdrawals do not imply support for arbitrary FT/NFT assets sent to an executor. Record storage and network fees are not refunded. Account names remain reclaimable according to NEAR account rules; permissions bind account IDs, not a permanent natural-person identity.

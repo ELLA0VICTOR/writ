@@ -30,7 +30,7 @@ page.on("pageerror", (err) => errors.push(err.message));
 const rpcResult = await page.evaluate(async () => {
   const { JsonRpcProvider } =
     await import("/node_modules/.vite/deps/near-api-js.js");
-  const provider = new JsonRpcProvider({ url: "https://rpc.testnet.near.org" });
+  const provider = new JsonRpcProvider({ url: "https://test.rpc.fastnear.com" });
   try {
     const response = await provider.sendJsonRpc("status", []);
     return { ok: true, chainId: response.chain_id };

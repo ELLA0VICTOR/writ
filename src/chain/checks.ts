@@ -31,16 +31,25 @@ export function mapCheck(
   const expected = def.expected === "$WRIT" ? writ.executor : def.expected;
   const passed =
     def.operator === "group_member"
-      ? Array.isArray(actual) && actual.some(role => {
-          if (!role || typeof role !== "object" || Array.isArray(role)) return false;
+      ? Array.isArray(actual) &&
+        actual.some((role) => {
+          if (!role || typeof role !== "object" || Array.isArray(role))
+            return false;
           const kind = role.kind;
-          return role.name === def.groupName && kind && typeof kind === "object" && !Array.isArray(kind) && Array.isArray(kind.Group) && kind.Group.includes(expected);
+          return (
+            role.name === def.groupName &&
+            kind &&
+            typeof kind === "object" &&
+            !Array.isArray(kind) &&
+            Array.isArray(kind.Group) &&
+            kind.Group.includes(expected)
+          );
         })
       : def.operator === "null"
-      ? actual === null
-      : def.operator === "contains"
-        ? Array.isArray(actual) && actual.includes(expected)
-        : JSON.stringify(actual) === JSON.stringify(expected);
+        ? actual === null
+        : def.operator === "contains"
+          ? Array.isArray(actual) && actual.includes(expected)
+          : JSON.stringify(actual) === JSON.stringify(expected);
   return {
     id: def.id,
     label: def.label,

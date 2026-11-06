@@ -117,17 +117,69 @@ export function createMockAdapter(): WritAdapter {
     async getPurchaseFeeAllowance() {
       return nearToYocto("0.03");
     },
-    async getPurchaseStorageDeposit() { return "0"; },
-    async getMintQuote() { return {deposit:"0",executorFunding:"0",storageDeposit:"0",nonRefundableStorage:true}; },
-    async transfer(id,receiver) {
-      const w=holder(id);if(!isAccountId(receiver)||receiver===w.owner) throw new ChainError("invalid_input","Choose a different valid receiver.");
-      w.owner=receiver;w.epoch=String(BigInt(w.epoch)+1n);w.loans=[];w.status="held";mutate(w);event(w,"NFT transferred",`Control moved to ${receiver}`);return tx();
+    async getPurchaseStorageDeposit() {
+      return "0";
     },
-    async fundExecutor(id,amount) {const w=holder(id);if(BigInt(amount)<=0n)throw new ChainError("invalid_input","Positive funding required.");w.balance=(BigInt(w.balance)+BigInt(amount)).toString();w.withdrawableFees=(BigInt(w.withdrawableFees)+BigInt(amount)).toString();mutate(w);return tx();},
-    async confirmWrap(id) {const w=holder(id);w.roleConfirmed=w.roleOwner===w.executor&&w.proposedOwner===null;return tx();},
-    async getAccountRecovery() {return {credit:"0",retired:[]};},
-    async withdrawCredit() {throw new ChainError("invalid_input","No example credit is available.");},
-    async withdrawRetired() {throw new ChainError("invalid_input","No example retired executor is available.");},
+    async getMintQuote() {
+      return {
+        deposit: "0",
+        executorFunding: "0",
+        storageDeposit: "0",
+        nonRefundableStorage: true,
+      };
+    },
+    async getPracticeQuote() {
+      return this.getMintQuote({
+        templateId: "contract-owner",
+        target: "example.testnet",
+      });
+    },
+    async createPracticeTarget() {
+      return "your-practice.testnet";
+    },
+    async transfer(id, receiver) {
+      const w = holder(id);
+      if (!isAccountId(receiver) || receiver === w.owner)
+        throw new ChainError(
+          "invalid_input",
+          "Choose a different valid receiver.",
+        );
+      w.owner = receiver;
+      w.epoch = String(BigInt(w.epoch) + 1n);
+      w.loans = [];
+      w.status = "held";
+      mutate(w);
+      event(w, "NFT transferred", `Control moved to ${receiver}`);
+      return tx();
+    },
+    async fundExecutor(id, amount) {
+      const w = holder(id);
+      if (BigInt(amount) <= 0n)
+        throw new ChainError("invalid_input", "Positive funding required.");
+      w.balance = (BigInt(w.balance) + BigInt(amount)).toString();
+      w.withdrawableFees = (
+        BigInt(w.withdrawableFees) + BigInt(amount)
+      ).toString();
+      mutate(w);
+      return tx();
+    },
+    async confirmWrap(id) {
+      const w = holder(id);
+      w.roleConfirmed = w.roleOwner === w.executor && w.proposedOwner === null;
+      return tx();
+    },
+    async getAccountRecovery() {
+      return { credit: "0", retired: [] };
+    },
+    async withdrawCredit() {
+      throw new ChainError("invalid_input", "No example credit is available.");
+    },
+    async withdrawRetired() {
+      throw new ChainError(
+        "invalid_input",
+        "No example retired executor is available.",
+      );
+    },
     async getTemplates() {
       return clone(templates.filter((t) => t.id === "contract-owner"));
     },

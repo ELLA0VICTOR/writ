@@ -23,6 +23,7 @@ export function Footer() {
           )}
           <a href="/docs/README.md">README</a>
           <a href="/docs/THREAT_MODEL.md">Threat model</a>
+          <a href="/docs/contract-verification.json">Contract test evidence</a>
           {video && (
             <a href={video} target="_blank" rel="noreferrer">
               Demo video

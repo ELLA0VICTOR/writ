@@ -34,7 +34,8 @@ export function createTestnetAdapter(): WritAdapter {
       ({ JsonRpcProvider }) =>
         new JsonRpcProvider({
           url:
-            import.meta.env.VITE_NEAR_RPC_URL || "https://rpc.testnet.near.org",
+            import.meta.env.VITE_NEAR_RPC_URL ||
+            "https://test.rpc.fastnear.com",
         }),
     ));
   function configured() {
@@ -116,8 +117,10 @@ export function createTestnetAdapter(): WritAdapter {
           config.abi_version !== bindings.abiVersion ||
           config.executor_code_hash !==
             import.meta.env.VITE_EXECUTOR_CODE_HASH ||
-          hashes["contract-owner"] !== import.meta.env.VITE_OWNER_TEMPLATE_HASH ||
-          (import.meta.env.VITE_DAO_TEMPLATE_HASH && hashes["dao-council"] !== import.meta.env.VITE_DAO_TEMPLATE_HASH)
+          hashes["contract-owner"] !==
+            import.meta.env.VITE_OWNER_TEMPLATE_HASH ||
+          (import.meta.env.VITE_DAO_TEMPLATE_HASH &&
+            hashes["dao-council"] !== import.meta.env.VITE_DAO_TEMPLATE_HASH)
         )
           throw new ChainError(
             "not_configured",
@@ -135,7 +138,10 @@ export function createTestnetAdapter(): WritAdapter {
       writ &&
       (writ.collection !== contractId ||
         !["contract-owner", "dao-council"].includes(writ.templateId) ||
-        writ.templateHash !== (writ.templateId === "contract-owner" ? import.meta.env.VITE_OWNER_TEMPLATE_HASH : import.meta.env.VITE_DAO_TEMPLATE_HASH) ||
+        writ.templateHash !==
+          (writ.templateId === "contract-owner"
+            ? import.meta.env.VITE_OWNER_TEMPLATE_HASH
+            : import.meta.env.VITE_DAO_TEMPLATE_HASH) ||
         (id !== undefined && writ.id !== String(Number(id))))
     )
       throw new ChainError(
@@ -144,22 +150,53 @@ export function createTestnetAdapter(): WritAdapter {
       );
     return writ;
   }
-  async function enrich(writ: Writ | null, signal?: AbortSignal): Promise<Writ | null> {
+  async function enrich(
+    writ: Writ | null,
+    signal?: AbortSignal,
+  ): Promise<Writ | null> {
     if (!writ || writ.provisioned === false) return writ;
-    const state = await query({request_type:"view_account",account_id:writ.executor,finality:"final"},signal);
-    const hash=String(state.block_hash);
+    const state = await query(
+      {
+        request_type: "view_account",
+        account_id: writ.executor,
+        finality: "final",
+      },
+      signal,
+    );
+    const hash = String(state.block_hash);
     const [available, keys] = await Promise.all([
-      view(writ.executor,"get_balance",{},hash,signal),
-      query({request_type:"view_access_key_list",account_id:writ.executor,block_id:hash},signal),
+      view(writ.executor, "get_balance", {}, hash, signal),
+      query(
+        {
+          request_type: "view_access_key_list",
+          account_id: writ.executor,
+          block_id: hash,
+        },
+        signal,
+      ),
     ]);
-    writ.balance=String(state.amount);writ.withdrawableFees=String(available);
-    writ.executorCodeHash=String(state.code_hash);
-    writ.accessKeys=Array.isArray(keys.keys)?keys.keys.map(k=>String(object(k).public_key)):[];
+    writ.balance = String(state.amount);
+    writ.withdrawableFees = String(available);
+    writ.executorCodeHash = String(state.code_hash);
+    writ.accessKeys = Array.isArray(keys.keys)
+      ? keys.keys.map((k) => String(object(k).public_key))
+      : [];
     // Role views are checked separately. Never substitute a fabricated owner when unavailable.
-    if(writ.templateId==="contract-owner") {
-      const [owner,proposed]=await Promise.all([view(writ.target,"own_get_owner",{},hash,signal),view(writ.target,"own_get_proposed_owner",{},hash,signal)]);
-      if(typeof owner!=="string" || !(proposed===null||typeof proposed==="string"))throw new ChainError("rpc_unavailable","The target returned an invalid owner observation.");
-      writ.roleOwner=owner;writ.proposedOwner=proposed;
+    if (writ.templateId === "contract-owner") {
+      const [owner, proposed] = await Promise.all([
+        view(writ.target, "own_get_owner", {}, hash, signal),
+        view(writ.target, "own_get_proposed_owner", {}, hash, signal),
+      ]);
+      if (
+        typeof owner !== "string" ||
+        !(proposed === null || typeof proposed === "string")
+      )
+        throw new ChainError(
+          "rpc_unavailable",
+          "The target returned an invalid owner observation.",
+        );
+      writ.roleOwner = owner;
+      writ.proposedOwner = proposed;
     }
     return parseWrit(writ);
   }
@@ -252,40 +289,135 @@ export function createTestnetAdapter(): WritAdapter {
       const gasPrice = BigInt(String(price.gas_price));
       return ((gasPrice * 250000000000000n * 13n) / 10n).toString();
     },
-    async getPurchaseStorageDeposit() {await ensureConfig();return purchaseStorage;},
+    async getPurchaseStorageDeposit() {
+      await ensureConfig();
+      return purchaseStorage;
+    },
     async getMintQuote(request) {
       await ensureConfig();
-      const q=object(await view(contractId,"get_mint_quote",{template_id:request.templateId,target:request.target}));
-      for(const k of ["deposit","executorFunding","storageDeposit"])if(typeof q[k]!=="string"||!/^\d+$/.test(String(q[k])))throw new ChainError("rpc_unavailable","Invalid funding quote.");
-      return {deposit:String(q.deposit),executorFunding:String(q.executorFunding),storageDeposit:String(q.storageDeposit),nonRefundableStorage:q.nonRefundableStorage===true};
+      const q = object(
+        await view(contractId, "get_mint_quote", {
+          template_id: request.templateId,
+          target: request.target,
+        }),
+      );
+      for (const k of ["deposit", "executorFunding", "storageDeposit"])
+        if (typeof q[k] !== "string" || !/^\d+$/.test(String(q[k])))
+          throw new ChainError("rpc_unavailable", "Invalid funding quote.");
+      return {
+        deposit: String(q.deposit),
+        executorFunding: String(q.executorFunding),
+        storageDeposit: String(q.storageDeposit),
+        nonRefundableStorage: q.nonRefundableStorage === true,
+      };
     },
-    async transfer(id,receiver) {return call("nft_transfer",{token_id:id,receiver_id:receiver},"1");},
-    async fundExecutor(id,amount) {return call("fund_executor",{token_id:id},amount);},
-    async confirmWrap(id) {return call("confirm_wrap",{token_id:id});},
+    async transfer(id, receiver) {
+      return call("nft_transfer", { token_id: id, receiver_id: receiver }, "1");
+    },
+    async getPracticeQuote() {
+      await ensureConfig();
+      return object(
+        await view(contractId, "get_practice_quote"),
+      ) as unknown as import("./types").MintQuote;
+    },
+    async createPracticeTarget() {
+      const session = await this.getSession();
+      if (!session)
+        throw new ChainError("unauthorized", "Connect your wallet first.");
+      const saved = `writ-practice:${contractId}:${session.accountId}`;
+      let id = sessionStorage.getItem(saved);
+      if (!id) {
+        id = crypto.randomUUID();
+        sessionStorage.setItem(saved, id);
+      }
+      let result = await view(contractId, "get_practice_target", {
+        owner_id: session.accountId,
+        client_request_id: id,
+      });
+      if (result === null) {
+        const quote = await this.getPracticeQuote();
+        await call(
+          "create_practice_target",
+          { client_request_id: id },
+          quote.deposit,
+        );
+        result = await view(contractId, "get_practice_target", {
+          owner_id: session.accountId,
+          client_request_id: id,
+        });
+      }
+      const r = object(result);
+      if (r.status !== "ready")
+        throw new ChainError(
+          "outcome_unknown",
+          "Practice provisioning has not completed. Retry to check this same request; recover any credited funding in My Writs.",
+        );
+      return String(r.target);
+    },
+    async fundExecutor(id, amount) {
+      return call("fund_executor", { token_id: id }, amount);
+    },
+    async confirmWrap(id) {
+      return call("confirm_wrap", { token_id: id });
+    },
     async getAccountRecovery(accountId) {
       await ensureConfig();
-      const [credit,retired]=await Promise.all([view(contractId,"get_credit",{account_id:accountId}),view(contractId,"get_retired_writs",{owner_id:accountId})]);
-      if(typeof credit!=="string"||!/^\d+$/.test(credit)||!Array.isArray(retired))throw new ChainError("rpc_unavailable","Invalid recovery response.");
-      return {credit,retired:await Promise.all(retired.map(async item=>{const r=object(item);const available=await view(String(r.executor),"get_balance");return {id:String(r.id),executor:String(r.executor),target:String(r.target),available:String(available)};}))};
+      const [credit, retired] = await Promise.all([
+        view(contractId, "get_credit", { account_id: accountId }),
+        view(contractId, "get_retired_writs", { owner_id: accountId }),
+      ]);
+      if (
+        typeof credit !== "string" ||
+        !/^\d+$/.test(credit) ||
+        !Array.isArray(retired)
+      )
+        throw new ChainError("rpc_unavailable", "Invalid recovery response.");
+      return {
+        credit,
+        retired: await Promise.all(
+          retired.map(async (item) => {
+            const r = object(item);
+            const available = await view(String(r.executor), "get_balance");
+            return {
+              id: String(r.id),
+              executor: String(r.executor),
+              target: String(r.target),
+              available: String(available),
+            };
+          }),
+        ),
+      };
     },
-    async withdrawCredit(amount) {return call("withdraw_credit",{amount});},
-    async withdrawRetired(id,amount) {return call("withdraw_retired_funds",{token_id:id,amount});},
+    async withdrawCredit(amount) {
+      return call("withdraw_credit", { amount });
+    },
+    async withdrawRetired(id, amount) {
+      return call("withdraw_retired_funds", { token_id: id, amount });
+    },
     async getTemplates() {
       if (enabled) await ensureConfig();
-      return templates.filter((t) => t.id === "contract-owner" || (t.id === "dao-council" && Boolean(import.meta.env.VITE_DAO_TEMPLATE_HASH)));
+      return templates.filter(
+        (t) =>
+          t.id === "contract-owner" ||
+          (t.id === "dao-council" &&
+            Boolean(import.meta.env.VITE_DAO_TEMPLATE_HASH)),
+      );
     },
     async getWrit(id, signal) {
       await ensureConfig();
-      return enrich(checkedWrit(
-        await view(
-          contractId,
-          bindings.writ,
-          { token_id: String(Number(id)) },
-          undefined,
-          signal,
+      return enrich(
+        checkedWrit(
+          await view(
+            contractId,
+            bindings.writ,
+            { token_id: String(Number(id)) },
+            undefined,
+            signal,
+          ),
+          id,
         ),
-        id,
-      ),signal);
+        signal,
+      );
     },
     async listWrits(options, signal) {
       await ensureConfig();
@@ -307,9 +439,12 @@ export function createTestnetAdapter(): WritAdapter {
         throw new ChainError("rpc_unavailable", "Invalid Writ list response.");
       return {
         ...page,
-        items: await Promise.all(page.items
-          .map((value) => checkedWrit(value))
-          .filter((w): w is Writ => w !== null).map(w=>enrich(w,signal))),
+        items: await Promise.all(
+          page.items
+            .map((value) => checkedWrit(value))
+            .filter((w): w is Writ => w !== null)
+            .map((w) => enrich(w, signal)),
+        ),
       } as unknown as WritPage;
     },
     async readChecks(id, signal) {
@@ -456,10 +591,15 @@ export function createTestnetAdapter(): WritAdapter {
       if (!session)
         throw new ChainError("unauthorized", "Connect your wallet first.");
       const attemptId = request.clientAttemptId ?? crypto.randomUUID();
-      const handle = { mock: false, writId: request.writId, attemptId, buyerId:session.accountId };
+      const handle = {
+        mock: false,
+        writId: request.writId,
+        attemptId,
+        buyerId: session.accountId,
+      };
       await ensureConfig();
-      const savedKey=`writ-purchase:testnet:${request.writId}`;
-      sessionStorage.setItem(savedKey,JSON.stringify(handle));
+      const savedKey = `writ-purchase:testnet:${request.writId}`;
+      sessionStorage.setItem(savedKey, JSON.stringify(handle));
       try {
         const result = await call(
           bindings.buy,
@@ -471,11 +611,12 @@ export function createTestnetAdapter(): WritAdapter {
             pins: request.pins,
             client_attempt_id: attemptId,
           },
-          (BigInt(request.maximumPrice)+BigInt(purchaseStorage)).toString(),
+          (BigInt(request.maximumPrice) + BigInt(purchaseStorage)).toString(),
         );
         return { ...result, ...handle };
       } catch (error) {
-        if(error instanceof ChainError && error.code==="wallet_rejected")sessionStorage.removeItem(savedKey);
+        if (error instanceof ChainError && error.code === "wallet_rejected")
+          sessionStorage.removeItem(savedKey);
         if (error instanceof ChainError && error.code === "outcome_unknown")
           throw new PurchaseSubmissionError(handle);
         throw error;
@@ -563,14 +704,32 @@ export function createTestnetAdapter(): WritAdapter {
         account_id: request.target,
         finality: "final",
       });
-      let holder:unknown;
-      if(request.templateId==="dao-council") {
-        const policy=object(await view(request.target,"get_policy",{},String(state.block_hash)));
-        const roles=Array.isArray(policy.roles)?policy.roles:[];
-        const council=roles.map(object).find(r=>r.name==="council");
-        const members=council?object(council.kind).Group:[];
-        holder=Array.isArray(members)&&members.includes(session.accountId)?session.accountId:(Array.isArray(members)?String(members[0]??""):"");
-      } else holder=await view(request.target,"own_get_owner",{},String(state.block_hash));
+      let holder: unknown;
+      if (request.templateId === "dao-council") {
+        const policy = object(
+          await view(
+            request.target,
+            "get_policy",
+            {},
+            String(state.block_hash),
+          ),
+        );
+        const roles = Array.isArray(policy.roles) ? policy.roles : [];
+        const council = roles.map(object).find((r) => r.name === "council");
+        const members = council ? object(council.kind).Group : [];
+        holder =
+          Array.isArray(members) && members.includes(session.accountId)
+            ? session.accountId
+            : Array.isArray(members)
+              ? String(members[0] ?? "")
+              : "";
+      } else
+        holder = await view(
+          request.target,
+          "own_get_owner",
+          {},
+          String(state.block_hash),
+        );
       if (typeof holder !== "string")
         throw new ChainError(
           "invalid_input",
@@ -588,28 +747,61 @@ export function createTestnetAdapter(): WritAdapter {
       };
     },
     async mintWrit(request) {
-      const session=await this.getSession();if(!session)throw new ChainError("unauthorized","Connect your wallet first.");
-      const storageKey=`writ-mint:${contractId}:${session.accountId}:${request.templateId}:${request.target}`;
-      let client=sessionStorage.getItem(storageKey);
-      if(!client){client=crypto.randomUUID();sessionStorage.setItem(storageKey,client);}
-      await ensureConfig();
-      const args={owner_id:session.accountId,client_request_id:client};
-      let state=await view(contractId,"get_mint_result",args);
-      let tx:{hash?:string;mock:boolean}={mock:false};
-      if(state===null){
-        const quote=await this.getMintQuote(request);
-        tx=await call("mint",{template_id:request.templateId,target:request.target,client_request_id:client},quote.deposit);
-        state=await view(contractId,"get_mint_result",args);
+      const session = await this.getSession();
+      if (!session)
+        throw new ChainError("unauthorized", "Connect your wallet first.");
+      const storageKey = `writ-mint:${contractId}:${session.accountId}:${request.templateId}:${request.target}`;
+      let client = sessionStorage.getItem(storageKey);
+      if (!client) {
+        client = crypto.randomUUID();
+        sessionStorage.setItem(storageKey, client);
       }
-      const result=object(state);
-      if(result.status!=="ready")throw new ChainError("outcome_unknown",result.status==="failed"?"Provisioning failed. Recover the credited funding in My Writs; storage is retained. This request will not be paid again.":"Provisioning has not finished. Retry this same request to check it without another payment.");
-      const writ=await this.getWrit(String(result.tokenId));if(!writ)throw new ChainError("outcome_unknown","Minted Writ is not readable yet.");
-      return {...tx,writ};
+      await ensureConfig();
+      const args = { owner_id: session.accountId, client_request_id: client };
+      let state = await view(contractId, "get_mint_result", args);
+      // A definitive failed/retired attempt can be replaced only on a fresh, explicit Mint click.
+      // Creating/unknown attempts keep their ID and never trigger a second payment here.
+      if (state !== null && object(state).status === "failed") {
+        client = crypto.randomUUID();
+        sessionStorage.setItem(storageKey, client);
+        args.client_request_id = client;
+        state = null;
+      }
+      let tx: { hash?: string; mock: boolean } = { mock: false };
+      if (state === null) {
+        const quote = await this.getMintQuote(request);
+        tx = await call(
+          "mint",
+          {
+            template_id: request.templateId,
+            target: request.target,
+            client_request_id: client,
+          },
+          quote.deposit,
+        );
+        state = await view(contractId, "get_mint_result", args);
+      }
+      const result = object(state);
+      if (result.status !== "ready")
+        throw new ChainError(
+          "outcome_unknown",
+          result.status === "failed"
+            ? "Provisioning failed. Recover credited funding in My Writs; storage is retained. Clicking Mint again starts a new quoted request."
+            : "Provisioning has not finished. Retry this same request to check it without another payment.",
+        );
+      const writ = await this.getWrit(String(result.tokenId));
+      if (!writ)
+        throw new ChainError(
+          "outcome_unknown",
+          "Minted Writ is not readable yet.",
+        );
+      return { ...tx, writ };
     },
     async performWrapStep(request) {
       const writ = await this.getWrit(request.writId);
       if (!writ) throw new ChainError("not_found", "This Writ does not exist.");
-      if(writ.templateId==="dao-council")return call("confirm_wrap",{token_id:writ.id});
+      if (writ.templateId === "dao-council")
+        return call("confirm_wrap", { token_id: writ.id });
       if (request.step === 0)
         return call(
           "own_propose_owner",
@@ -620,17 +812,29 @@ export function createTestnetAdapter(): WritAdapter {
       return call(bindings.wrap, { token_id: writ.id, step: request.step });
     },
     async unwrap(id) {
-      let writ=await this.getWrit(id);if(!writ)throw new ChainError("not_found","This Writ does not exist.");
-      const session=await this.getSession();if(session?.accountId!==writ.owner)throw new ChainError("unauthorized","Holder only.");
-      const owner=await view(writ.target,"own_get_owner");
-      if(owner!==session.accountId){
-        if(!writ.unwrapPending)await call("begin_unwrap",{token_id:id});
-        const proposed=await view(writ.target,"own_get_proposed_owner");
-        if(proposed!==session.accountId)throw new ChainError("outcome_unknown","Hand-back was not proposed. Inspect the role and retry.");
-        await call("own_accept_owner",{},"1",writ.target);
+      let writ = await this.getWrit(id);
+      if (!writ) throw new ChainError("not_found", "This Writ does not exist.");
+      const session = await this.getSession();
+      if (session?.accountId !== writ.owner)
+        throw new ChainError("unauthorized", "Holder only.");
+      const owner = await view(writ.target, "own_get_owner");
+      if (owner !== session.accountId) {
+        if (!writ.unwrapPending) await call("begin_unwrap", { token_id: id });
+        const proposed = await view(writ.target, "own_get_proposed_owner");
+        if (proposed !== session.accountId)
+          throw new ChainError(
+            "outcome_unknown",
+            "Hand-back was not proposed. Inspect the role and retry.",
+          );
+        await call("own_accept_owner", {}, "1", writ.target);
       }
-      const tx=await call("finish_unwrap",{token_id:id});
-      writ=await this.getWrit(id);if(writ)throw new ChainError("outcome_unknown","The role hand-back has not been confirmed. Retry to check; the NFT has not been retired.");
+      const tx = await call("finish_unwrap", { token_id: id });
+      writ = await this.getWrit(id);
+      if (writ)
+        throw new ChainError(
+          "outcome_unknown",
+          "The role hand-back has not been confirmed. Retry to check; the NFT has not been retired.",
+        );
       return tx;
     },
   };

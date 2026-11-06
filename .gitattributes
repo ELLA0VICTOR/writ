@@ -1,6 +1,5 @@
-* text=auto
-.githooks/* text eol=lf
 *.sh text eol=lf
-*.woff binary
-*.woff2 binary
-*.png binary
+*.rs text eol=lf
+*.toml text eol=lf
+Cargo.lock text eol=lf
+src/templates/*.json text eol=lf

@@ -34,10 +34,14 @@ export interface WritAdapter {
   getPurchaseFeeAllowance(): Promise<YoctoNear>;
   getPurchaseStorageDeposit(): Promise<YoctoNear>;
   getMintQuote(request: WrapRequest): Promise<import("./types").MintQuote>;
+  getPracticeQuote(): Promise<import("./types").MintQuote>;
+  createPracticeTarget(): Promise<string>;
   transfer(id: string, receiver: string): Promise<TransactionRef>;
   fundExecutor(id: string, amount: YoctoNear): Promise<TransactionRef>;
   confirmWrap(id: string): Promise<TransactionRef>;
-  getAccountRecovery(accountId: string): Promise<import("./types").AccountRecovery>;
+  getAccountRecovery(
+    accountId: string,
+  ): Promise<import("./types").AccountRecovery>;
   withdrawCredit(amount: YoctoNear): Promise<TransactionRef>;
   withdrawRetired(id: string, amount: YoctoNear): Promise<TransactionRef>;
   getTemplates(): Promise<RoleTemplate[]>;

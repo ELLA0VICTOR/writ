@@ -1,5 +1,5 @@
 {
-  "contract-owner": { "sandboxPassed": false, "evidence": null },
-  "dao-council": { "sandboxPassed": false, "evidence": null },
+  "contract-owner": { "sandboxPassed": true, "evidence": "docs/contract-verification.json" },
+  "dao-council": { "sandboxPassed": true, "evidence": "docs/contract-verification.json" },
   "staking-pool-owner": { "sandboxPassed": false, "evidence": null }
 }

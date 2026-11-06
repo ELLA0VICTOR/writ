@@ -1,108 +1,74 @@
 # Writ
 
-Transfer a contract role with an NFT. Inspect its declared conditions before buying it.
+Transfer an NFT, and transfer who can exercise an on-chain role. The role stays with the same keyless NEAR executor account. The previous holder and all previous loans lose permission at the collection.
 
-React 18, strict TypeScript and Vite. Static frontend for the NEAR hackathon NFT track, following `writ-frontend-codex-prompt.md`.
+Built for NEAR's **NFTs That Do Something** track. React 18, TypeScript and Vite frontend; Rust/near-sdk collection and executor. Supports native NEAR, scoped zero-deposit role calls, direct NFT transfers, optional conditional sales and verified Owner-role hand-back.
 
-**Status:** interactive frontend with a stateful mock adapter, real NEAR wallet/RPC integration and a gated, proposed contract ABI. This repository does not deploy a collection or executor. Minting and unwrapping remain disabled in testnet mode until their provisioning quote and verified hand-back integrations exist. Frontend tests are not contract security tests.
-
-## Run and explore
-
-Use Node 24.19+ (the NEAR package also supports Node 22.22.2+).
+## Try it
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open `http://localhost:5173/?mock=1`. The example banner stays visible on every mock page. No wallet signs anything and no NEAR moves in example mode. Internal links preserve the flag.
+Use the configured testnet deployment, or add `?mock=1` for labelled examples. `/app` shows your Writs and withdrawal credits; `/market` shows listings; `/wrap` creates a Writ; `/writ/<id>` exposes checks, history and holder actions.
 
-1. The landing page introduces transferable role authority and shows the technology strip. **Wrap a role** is the primary action; sales remain optional. Its previous purchase exercise is available only in the development component gallery.
-2. Open `/market?mock=1`, inspect Writ 0007 and read the checks without connecting. Key/code checks are explicitly page-only observations.
-3. Select **Ben, buyer** in **Example viewer**. Buy Writ 0007 with conditions. The holder changes to Ben and his holder actions become available.
-4. Reset examples. Use **Example purchase controls** on the Writ page to choose **Hidden next owner**. The purchase is refused and the refund becomes claimable. Withdraw it to see the returned-funds example. There are no invented testnet links.
-5. Try rejected signatures, changed versions, competing buyers, insufficient balance, unconfirmed outcomes and overdue callbacks. An unconfirmed attempt offers a status check instead of another payment. Timeout release precedes refund withdrawal.
-6. Select **Ada, holder**, then inspect Writ 0012 through **My Writs**. Use a role, lend exact `set_price` arguments with a future UTC expiry, or list it. Listed Writs pause holder actions. End loans before unwrapping.
-7. On `/wrap?mock=1` as Ada, choose Contract owner and enter `lanterns-nft.testnet`. Read the owner, mint, propose the executor, accept from it, and verify. Enter `other.testnet` to see a mismatched holder.
-8. `/__gallery?mock=1` shows component/NFT states in development. Its route and source chunk are omitted from production.
+Public identities, hashes and genuine receipts are in [deployments/testnet.json](deployments/testnet.json). On a clean checkout, copy its public values into `.env.local` using [.env.example](.env.example), then restart Vite. Every `VITE_` value is public. Never put a signing key in one.
 
-Fixtures are authored examples dated 6 November 2026. **Reset examples** clears in-memory state and mock purchase recovery entries. A hard reload resets the mock chain; real purchase identifiers use separate session-storage entries.
+Connect a testnet wallet, open **Wrap a role**, and choose **Contract owner**. If you have no compatible contract, **Create or resume practice target** provisions a keyless practice service owned by your wallet. Funding/storage quotes appear before signing. Minting provisions a separate keyless executor; propose that executor as owner, let it accept, and verify the handover. A mint alone does not move the role.
 
-## Testnet integration
+Use the Writ to exercise or lend `set_price`, fund/withdraw native NEAR, transfer directly, or optionally list for sale. Direct transfers have no purchase price or settlement checks. Listing pauses use, lending, withdrawals and transfers. Buyers pin the version, template, price and optional minimum available executor balance. Failed conditions preserve the seller's NFT and make the full purchase price refundable. The disclosed **0.05 NEAR retained record charge** and network fees remain spent. Successful sales credit the seller's withdrawal balance in **My Writs**.
 
-Without the flag, `testnetAdapter` uses real wallets and public RPC. Missing configuration shows a deployment-pending sheet. RPC errors never fall back to fixtures.
+Unwrap uses three transactions: propose the wallet, accept from the wallet, then verify the external role before retiring the NFT. Reopen **Unwrap** after an interruption to resume. Remaining native executor funds are recoverable by the last holder through **My Writs**.
 
-Copy `.env.example` to `.env.local`:
+## Role compatibility
 
-| Variable                   | Purpose                                                    |
-| -------------------------- | ---------------------------------------------------------- |
-| `VITE_NEAR_RPC_URL`        | Defaults to `https://rpc.testnet.near.org`.                |
-| `VITE_WRIT_CONTRACT`       | Actual collection account. Leave empty until deployed.     |
-| `VITE_WRIT_ABI_VERSION`    | `writ-ui-v1`, after implementing the integration contract. |
-| `VITE_EXECUTOR_CODE_HASH`  | Independently published executor hash.                     |
-| `VITE_OWNER_TEMPLATE_HASH` | Published hash for the exact owner template.               |
-| `VITE_GITHUB_URL`          | Real repository link; hidden when absent.                  |
-| `VITE_DEMO_VIDEO_URL`      | Real demo link; hidden when absent.                        |
+| Template       | Integration                                           | Boundary                                                                                                                                   |
+| -------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Contract owner | Actual upstream `near-sdk-contract-tools` Owner 4.0.0 | `set_price` belongs to the example service, not the generic Owner trait. Targets must expose the declared methods.                         |
+| DAO council    | Pinned, unchanged upstream Sputnik DAO v2 Wasm        | Matches the named council group. DAO governance must approve membership and can later revoke it. A seat does not confer exclusive control. |
+| Staking pool   | Unimplemented draft                                   | Not offered as a supported live template. Immutable standard pool ownership cannot simply be wrapped after creation.                       |
 
-All `VITE_` values are public. Do not put signing keys or secrets in them. The adapter verifies `get_frontend_config` against the configured ABI and hashes. Setting environment values alone does not establish deployment compatibility.
+For DAO wrapping, approve an `AddMemberToRole` proposal through the existing DAO governance interface, adding the displayed executor to `council`, then confirm in Writ. Writ does not bypass approval. Its role action forwards `act_proposal` with exact JSON arguments.
 
-See [contract integration](docs/contract-integration.md) for proposed methods, JSON shapes, money semantics and remaining work. After connecting a compatible deployment, restart Vite and open `/writ/<actual-id>`. **Read again** runs the page checks at one finalized block hash. A purchase runs its own asynchronous settlement checks.
-
-No indexer is configured; history uses the contract history view. `src/content/evidence.json` has no transaction hashes. Every gate in `template-validation.json` starts false. Only genuine sandbox evidence should change them. DAO and staking drafts are consequently not promoted as supported integrations.
-
-## Checks and build
+## Build and verify
 
 ```sh
+# Linux or WSL: Node 24+, Rust 1.99.1, cargo-near 0.23.0
+npm ci
+bash scripts/build-contracts.sh
+npm --prefix integration ci
+npm --prefix integration test
+
+# Frontend
 npm test
 npx playwright install chromium
 npm run test:e2e
 npm run build
-npm run preview
+npm run check:secrets
 ```
 
-Vitest covers replay outcomes, check mapping, integer precision, untrusted RPC data, mock permission behavior, purchase transitions and four SVG snapshots. Playwright covers routes, responsive overflow, console errors, axe, purchase/refund/recovery states, keyboard focus and wrapping. Automated accessibility checks supplement browser/keyboard inspection.
+Contracts originate from `cargo near new` scaffolds and use pinned Cargo locks/toolchain. Builds use `cargo near build non-reproducible-wasm`; published hashes identify the tested/deployed artifacts, without claiming reproducible container-build certification. The local Windows helper is `wsl -d Ubuntu-24.04 -- bash /mnt/c/Users/kolev/Desktop/writ/scripts/linux-env.sh <command>`.
 
-Screenshots are saved to [docs/screenshots](docs/screenshots) at 1440×900 and 390×844, including purchase receipts. The build enforces 120,000 gzipped JS bytes for landing and 250,000 for the **sum of all production JS chunks**, including wallet, RPC and embedded NFT fonts. See `dist/bundle-report.json`. Vite reports CSS/fonts separately.
+The sandbox suite executes actual Wasm and receipts: upstream Owner handover, direct transfer, receiver rollback/reentry, lending/revocation, sale/refund accounting, spoofed callbacks, yielded calls, deadline release, late callbacks, failed provisioning, real failed native payments, retirement and residual-fund recovery. [Measurements](docs/contract-verification.json) include binary hashes and gas observations. [Verification](docs/VERIFICATION.md) distinguishes local sandbox, browser and public testnet evidence. It is not an audit or competitor benchmark.
 
-`node scripts/inspect-browser.mjs` checks layout and an actual browser RPC connection while Vite is running. It uses development module URLs, not production endpoints.
+`node integration/deploy-testnet.mjs` creates funded **testnet-only** accounts, deploys local artifacts and records real demonstration receipts. Run through the WSL helper with integration dependencies installed. It journals completed steps and refuses silent upgrades. Credentials and journal stay in ignored `.local/deployment/`; only public identities/hashes enter frontend configuration and the deployment manifest. No mainnet deployment is configured.
 
-`node scripts/inspect-wallet.mjs` checks the actual testnet wallet manifest, Writ's own wallet picker and its accessibility at both screenshot sizes. It does not select a wallet or sign anything. The picker uses Writ's flat white/yellow dialog; NEAR Connect handles discovery and signing underneath.
+## Security and limits
 
-## Static hosting
+- Executors have no keys. Only the collection can instruct them. No key, deploy or delete surface exists. Authorization checks the current NFT holder or an exact unexpired loan at the current epoch.
+- Ordinary role calls attach zero deposit. The executor supplies exactly 1 yoctoNEAR for upstream Owner authentication; those ownership methods cannot be lent.
+- A pending counter is set before dispatch. Listing/transfers wait for completion of returned promises. Browser timers cannot unlock an unknown action.
+- Sales join independent external calls. This is **not a simultaneous global snapshot**. Targets can misreport state or schedule future changes; governance may revoke authority later. Only declared predicates are enforced.
+- Executor key/code observations are page-only RPC checks. The collection's full-access deployment key remains local for this testnet prototype; collection upgrades remain a trust assumption. No independent security audit is claimed.
+- Purchase refunds and seller/account credits have separate ledgers. Outgoing amounts are reserved before dispatch; private callbacks restore failed payments. Deadline release invalidates an attempt before refund availability.
+- Withdrawable native NEAR excludes storage and the 0.05 NEAR operating reserve. Arbitrary FT/NFT inventories and paid forwarded role calls are not implemented: do not send unsupported assets to an executor.
+- History retains 64 entries; event logs preserve separate transaction evidence. Loans are capped at eight, each with 4 KB of canonical JSON arguments and at most 366 days of validity. No production indexer is configured.
 
-Vercel or Netlify: build command `npm run build`, output `dist`. `vercel.json` and `public/_redirects` support direct SPA routes. Configure public environment values before building. No external hosting was registered or published during this work.
+See [threat model](docs/THREAT_MODEL.md), [ABI](docs/contract-integration.md), [NFT media](docs/NFT_MEDIA.md), and [AI/library disclosure](docs/AI_USE.md). Dynamic standalone SVG media derives from the same face renderer as the frontend, including embedded font subsets. Marketplaces may cache it.
 
-## Design and boundaries
+## Hosting and Git safety
 
-See [brief resolutions](docs/BRIEF_RESOLUTIONS.md), [threat model](docs/THREAT_MODEL.md) and [NFT media specification](docs/NFT_MEDIA.md). The original brief is unchanged. Design PNGs were not present, so matching unseen canvas exports is not claimed; the written specification governs the build.
+Build `npm run build`, publish `dist` to Vercel or Netlify; SPA rewrites are supplied. No hosting account, public website, hackathon submission, commit or push is created by these scripts. The gallery is development-only. Original headline weights and reduced-motion-aware scroll reveals are retained.
 
-Plain CSS custom properties and component CSS Modules implement the theme. Fontsource fonts use `font-display: swap`. Measured Arial/Courier New fallback overrides are reproducible with `python scripts/font-metrics.py` on Windows, without Python dependencies. Platform-specific font loading can still affect layout.
-
-## Libraries and AI use
-
-| Library/tool                           | Use                                           |
-| -------------------------------------- | --------------------------------------------- |
-| React 18 / React DOM                   | UI and contexts.                              |
-| React Router DOM                       | Routing.                                      |
-| Vite / React plugin                    | Development and static build.                 |
-| TypeScript                             | Strict types.                                 |
-| Fontsource Public Sans / Courier Prime | Self-hosted fonts and standalone SVG subsets. |
-| `@hot-labs/near-connect`               | Lazy wallet selection/signing.                |
-| `near-api-js`                          | Lazy RPC provider.                            |
-| Vitest                                 | Unit/snapshot tests.                          |
-| Playwright                             | Browser flows, keyboard and screenshots.      |
-| `@axe-core/playwright` / axe-core      | Accessibility checks.                         |
-| Oxlint                                 | Existing optional lint command.               |
-| Prettier                               | Source formatting.                            |
-
-NEAR's [wallet-login guide](https://docs.near.org/web3-apps/tutorials/wallet-login) recommends NEAR Connect with near-api-js. The [RPC documentation](https://docs.near.org/api/rpc/contracts) defines account/key/code queries; [cross-contract docs](https://docs.near.org/smart-contracts/anatomy/crosscontract) explain asynchronous settlement. Checked 6 November 2026.
-
-The user supplied the brief; Claude supplied the Writ proposal/frontend direction. OpenAI Codex generated and revised frontend code, tests, docs and SVG layout. The Sites skill's local-preview/validation workflow was used; its hosting services were not. See [AI-use disclosure](docs/AI_USE.md). Versions/transitive dependencies are recorded in package-lock.json. Fonts retain their included SIL Open Font Licenses. Project source is MIT licensed. No competitor implementation was copied.
-
-## Local Git safety
-
-The local repository uses `.githooks/pre-commit` to scan the **staged content** for common credential patterns and reject generated/private file paths. Activate the hook on a new clone with `git config core.hooksPath .githooks`. Run `npm run check:secrets` to inspect current commit candidates without staging anything. Pattern checks are a safeguard, not a guarantee that every possible secret format is detectable; review staged changes before committing.
-
-Environment files, private-key formats, dependencies, builds, browser reports, local screenshots, copied public docs/licenses, generated SVG font data and the local build brief are excluded. `.env.example`, package-lock.json, source assets, tests and SVG snapshots stay eligible. Font data is regenerated automatically before dev, build and test, so a clean checkout does not need the generated font file committed.
-
-Content uses one-time scroll reveals with a short stagger. Reduced-motion, keyboard-focus and print views remain immediately readable.
+`.local/`, environment files, keys, dependencies, Wasm artifacts, targets, reports and generated fonts/media are ignored. Source, Cargo/npm locks, public deployment provenance and tests remain eligible. The pre-commit scanner is in `.githooks`; activate it on a clone with `git config core.hooksPath .githooks`. Pattern checks supplement a human review.

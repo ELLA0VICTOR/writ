@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test --test-concurrency=1 tests/*.test.mjs"
+    "test": "node run-tests.mjs"
   },
   "dependencies": {
     "near-sandbox": "0.3.5",

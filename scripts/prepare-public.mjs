@@ -6,11 +6,21 @@ for (const name of [
   "BRIEF_RESOLUTIONS.md",
   "contract-integration.md",
   "NFT_MEDIA.md",
+  "contract-verification.json",
+  "vendor-provenance.json",
 ])
   await copyFile(
     new URL(`../docs/${name}`, import.meta.url),
     new URL(`../public/docs/${name}`, import.meta.url),
   );
+try {
+  await copyFile(
+    new URL("../deployments/testnet.json", import.meta.url),
+    new URL("../public/docs/testnet-deployment.json", import.meta.url),
+  );
+} catch (error) {
+  if (error.code !== "ENOENT") throw error;
+}
 await copyFile(
   new URL("../README.md", import.meta.url),
   new URL("../public/docs/README.md", import.meta.url),

@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import {useSearchParams} from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import type {
   CheckSnapshot,
   MintResult,
@@ -8,7 +8,7 @@ import type {
   MintQuote,
 } from "../../chain/types";
 import { useAdapter, useChain, useTitle } from "../../hooks/useChain";
-import { isAccountId, writNumber,formatNear } from "../../utils/amounts";
+import { isAccountId, writNumber, formatNear } from "../../utils/amounts";
 import { messageOf } from "../../chain/errors";
 import { Button, ButtonLink } from "../../components/Button/Button";
 import { Stepper } from "../../components/Stepper/Stepper";
@@ -42,10 +42,67 @@ export default function Wrap() {
   const [checks, setChecks] = useState<CheckSnapshot | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [quote,setQuote]=useState<MintQuote|null>(null);
-  const [search]=useSearchParams();const resume=search.get("resume");
-  useEffect(()=>{if(!adapter||!resume||!session)return;let live=true;void adapter.getWrit(resume).then(w=>{if(!live)return;if(!w||w.owner!==session.accountId)throw new Error("Only the Writ holder can resume this handover.");setMint({writ:w,mock:mode==="mock"});setTarget(w.target);setTemplate(w.templateId);setStep(3);}).catch(e=>{if(live)setError(messageOf(e));});return()=>{live=false;};},[adapter,resume,session,mode]);
-  useEffect(()=>{if(step!==2||!adapter||mint)return;let live=true;setQuote(null);void adapter.getMintQuote({templateId,target}).then(q=>{if(live)setQuote(q);}).catch(e=>{if(live)setError(messageOf(e));});return()=>{live=false;};},[adapter,step,mint,templateId,target]);
+  const [quote, setQuote] = useState<MintQuote | null>(null);
+  const [practiceQuote, setPracticeQuote] = useState<MintQuote | null>(null);
+  useEffect(() => {
+    if (
+      !adapter?.capabilities.wrap ||
+      step !== 1 ||
+      templateId !== "contract-owner"
+    )
+      return;
+    let live = true;
+    void adapter
+      .getPracticeQuote()
+      .then((q) => {
+        if (live) setPracticeQuote(q);
+      })
+      .catch((e) => {
+        if (live) setError(messageOf(e));
+      });
+    return () => {
+      live = false;
+    };
+  }, [adapter, step, templateId]);
+  const [search] = useSearchParams();
+  const resume = search.get("resume");
+  useEffect(() => {
+    if (!adapter || !resume || !session) return;
+    let live = true;
+    void adapter
+      .getWrit(resume)
+      .then((w) => {
+        if (!live) return;
+        if (!w || w.owner !== session.accountId)
+          throw new Error("Only the Writ holder can resume this handover.");
+        setMint({ writ: w, mock: mode === "mock" });
+        setTarget(w.target);
+        setTemplate(w.templateId);
+        setStep(3);
+      })
+      .catch((e) => {
+        if (live) setError(messageOf(e));
+      });
+    return () => {
+      live = false;
+    };
+  }, [adapter, resume, session, mode]);
+  useEffect(() => {
+    if (step !== 2 || !adapter || mint) return;
+    let live = true;
+    setQuote(null);
+    void adapter
+      .getMintQuote({ templateId, target })
+      .then((q) => {
+        if (live) setQuote(q);
+      })
+      .catch((e) => {
+        if (live) setError(messageOf(e));
+      });
+    return () => {
+      live = false;
+    };
+  }, [adapter, step, mint, templateId, target]);
   useEffect(() => {
     if (adapter)
       void adapter
@@ -84,6 +141,25 @@ export default function Wrap() {
       setBusy(false);
     }
   }
+  async function practice() {
+    if (!adapter) return;
+    setBusy(true);
+    setError("");
+    try {
+      const account = await adapter.createPracticeTarget();
+      setTarget(account);
+      setInspection(
+        await adapter.inspectWrap({
+          templateId: "contract-owner",
+          target: account,
+        }),
+      );
+    } catch (e) {
+      setError(messageOf(e));
+    } finally {
+      setBusy(false);
+    }
+  }
   async function handOver(index: number) {
     if (!adapter || !mint) return;
     setBusy(true);
@@ -107,7 +183,7 @@ export default function Wrap() {
     setBusy(true);
     setError("");
     try {
-      if(mode==="testnet")await adapter.confirmWrap(mint.writ.id);
+      if (mode === "testnet") await adapter.confirmWrap(mint.writ.id);
       setChecks(await adapter.readChecks(mint.writ.id));
     } catch (reason) {
       setError(messageOf(reason));
@@ -161,7 +237,10 @@ export default function Wrap() {
                           type="radio"
                           name="template"
                           checked={templateId === item.id}
-                          onChange={() => setTemplate(item.id)}
+                          onChange={() => {
+                            setTemplate(item.id);
+                            setInspection(null);
+                          }}
                         />
                         <span>
                           <strong>{item.name}</strong>
@@ -231,7 +310,10 @@ export default function Wrap() {
                     <FieldList
                       fields={[
                         {
-                          label: "Reported owner",
+                          label:
+                            templateId === "dao-council"
+                              ? "Council member"
+                              : "Reported owner",
                           value: inspection.holder,
                           typed: true,
                         },
@@ -250,11 +332,40 @@ export default function Wrap() {
                     />
                     <p role="status">
                       {inspection.isCurrentHolder
-                        ? "The reported owner matches your wallet."
+                        ? templateId === "dao-council"
+                          ? "Your wallet is in the reported council group. Adding the executor still needs DAO approval."
+                          : "The reported owner matches your wallet."
                         : `${target} says its owner is ${inspection.holder}, not you.`}
                     </p>
                   </div>
                 )}
+                {session &&
+                  templateId === "contract-owner" &&
+                  practiceQuote && (
+                    <div className={s.inspection}>
+                      <h3>Need a contract to try?</h3>
+                      <p>
+                        Create a practice service whose Owner role belongs to
+                        your connected wallet. Its account has no keys. This is
+                        optional; existing compatible contracts work too.
+                      </p>
+                      <p>
+                        Attach{" "}
+                        <code>{formatNear(practiceQuote.deposit)} NEAR</code>{" "}
+                        for the target, including{" "}
+                        <code>
+                          {formatNear(practiceQuote.storageDeposit)} NEAR
+                        </code>{" "}
+                        of retained record storage. Minting your Writ is a
+                        separate quoted payment.
+                      </p>
+                      <Button disabled={busy} onClick={() => void practice()}>
+                        {busy
+                          ? "Provisioning…"
+                          : "Create or resume practice target"}
+                      </Button>
+                    </div>
+                  )}
                 <footer>
                   <Button onClick={() => next(0)}>Back</Button>
                   <Button
@@ -318,7 +429,9 @@ export default function Wrap() {
                     <p className={s.note}>
                       {mode === "mock"
                         ? "Example minting uses fixture funds. No NEAR is charged."
-                        : quote ? `Attach ${formatNear(quote.deposit)} NEAR: ${formatNear(quote.executorFunding)} funds the executor and ${formatNear(quote.storageDeposit)} covers retained storage. Storage is not refunded if provisioning fails; recover returned funding in My Writs.` : "Reading the on-chain funding and storage quote…"}
+                        : quote
+                          ? `Attach ${formatNear(quote.deposit)} NEAR: ${formatNear(quote.executorFunding)} funds the executor and ${formatNear(quote.storageDeposit)} covers retained storage. Storage is not refunded if provisioning fails; recover returned funding in My Writs.`
+                          : "Reading the on-chain funding and storage quote…"}
                     </p>
                   </>
                 )}
@@ -326,7 +439,9 @@ export default function Wrap() {
                   {!mint && <Button onClick={() => next(1)}>Back</Button>}
                   <Button
                     variant="primary"
-                    disabled={busy || !adapter?.capabilities.wrap || (!mint&&!quote)}
+                    disabled={
+                      busy || !adapter?.capabilities.wrap || (!mint && !quote)
+                    }
                     onClick={() => void (mint ? next(3) : mintWrit())}
                   >
                     {busy
@@ -342,9 +457,23 @@ export default function Wrap() {
               <>
                 <h2>Let the account accept.</h2>
                 <p>
-                  {templateId==="dao-council"?"The DAO must approve adding the executor to its council through its own governance. This does not grant exclusive control. Use the executor account below in an AddMemberToRole proposal, then return here to verify membership.":"The owner role follows a two-step handover. Complete these in order. Ticks appear only after each action completes."}
+                  {templateId === "dao-council"
+                    ? "The DAO must approve adding the executor to its council through its own governance. This does not grant exclusive control. Use the executor account below in an AddMemberToRole proposal, then return here to verify membership."
+                    : "The owner role follows a two-step handover. Complete these in order. Ticks appear only after each action completes."}
                 </p>
-                {templateId==="dao-council"&&<FieldList fields={[{label:"Council member to add",value:mint.writ.executor,typed:true},{label:"DAO",value:target,typed:true},{label:"Role",value:"council"}]}/>}
+                {templateId === "dao-council" && (
+                  <FieldList
+                    fields={[
+                      {
+                        label: "Council member to add",
+                        value: mint.writ.executor,
+                        typed: true,
+                      },
+                      { label: "DAO", value: target, typed: true },
+                      { label: "Role", value: "council" },
+                    ]}
+                  />
+                )}
                 <div className={s.handover}>
                   {template?.wrapSteps.map((item, index) => (
                     <article key={item.method}>
@@ -404,7 +533,9 @@ export default function Wrap() {
                   <Button
                     variant="primary"
                     disabled={
-                      busy || (templateId!=="dao-council"&&completed.length !== template?.wrapSteps.length)
+                      busy ||
+                      (templateId !== "dao-council" &&
+                        completed.length !== template?.wrapSteps.length)
                     }
                     onClick={() => next(4)}
                   >
@@ -421,8 +552,9 @@ export default function Wrap() {
                     : "Confirm the role arrived."}
                 </h2>
                 <p>
-                  Read the target and executor again. A successful handover must
-                  show the executor as owner, with no next owner left waiting.
+                  {templateId === "dao-council"
+                    ? "Read the named council group and executor again. Membership must include the executor; DAO governance remains sovereign."
+                    : "Read the target and executor again. A successful handover must show the executor as owner, with no next owner left waiting."}
                 </p>
                 {checks && (
                   <>

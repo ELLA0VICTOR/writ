@@ -47,7 +47,7 @@ try {
   report.rpc = await page.evaluate(async (file) => {
     const { JsonRpcProvider } = await import("/" + file);
     const provider = new JsonRpcProvider({
-      url: "https://rpc.testnet.near.org",
+      url: "https://test.rpc.fastnear.com",
     });
     const status = await provider.sendJsonRpc("status", []);
     return { chainId: status.chain_id };

@@ -1,6 +1,13 @@
 import { beforeEach, afterEach, describe, it, expect, vi } from "vitest";
 import { exampleWrit } from "../../src/chain/fixtures/writs";
 const rpc = vi.hoisted(() => vi.fn());
+const walletCall = vi.hoisted(() =>
+  vi.fn(async () => ({ mock: false, hash: "actual-wallet-result" })),
+);
+vi.mock("../../src/chain/wallet", () => ({
+  walletSession: async () => ({ accountId: "ben.testnet" }),
+  walletCall,
+}));
 vi.mock("near-api-js", () => ({
   JsonRpcProvider: class {
     sendJsonRpc = rpc;
@@ -16,7 +23,15 @@ describe("real adapter wire contract with controlled RPC responses", () => {
     vi.stubEnv("VITE_WRIT_ABI_VERSION", "writ-ui-v1");
     vi.stubEnv("VITE_EXECUTOR_CODE_HASH", "published-executor");
     vi.stubEnv("VITE_OWNER_TEMPLATE_HASH", "published-owner");
+    vi.stubEnv("VITE_DAO_TEMPLATE_HASH", "");
     rpc.mockReset();
+    walletCall.mockClear();
+    const saved = new Map<string, string>();
+    vi.stubGlobal("sessionStorage", {
+      getItem: (k: string) => saved.get(k) ?? null,
+      setItem: (k: string, v: string) => saved.set(k, v),
+      removeItem: (k: string) => saved.delete(k),
+    });
   });
   afterEach(() => vi.unstubAllEnvs());
   it("fails closed for incompatible deployment metadata", async () => {
@@ -105,5 +120,96 @@ describe("real adapter wire contract with controlled RPC responses", () => {
     expect(a.capabilities.unwrap).toBe(true);
     vi.stubEnv("VITE_WRIT_CONTRACT", "");
     expect(createTestnetAdapter().capabilities.wrap).toBe(false);
+  });
+  it("attaches retained storage to a purchase and keeps buyer identity for refund recovery", async () => {
+    rpc.mockImplementation(
+      async (_method: string, args: Record<string, unknown>) => {
+        if (args.method_name === "get_frontend_config")
+          return encoded({
+            abi_version: "writ-ui-v1",
+            executor_code_hash: "published-executor",
+            template_hashes: { "contract-owner": "published-owner" },
+            purchase_storage_deposit: "500",
+          });
+        if (args.method_name === "get_purchase")
+          return encoded({ status: "released", refundStatus: "claimable" });
+        throw new Error("Unexpected query");
+      },
+    );
+    const a = createTestnetAdapter();
+    const handle = await a.buy({
+      writId: "7",
+      expectedNonce: "12",
+      expectedTemplateHash: "published-owner",
+      maximumPrice: "1000",
+      pins: [],
+      clientAttemptId: "stable-request",
+    });
+    expect(walletCall).toHaveBeenCalledWith(
+      "writ-demo.testnet",
+      "buy",
+      expect.objectContaining({ client_attempt_id: "stable-request" }),
+      "1500",
+    );
+    expect(handle.buyerId).toBe("ben.testnet");
+    expect(sessionStorage.getItem("writ-purchase:testnet:7")).toContain(
+      "ben.testnet",
+    );
+    await a.getPurchase(handle);
+    await a.claimRefund(handle);
+    expect(walletCall).toHaveBeenLastCalledWith(
+      "writ-demo.testnet",
+      "claim_refund",
+      {
+        token_id: "7",
+        buyer_id: "ben.testnet",
+        client_attempt_id: "stable-request",
+      },
+      "0",
+    );
+    const lookup = rpc.mock.calls.find(
+      ([, p]) => p.method_name === "get_purchase",
+    )![1];
+    expect(
+      JSON.parse(Buffer.from(lookup.args_base64, "base64").toString()),
+    ).toEqual({
+      token_id: "7",
+      buyer_id: "ben.testnet",
+      client_attempt_id: "stable-request",
+    });
+  });
+  it("uses milliseconds for loan expiry and one yocto for standard NFT transfer", async () => {
+    rpc.mockResolvedValue(
+      encoded({
+        abi_version: "writ-ui-v1",
+        executor_code_hash: "published-executor",
+        template_hashes: { "contract-owner": "published-owner" },
+        purchase_storage_deposit: "500",
+      }),
+    );
+    const a = createTestnetAdapter();
+    await a.lend({
+      writId: "7",
+      borrower: "sam.testnet",
+      method: "set_price",
+      args: { price: "1" },
+      maxDeposit: "0",
+      expiresAt: "2026-11-07T00:00:00Z",
+    });
+    expect(walletCall).toHaveBeenLastCalledWith(
+      "writ-demo.testnet",
+      "lend",
+      expect.objectContaining({
+        expires_at_ms: String(Date.parse("2026-11-07T00:00:00Z")),
+      }),
+      "0",
+    );
+    await a.transfer("7", "sam.testnet");
+    expect(walletCall).toHaveBeenLastCalledWith(
+      "writ-demo.testnet",
+      "nft_transfer",
+      { token_id: "7", receiver_id: "sam.testnet" },
+      "1",
+    );
   });
 });

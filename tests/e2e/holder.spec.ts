@@ -50,3 +50,28 @@ test("only current borrower gets the scoped action UI", async ({ page }) => {
     page.getByRole("heading", { name: "Your holder actions" }),
   ).toHaveCount(0);
 });
+
+test("a direct transfer moves holder actions without opening a sale", async ({
+  page,
+}) => {
+  await page.goto("/writ/12?mock=1");
+  await page.getByLabel("Example viewer").selectOption("ada.testnet");
+  await page
+    .getByRole("button", { name: "Transfer the Writ", exact: true })
+    .click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByLabel("Receiving account").fill("ben.testnet");
+  await dialog.getByRole("checkbox").check();
+  await dialog
+    .getByRole("button", { name: "Transfer the Writ", exact: true })
+    .click();
+  await expect(dialog).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: "Your holder actions" }),
+  ).toHaveCount(0);
+  await page.getByLabel("Example viewer").selectOption("ben.testnet");
+  await expect(
+    page.getByRole("heading", { name: "Your holder actions" }),
+  ).toBeVisible();
+  await expect(page.getByText("No active loans.")).toBeVisible();
+});

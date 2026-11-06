@@ -137,6 +137,15 @@ export default function WritDetail() {
       setActionError(messageOf(reason));
     }
   }
+  async function moreHistory() {
+    if (!adapter || !history?.nextCursor) return;
+    try {
+      const next = await adapter.getHistory(id, history.nextCursor);
+      setHistory({ ...next, entries: [...history.entries, ...next.entries] });
+    } catch (e) {
+      setHistoryError(messageOf(e));
+    }
+  }
   const refresh = () => setRetry((value) => value + 1);
   if (error)
     return (
@@ -169,7 +178,12 @@ export default function WritDetail() {
     );
   const template = getTemplate(writ.templateId);
   const owner = session?.accountId === writ.owner;
-  const paused = writ.status === "listed" || writ.status === "locked" || writ.pendingCalls>0 || writ.provisioned===false || writ.unwrapPending===true;
+  const paused =
+    writ.status === "listed" ||
+    writ.status === "locked" ||
+    writ.pendingCalls > 0 ||
+    writ.provisioned === false ||
+    writ.unwrapPending === true;
   const loaned = writ.loans.some(
     (l) =>
       l.borrower === session?.accountId &&
@@ -211,9 +225,20 @@ export default function WritDetail() {
             ) : owner ? (
               <>
                 <div className={s.actionButtons}>
-                  {writ.roleConfirmed===false && <ButtonLink to={`/wrap?resume=${writ.id}`}>Complete role handover</ButtonLink>}
-                  <Button disabled={paused} onClick={()=>setAction("transfer")}>Transfer the Writ</Button>
-                  <Button disabled={paused} onClick={()=>setAction("fund")}>Fund the executor</Button>
+                  {writ.roleConfirmed === false && (
+                    <ButtonLink to={`/wrap?resume=${writ.id}`}>
+                      Complete role handover
+                    </ButtonLink>
+                  )}
+                  <Button
+                    disabled={paused}
+                    onClick={() => setAction("transfer")}
+                  >
+                    Transfer the Writ
+                  </Button>
+                  <Button disabled={paused} onClick={() => setAction("fund")}>
+                    Fund the executor
+                  </Button>
                   {adapter?.capabilities.execute && (
                     <Button
                       disabled={paused}
@@ -242,7 +267,15 @@ export default function WritDetail() {
                     </Button>
                   )}
                   {adapter?.capabilities.list && (
-                    <Button disabled={writ.unwrapPending || writ.pendingCalls>0 || writ.roleConfirmed===false} variant="primary" onClick={() => setAction("list")}>
+                    <Button
+                      disabled={
+                        writ.unwrapPending ||
+                        writ.pendingCalls > 0 ||
+                        writ.roleConfirmed === false
+                      }
+                      variant="primary"
+                      onClick={() => setAction("list")}
+                    >
                       {writ.status === "listed"
                         ? "Change listing"
                         : "List for sale"}
@@ -253,7 +286,11 @@ export default function WritDetail() {
                   )}
                   {adapter?.capabilities.unwrap && template.supportsUnwrap && (
                     <Button
-                      disabled={(paused && !writ.unwrapPending) || writ.pendingCalls>0 || writ.loans.length > 0}
+                      disabled={
+                        (paused && !writ.unwrapPending) ||
+                        writ.pendingCalls > 0 ||
+                        writ.loans.length > 0
+                      }
                       title={
                         paused
                           ? "Paused while listed"
@@ -310,7 +347,12 @@ export default function WritDetail() {
         <div className={s.content}>
           <div className={s.title} data-reveal>
             <p className="sectionLabel">Public Writ record</p>
-            <h1>Owner of {writ.target.replace(/\.testnet$/, "")}.</h1>
+            <h1>
+              {writ.templateId === "dao-council"
+                ? "Council seat at"
+                : "Owner of"}{" "}
+              {writ.target.replace(/\.testnet$/, "")}.
+            </h1>
             <p className="lead">{template.description}</p>
             {writ.price && (
               <div className={s.price}>
@@ -499,6 +541,11 @@ export default function WritDetail() {
               </p>
             ) : (
               <Loading label="Reading the ledger…" />
+            )}
+            {history?.nextCursor && (
+              <Button onClick={() => void moreHistory()}>
+                Load more history
+              </Button>
             )}
           </section>
         </div>

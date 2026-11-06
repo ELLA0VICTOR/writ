@@ -45,14 +45,16 @@ export function ChainProvider({ children }: { children: ReactNode }) {
     return adapter;
   }, [mode]);
   const refreshSession = useCallback(async () => {
-    setSession(await (await getAdapter()).getSession());
-  }, [getAdapter]);
+    const value = await (await getAdapter()).getSession();
+    if (modeRef.current === mode) setSession(value);
+  }, [getAdapter, mode]);
   useEffect(() => {
     setSession(null);
     setError("");
     setWalletOptions(null);
     setBusy(false);
     const listener = () => void refreshSession().catch(() => setSession(null));
+    listener();
     window.addEventListener("writ:wallet", listener);
     return () => window.removeEventListener("writ:wallet", listener);
   }, [refreshSession]);
