@@ -1,22 +1,32 @@
-# Frontend verification — 6 November 2026
+# Verification ? 6 November 2026
 
-| Check                     | Observed result                                                                                                                            |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `npm test`                | 38 tests across 8 files passed.                                                                                                            |
-| `npm run test:e2e`        | 34 browser tests passed.                                                                                                                   |
-| Route accessibility       | Zero axe violations on the tested mock routes at 1440×900 and 390×844. Unconfigured testnet routes and purchase dialogs also passed.       |
-| Browser errors            | Zero console errors/page exceptions in the route checks and production smoke test.                                                         |
-| Keyboard                  | Dialog Tab cycling, Escape and focus restoration passed.                                                                                   |
-| Responsive                | No page-level horizontal overflow in the tested route/viewport combinations. Tables and the mobile stepper scroll within their containers. |
-| Production build          | TypeScript strict build, Vite build and budget script passed.                                                                              |
-| Landing JS                | 68,537 gzip bytes against a 120,000-byte budget.                                                                                           |
-| Entire app JS             | 237,059 gzip bytes against a 250,000-byte budget; sum includes all emitted production chunks, wallet/RPC and embedded SVG fonts.           |
-| Production purchase       | Mock purchase settled in the built app. No real funds moved.                                                                               |
-| Real wallet picker        | Loaded real NEAR Connect testnet manifest, passed axe at both viewport sizes, cancelled without selecting an account or signing.           |
-| Real RPC                  | Browser and production-bundle provider returned chain ID `testnet`.                                                                        |
-| Public documents/licenses | HTTP 200 for README, threat model, AI disclosure and both font licenses.                                                                   |
-| Dev gallery               | Excluded from production manifest.                                                                                                         |
+| Check                           | Result                                                                                                                                                                     |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Frontend unit tests             | 42 passed across 8 files. Includes buyer-bound wire arguments, retained storage payment, loan expiry units, direct-transfer deposit and target-loss withdrawal visibility. |
+| Mock/unconfigured browser suite | 35 passed, including direct transfer, lending, purchase/refund/recovery, keyboard focus and responsive accessibility.                                                      |
+| Actual Wasm/NEAR sandbox        | 7 scenarios passed against the final deployed artifact hashes; 94 transactions recorded, including expected rejected attacks.                                              |
+| Live production browser         | 12 route/viewport checks passed at 1440?900 and 390?844 with real testnet RPC data; no page/console errors, no horizontal overflow, zero axe violations in tested views.   |
+| Live purchase readback          | Production adapter decoded Settled/Credited and Refused/Paid from actual buyer-bound contract records.                                                                     |
+| Production smoke                | Mock purchase, static docs/licenses, real RPC chain identity and real wallet picker passed. Picker cancelled without signing.                                              |
+| Build                           | Strict TypeScript, Vite and bundle limits passed. Landing 69,309 gzip JS bytes; all emitted app JS 228,056 bytes (limits 120,000 / 250,000).                               |
+| Dependencies                    | npm production audit and separate integration audit reported zero known vulnerabilities at the time checked.                                                               |
+| Lint                            | Exited successfully with React lifecycle/ref/purity advisory warnings. Not a warning-free claim.                                                                           |
+| Secret scan                     | Commit-candidate scan passed. Credentials, environment files, Wasm/targets, local journals and generated reports remain ignored.                                           |
 
-Raw production observations: [production-verification.json](production-verification.json). Reproduce with Vite preview on port 4173 and `node scripts/check-production.mjs`. The build writes its current measurements to `dist/bundle-report.json`. The Playwright report is generated under the ignored `playwright-report/` directory.
+## On-chain evidence
 
-These are frontend verification results. No Writ contract deployment, actual settlement/refund transaction, contract audit, sandbox gas/storage benchmark, competitor benchmark or external publication was performed. Real mint/unwrap integration remains disabled; method/ABI activation requirements are documented in [contract-integration.md](contract-integration.md).
+[Deployment manifest](../deployments/testnet.json) records the collection, executor/template hashes, actual transaction/receipt IDs, gas observations and public recovery handles. Collection: `writ-collection-mw52y1d4.testnet`.
+
+- Writ 1: upstream Owner handover, real service income, scoped loan, conditional sale, old-holder rejection, new-holder action, income withdrawal, seller proceeds withdrawal and relisting.
+- Writ 2: a next owner is deliberately left proposed. The purchase is refused and its native purchase-price refund is paid. Its live condition correctly remains Fail.
+- Writ 3: unchanged upstream Sputnik council membership, direct NFT transfer and a vote from the new holder through the same keyless executor.
+
+The old NEAR public endpoint returned a deprecation/rate-limit rejection during deployment. The journal retained completed transactions; the remaining DAO state was checked before resuming on `https://test.rpc.fastnear.com`, listed in the [official provider documentation](https://docs.near.org/api/rpc/providers). Frontend defaults and the generated environment now use that endpoint.
+
+## Reproduction and scope
+
+Run `bash scripts/build-contracts.sh` then `npm --prefix integration test` under Linux/WSL. [contract-verification.json](contract-verification.json) records artifact hashes and measured maximum gas per method from those executed calls. Examples: direct transfer about 3.045 Tgas, purchase about 12.605 Tgas, role execution about 23.755 Tgas and mint about 30.531 Tgas. These are sampled local observations, not worst-case upper bounds or competitor comparisons. Storage funding is a disclosed bounded allocation; a comprehensive worst-case storage benchmark is not claimed.
+
+Run `npm test`, `npm run test:e2e`, `npm run build`. With preview on port 4173, `node scripts/check-production.mjs` checks mock production behavior and `node scripts/check-live.mjs` checks real read flows. Raw local screenshots/reports stay under ignored `.local/live-browser/`; [live-verification.json](live-verification.json) is the public, key-free summary. Actual app-wallet signatures still need a human wallet interaction; public testnet writes were signed programmatically by the local demo accounts. No wallet signature was automated through an app wallet.
+
+The collection full-access deployment key remains local. This is an unaudited testnet prototype, with no mainnet deployment, public hosting, indexer, submitted entry or competitor-winning benchmark claimed. Contract tests establish the executed scenarios, not every possible async schedule, globally atomic external reads, permanent authority, or an exhaustive solvency proof.

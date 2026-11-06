@@ -14,6 +14,7 @@ vi.mock("near-api-js", () => ({
   },
 }));
 import { createTestnetAdapter } from "../../src/chain/testnetAdapter";
+import { ChainError } from "../../src/chain/errors";
 const encoded = (value: unknown) => ({
   result: [...new TextEncoder().encode(JSON.stringify(value))],
 });
@@ -25,7 +26,8 @@ describe("real adapter wire contract with controlled RPC responses", () => {
     vi.stubEnv("VITE_OWNER_TEMPLATE_HASH", "published-owner");
     vi.stubEnv("VITE_DAO_TEMPLATE_HASH", "");
     rpc.mockReset();
-    walletCall.mockClear();
+    walletCall.mockReset();
+    walletCall.mockResolvedValue({ mock: false, hash: "actual-wallet-result" });
     const saved = new Map<string, string>();
     vi.stubGlobal("sessionStorage", {
       getItem: (k: string) => saved.get(k) ?? null,
@@ -210,6 +212,67 @@ describe("real adapter wire contract with controlled RPC responses", () => {
       "nft_transfer",
       { token_id: "7", receiver_id: "sam.testnet" },
       "1",
+    );
+  });
+  it("keeps native-fund controls observable when the external Owner target disappears", async () => {
+    rpc.mockImplementation(
+      async (_method: string, args: Record<string, unknown>) => {
+        if (args.method_name === "get_frontend_config")
+          return encoded({
+            abi_version: "writ-ui-v1",
+            executor_code_hash: "published-executor",
+            template_hashes: { "contract-owner": "published-owner" },
+            purchase_storage_deposit: "500",
+          });
+        if (args.method_name === "get_writ")
+          return encoded({ ...exampleWrit, templateHash: "published-owner" });
+        if (args.method_name === "get_balance") return encoded("100");
+        if (args.request_type === "view_access_key_list") return { keys: [] };
+        if (args.request_type === "view_account")
+          return {
+            amount: "200",
+            code_hash: "published-executor",
+            block_hash: "pinned-block",
+          };
+        throw new Error("Target method no longer exists");
+      },
+    );
+    const w = await createTestnetAdapter().getWrit("7");
+    expect(w?.roleOwner).toBeNull();
+    expect(w?.roleObservationUnavailable).toBe(true);
+    expect(w?.withdrawableFees).toBe("100");
+  });
+  it("clears a definitively failed purchase handle but preserves an unknown submission", async () => {
+    rpc.mockResolvedValue(
+      encoded({
+        abi_version: "writ-ui-v1",
+        executor_code_hash: "published-executor",
+        template_hashes: { "contract-owner": "published-owner" },
+        purchase_storage_deposit: "500",
+      }),
+    );
+    const a = createTestnetAdapter();
+    const request = {
+      writId: "7",
+      expectedNonce: "1",
+      expectedTemplateHash: "published-owner",
+      maximumPrice: "1000",
+      pins: [],
+      clientAttemptId: "known-attempt",
+    };
+    walletCall.mockRejectedValueOnce(
+      new ChainError("invalid_input", "Confirmed on-chain failure"),
+    );
+    await expect(a.buy(request)).rejects.toThrow("Confirmed on-chain failure");
+    expect(sessionStorage.getItem("writ-purchase:testnet:7")).toBeNull();
+    walletCall.mockRejectedValueOnce(
+      new ChainError("outcome_unknown", "RPC interrupted"),
+    );
+    await expect(a.buy(request)).rejects.toMatchObject({
+      code: "outcome_unknown",
+    });
+    expect(sessionStorage.getItem("writ-purchase:testnet:7")).toContain(
+      "known-attempt",
     );
   });
 });

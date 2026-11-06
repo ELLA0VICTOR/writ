@@ -29,7 +29,7 @@ export function parseWrit(value: unknown): Writ | null {
   const w = record(value);
   for (const key of ["id", "epoch", "nonce", "balance", "withdrawableFees"])
     if (!integer(w[key])) throw invalid();
-  for (const key of ["collection", "owner", "executor", "target", "roleOwner"])
+  for (const key of ["collection", "owner", "executor", "target"])
     if (!account(w[key])) throw invalid();
   for (const key of ["templateId", "templateHash", "executorCodeHash"])
     if (!text(w[key]) || !w[key]) throw invalid();
@@ -37,6 +37,7 @@ export function parseWrit(value: unknown): Writ | null {
     !["held", "listed", "locked", "lent"].includes(String(w.status)) ||
     !Number.isSafeInteger(w.pendingCalls) ||
     Number(w.pendingCalls) < 0 ||
+    !(w.roleOwner === null || account(w.roleOwner)) ||
     !(w.proposedOwner === null || account(w.proposedOwner)) ||
     !(w.price === null || integer(w.price)) ||
     !Array.isArray(w.loans) ||

@@ -1,0 +1,96 @@
+{
+  "at": "2026-11-06T15:23:24.622Z",
+  "collection": "writ-collection-mw52y1d4.testnet",
+  "routes": [
+    {
+      "route": "/",
+      "width": 1440,
+      "status": 200,
+      "axeViolations": 0,
+      "overflow": false
+    },
+    {
+      "route": "/market",
+      "width": 1440,
+      "status": 200,
+      "axeViolations": 0,
+      "overflow": false
+    },
+    {
+      "route": "/writ/1",
+      "width": 1440,
+      "status": 200,
+      "axeViolations": 0,
+      "overflow": false
+    },
+    {
+      "route": "/writ/2",
+      "width": 1440,
+      "status": 200,
+      "axeViolations": 0,
+      "overflow": false
+    },
+    {
+      "route": "/writ/3",
+      "width": 1440,
+      "status": 200,
+      "axeViolations": 0,
+      "overflow": false
+    },
+    {
+      "route": "/wrap",
+      "width": 1440,
+      "status": 200,
+      "axeViolations": 0,
+      "overflow": false
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "status": 200,
+      "axeViolations": 0,
+      "overflow": false
+    },
+    {
+      "route": "/market",
+      "width": 390,
+      "status": 200,
+      "axeViolations": 0,
+      "overflow": false
+    },
+    {
+      "route": "/writ/1",
+      "width": 390,
+      "status": 200,
+      "axeViolations": 0,
+      "overflow": false
+    },
+    {
+      "route": "/writ/2",
+      "width": 390,
+      "status": 200,
+      "axeViolations": 0,
+      "overflow": false
+    },
+    {
+      "route": "/writ/3",
+      "width": 390,
+      "status": 200,
+      "axeViolations": 0,
+      "overflow": false
+    },
+    {
+      "route": "/wrap",
+      "width": 390,
+      "status": 200,
+      "axeViolations": 0,
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "purchaseReadback": {
+    "clean": "settled",
+    "refused": "refused",
+    "refund": "paid"
+  }
+}

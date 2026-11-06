@@ -183,20 +183,28 @@ export function createTestnetAdapter(): WritAdapter {
       : [];
     // Role views are checked separately. Never substitute a fabricated owner when unavailable.
     if (writ.templateId === "contract-owner") {
-      const [owner, proposed] = await Promise.all([
-        view(writ.target, "own_get_owner", {}, hash, signal),
-        view(writ.target, "own_get_proposed_owner", {}, hash, signal),
-      ]);
-      if (
-        typeof owner !== "string" ||
-        !(proposed === null || typeof proposed === "string")
-      )
-        throw new ChainError(
-          "rpc_unavailable",
-          "The target returned an invalid owner observation.",
-        );
-      writ.roleOwner = owner;
-      writ.proposedOwner = proposed;
+      try {
+        const [owner, proposed] = await Promise.all([
+          view(writ.target, "own_get_owner", {}, hash, signal),
+          view(writ.target, "own_get_proposed_owner", {}, hash, signal),
+        ]);
+        if (
+          !(owner === null || typeof owner === "string") ||
+          !(proposed === null || typeof proposed === "string")
+        )
+          throw new ChainError(
+            "rpc_unavailable",
+            "The target returned an invalid owner observation.",
+          );
+        writ.roleOwner = owner;
+        writ.proposedOwner = proposed;
+      } catch (error) {
+        if (signal?.aborted) throw error;
+        // A broken/deleted target must not hide the holder's independent native-fund controls.
+        writ.roleOwner = null;
+        writ.proposedOwner = null;
+        writ.roleObservationUnavailable = true;
+      }
     }
     return parseWrit(writ);
   }
@@ -615,7 +623,7 @@ export function createTestnetAdapter(): WritAdapter {
         );
         return { ...result, ...handle };
       } catch (error) {
-        if (error instanceof ChainError && error.code === "wallet_rejected")
+        if (error instanceof ChainError && error.code !== "outcome_unknown")
           sessionStorage.removeItem(savedKey);
         if (error instanceof ChainError && error.code === "outcome_unknown")
           throw new PurchaseSubmissionError(handle);

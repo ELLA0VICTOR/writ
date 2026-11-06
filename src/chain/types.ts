@@ -76,7 +76,8 @@ export interface Writ {
   withdrawableFees: YoctoNear;
   tokens: { symbol: string; amount: string }[];
   loans: Loan[];
-  roleOwner: AccountId;
+  roleOwner: AccountId | null;
+  roleObservationUnavailable?: boolean;
   proposedOwner: AccountId | null;
   accessKeys: string[];
   saleDeadlineBlock?: string;

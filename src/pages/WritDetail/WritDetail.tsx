@@ -354,6 +354,13 @@ export default function WritDetail() {
               {writ.target.replace(/\.testnet$/, "")}.
             </h1>
             <p className="lead">{template.description}</p>
+            {writ.roleObservationUnavailable && (
+              <p role="status">
+                The target role could not be observed. Its checks remain
+                unavailable; this does not disable your independent native-fund
+                withdrawals.
+              </p>
+            )}
             {writ.price && (
               <div className={s.price}>
                 <span>

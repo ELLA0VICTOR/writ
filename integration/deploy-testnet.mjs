@@ -403,7 +403,22 @@ const deployment = {
     await provider.viewAccount({ accountId: collection.accountId })
   ).code_hash,
   writs: { clean: first.id, proposed: second.id, dao: seat.id },
-  purchases: {clean:{mock:false,writId:first.id,attemptId:cleanAttempt,buyerId:bob.accountId,hash:clean.hash},proposed:{mock:false,writId:second.id,attemptId:refusedAttempt,buyerId:bob.accountId,hash:refused.hash}},
+  purchases: {
+    clean: {
+      mock: false,
+      writId: first.id,
+      attemptId: cleanAttempt,
+      buyerId: bob.accountId,
+      hash: clean.hash,
+    },
+    proposed: {
+      mock: false,
+      writId: second.id,
+      attemptId: refusedAttempt,
+      buyerId: bob.accountId,
+      hash: refused.hash,
+    },
+  },
   purchaseStorageDeposit: config.purchase_storage_deposit,
   upgradeAuthority:
     "Collection full-access deployment key retained locally. Testnet prototype; not immutable or audited.",

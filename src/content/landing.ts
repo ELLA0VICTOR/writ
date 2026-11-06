@@ -6,7 +6,7 @@ export const authoritySteps = [
   },
   {
     title: "Use its authority",
-    body: "The current NFT holder can exercise the role through the executor?s declared actions.",
+    body: "The current NFT holder can exercise the role through the executor's declared actions.",
     signer: "NFT holder",
   },
   {
@@ -16,7 +16,7 @@ export const authoritySteps = [
   },
   {
     title: "Pass the NFT on",
-    body: "The NFT?s ownership identifies the next controller. A sale is one optional way to arrange the handover.",
+    body: "The NFT's ownership identifies the next controller. A sale is one optional way to arrange the handover.",
     signer: "NFT holder",
   },
   {

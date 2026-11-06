@@ -8,6 +8,8 @@ for (const name of [
   "NFT_MEDIA.md",
   "contract-verification.json",
   "vendor-provenance.json",
+  "VERIFICATION.md",
+  "live-verification.json",
 ])
   await copyFile(
     new URL(`../docs/${name}`, import.meta.url),
