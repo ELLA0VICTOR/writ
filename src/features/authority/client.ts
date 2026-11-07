@@ -1,10 +1,14 @@
 import { WritClient } from "../../../sdk/index";
-import { deploymentConfig } from "../../chain/deployment";
-export function integrationClient() {
-  const deployment = deploymentConfig();
+import {
+  deploymentConfig,
+  type DeploymentConfig,
+} from "../../chain/deployment";
+export function integrationClient(
+  deployment: DeploymentConfig = deploymentConfig(),
+) {
   return new WritClient({
     rpcUrl: deployment.rpcUrl,
-    network: "testnet",
+    network: deployment.network,
     collection: deployment.collection,
     collectionCodeHash: deployment.collectionCodeHash,
     executorCodeHash: deployment.executorCodeHash,

@@ -9,7 +9,7 @@ export interface ReadContext {
   blockHash: string | null;
   phase?: "settlement_callback";
   observedAtMs: number;
-  source: "mock" | "testnet";
+  source: "mock" | "testnet" | "mainnet";
 }
 export interface CheckDefinition {
   id: string;
@@ -158,6 +158,8 @@ export interface TransactionRef {
   mock: boolean;
 }
 export interface PurchaseHandle extends TransactionRef {
+  network?: "testnet" | "mainnet";
+  collection?: string;
   writId: string;
   attemptId: string;
   buyerId?: AccountId;

@@ -227,7 +227,9 @@ export function ActionDialog({
                 className="typed"
                 autoComplete="off"
                 required
-                placeholder="sam.testnet"
+                placeholder={
+                  mode === "mainnet" ? "recipient.near" : "sam.testnet"
+                }
                 value={borrower}
                 onChange={(e) => setBorrower(e.target.value)}
               />
@@ -289,7 +291,9 @@ export function ActionDialog({
                 className="typed"
                 required
                 autoComplete="off"
-                placeholder="sam.testnet"
+                placeholder={
+                  mode === "mainnet" ? "recipient.near" : "sam.testnet"
+                }
                 value={receiver}
                 onChange={(e) => setReceiver(e.target.value)}
               />

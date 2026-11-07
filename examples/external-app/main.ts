@@ -5,14 +5,22 @@ const element = <T extends HTMLElement>(id: string) =>
 const message = (text: string) => {
   element("message").textContent = text;
 };
-const connector = new NearConnector({ network: "testnet", autoConnect: false });
 const deployment = await fetch("/deployment.json").then((r) => {
   if (!r.ok) throw new Error("Run npm run example:prepare first.");
   return r.json();
 });
+if (deployment.network !== "mainnet" && deployment.network !== "testnet")
+  throw new Error("Choose a mainnet or testnet public deployment manifest.");
+const network: "mainnet" | "testnet" = deployment.network;
+const connector = new NearConnector({ network, autoConnect: false });
+element("network").textContent = `Separate application · NEAR ${network}`;
 const client = new WritClient({
-  rpcUrl: "https://test.rpc.fastnear.com",
-  network: "testnet",
+  rpcUrl:
+    deployment.rpcUrl ||
+    (network === "mainnet"
+      ? "https://free.rpc.fastnear.com"
+      : "https://test.rpc.fastnear.com"),
+  network,
   collection: deployment.collection,
   collectionCodeHash: deployment.collectionCodeHash,
   executorCodeHash: deployment.executorCodeHash,
@@ -29,26 +37,32 @@ const run = (f: () => Promise<void>) =>
     message(e instanceof Error ? e.message : "Request failed."),
   );
 const select = element<HTMLSelectElement>("wallet");
-void connector.whenManifestLoaded.then(()=>{
-select.replaceChildren();
-for (const wallet of connector.availableWallets.filter(
-  (w) =>
-    w.manifest.features.testnet && w.manifest.features.signAndSendTransaction,
-)) {
-  const option = document.createElement("option");
-  option.value = wallet.manifest.id;
-  option.textContent = wallet.manifest.name;
-  select.append(option);
-}
-element<HTMLButtonElement>('connect').disabled=select.options.length===0;
-}).catch(()=>message('Wallet discovery is unavailable. Public inspection still works.'));
+void connector.whenManifestLoaded
+  .then(() => {
+    select.replaceChildren();
+    for (const wallet of connector.availableWallets.filter(
+      (w) =>
+        w.manifest.features[network] &&
+        w.manifest.features.signAndSendTransaction,
+    )) {
+      const option = document.createElement("option");
+      option.value = wallet.manifest.id;
+      option.textContent = wallet.manifest.name;
+      select.append(option);
+    }
+    element<HTMLButtonElement>("connect").disabled =
+      select.options.length === 0;
+  })
+  .catch(() =>
+    message("Wallet discovery is unavailable. Public inspection still works."),
+  );
 element("connect").onclick = () =>
   run(async () => {
     const wallet = await connector.connect({ walletId: select.value });
     actor = (await wallet.getAccounts())[0]?.accountId ?? "";
     element("account").textContent = actor || "No account selected.";
-    element<HTMLButtonElement>('disconnect').disabled=!actor;
-    element<HTMLButtonElement>('send').disabled=!actor || !actions.length;
+    element<HTMLButtonElement>("disconnect").disabled = !actor;
+    element<HTMLButtonElement>("send").disabled = !actor || !actions.length;
     message("Connected. Inspect your Writ before sending a command.");
   });
 element("disconnect").onclick = () =>
@@ -57,7 +71,7 @@ element("disconnect").onclick = () =>
     actor = "";
     element("account").textContent = "No wallet connected.";
     element<HTMLButtonElement>("send").disabled = true;
-    element<HTMLButtonElement>('disconnect').disabled=true;
+    element<HTMLButtonElement>("disconnect").disabled = true;
   });
 element("inspect").onclick = () =>
   run(async () => {
@@ -65,7 +79,14 @@ element("inspect").onclick = () =>
     message("Reading finalized contract state…");
     const id = element<HTMLInputElement>("token").value;
     const report = await client.inspect(id, true);
-    element("evidence").textContent = JSON.stringify(report, null, 2);
+    element("evidence").textContent = JSON.stringify(
+      report,
+      (key, value) =>
+        key === "media"
+          ? "[Artwork displayed above; its SHA-256 hash was verified.]"
+          : value,
+      2,
+    );
     const image = element<HTMLImageElement>("art");
     image.src = report.nft!.metadata.media;
     image.hidden = false;
@@ -96,7 +117,7 @@ element<HTMLSelectElement>("method").onchange = () => {
     2,
   );
 };
-element<HTMLButtonElement>('inspect').disabled=false;
+element<HTMLButtonElement>("inspect").disabled = false;
 element("command").onsubmit = (e) => {
   e.preventDefault();
   run(async () => {
@@ -119,7 +140,7 @@ element("command").onsubmit = (e) => {
     );
     element("evidence").textContent = JSON.stringify(confirmed, null, 2);
     message(
-      `Command completed on NEAR testnet. Transaction: ${confirmed.hash}`,
+      `Command completed on NEAR ${network}. Transaction: ${confirmed.hash}`,
     );
   });
 };

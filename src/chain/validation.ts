@@ -103,7 +103,7 @@ function parseCheck(value: unknown): CheckResult {
     ) ||
     typeof r.observedAtMs !== "number" ||
     !Number.isFinite(r.observedAtMs) ||
-    r.source !== "testnet"
+    (r.source !== "testnet" && r.source !== "mainnet")
   )
     throw invalid();
   return c as unknown as CheckResult;

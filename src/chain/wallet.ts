@@ -1,33 +1,64 @@
 import type { NearConnector } from "@hot-labs/near-connect";
 import { ChainError } from "./errors";
-let connectorPromise: Promise<NearConnector> | undefined;
-export function getConnector(): Promise<NearConnector> {
-  return (connectorPromise ??= import("@hot-labs/near-connect").then(
-    ({ NearConnector }) => {
-      const connector = new NearConnector({
-        network: "testnet",
-        autoConnect: false,
-      });
-      connector.on("wallet:signIn", () => {
-        localStorage.setItem("writ-wallet-connected", "1");
-        window.dispatchEvent(new Event("writ:wallet"));
-      });
-      connector.on("wallet:signOut", () => {
-        localStorage.removeItem("writ-wallet-connected");
-        window.dispatchEvent(new Event("writ:wallet"));
-      });
-      return connector;
-    },
-  ));
+import {
+  deploymentConfig,
+  type DeploymentConfig,
+  type NearNetwork,
+} from "./deployment";
+const connectors = new Map<NearNetwork, Promise<NearConnector>>();
+let pendingRequests = 0;
+export const walletRequestPending = () => pendingRequests > 0;
+function busy(delta: number) {
+  pendingRequests += delta;
+  window.dispatchEvent(new Event("writ:wallet-request"));
 }
-export async function walletSession() {
-  if (
-    !connectorPromise &&
-    localStorage.getItem("writ-wallet-connected") !== "1"
-  )
-    return null;
+function sessionKey(config: DeploymentConfig) {
+  return `writ-wallet-connected:${config.network}:${config.collection}`;
+}
+export function rememberWallet(config: DeploymentConfig, connected: boolean) {
+  if (connected) localStorage.setItem(sessionKey(config), "1");
+  else localStorage.removeItem(sessionKey(config));
+  window.dispatchEvent(new Event("writ:wallet"));
+}
+export function getConnector(
+  network: NearNetwork = "testnet",
+): Promise<NearConnector> {
+  let pending = connectors.get(network);
+  if (pending) return pending;
+  pending = import("@hot-labs/near-connect").then(({ NearConnector }) => {
+    const connector = new NearConnector({
+      network,
+      autoConnect: false,
+      storage: {
+        get: async (key) =>
+          localStorage.getItem(`writ-connector:${network}:${key}`),
+        set: async (key, value) => {
+          localStorage.setItem(`writ-connector:${network}:${key}`, value);
+        },
+        remove: async (key) => {
+          localStorage.removeItem(`writ-connector:${network}:${key}`);
+        },
+      },
+    });
+    connector.on("wallet:signIn", () => {
+      window.dispatchEvent(new Event("writ:wallet"));
+    });
+    connector.on("wallet:signOut", () => {
+      window.dispatchEvent(new Event("writ:wallet"));
+    });
+    return connector;
+  });
+  connectors.set(network, pending);
+  return pending;
+}
+export async function walletSession(
+  config: DeploymentConfig = deploymentConfig(),
+) {
+  if (localStorage.getItem(sessionKey(config)) !== "1") return null;
   try {
-    const { accounts } = await (await getConnector()).getConnectedWallet();
+    const { accounts } = await (
+      await getConnector(config.network)
+    ).getConnectedWallet();
     return accounts[0] ? { accountId: accounts[0].accountId } : null;
   } catch {
     return null;
@@ -38,10 +69,28 @@ export async function walletCall(
   methodName: string,
   args: object,
   deposit = "0",
+  config: DeploymentConfig = deploymentConfig(),
+  isActive: () => boolean = () => true,
 ) {
-  const connector = await getConnector();
+  if (pendingRequests)
+    throw new ChainError("busy", "Finish the pending wallet request first.");
+  busy(1);
   try {
+    const { JsonRpcProvider } = await import("near-api-js");
+    const rpc = new JsonRpcProvider({ url: config.rpcUrl });
+    const status = await rpc.sendJsonRpc("status", []);
+    if (status.chain_id !== config.network)
+      throw new ChainError(
+        "not_configured",
+        "The RPC network differs from the selected network. Nothing was signed.",
+      );
+    const connector = await getConnector(config.network);
     const wallet = await connector.wallet();
+    if (!isActive())
+      throw new ChainError(
+        "not_configured",
+        "The network or deployment changed. Review the action again. Nothing was signed.",
+      );
     const submitted = await wallet.signAndSendTransaction({
       receiverId,
       actions: [
@@ -52,10 +101,6 @@ export async function walletCall(
       ],
     });
     // A wallet may return after inclusion. Confirm the receipt chain before reporting completion.
-    const { JsonRpcProvider } = await import("near-api-js");
-    const rpc = new JsonRpcProvider({
-      url: import.meta.env.VITE_NEAR_RPC_URL || "https://test.rpc.fastnear.com",
-    });
     const result = await rpc.sendJsonRpc<typeof submitted>("tx", {
       tx_hash: submitted.transaction.hash,
       sender_account_id: submitted.transaction.signer_id,
@@ -98,5 +143,7 @@ export async function walletCall(
       "outcome_unknown",
       "The wallet request did not return a confirmed outcome. Check your wallet activity before submitting again.",
     );
+  } finally {
+    busy(-1);
   }
 }

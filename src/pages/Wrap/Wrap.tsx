@@ -18,6 +18,7 @@ import { CheckTable } from "../../components/CheckTable/CheckTable";
 import { Stamp } from "../../components/Stamp/Stamp";
 import { Loading } from "../../components/Loading/Loading";
 import s from "./Wrap.module.css";
+import { transactionUrl } from "../../chain/deployment";
 const steps = [
   "Choose the kind of role",
   "Point at the contract",
@@ -28,7 +29,7 @@ const steps = [
 export default function Wrap() {
   useTitle("Wrap a role");
   const adapter = useAdapter();
-  const { mode, session, connect, changed } = useChain();
+  const { mode, deployment, session, connect, changed } = useChain();
   const [step, setStep] = useState(0);
   const [templates, setTemplates] = useState<RoleTemplate[]>([]);
   const [templateId, setTemplate] = useState("contract-owner");
@@ -301,7 +302,11 @@ export default function Wrap() {
                       Contract account
                       <input
                         className="typed"
-                        placeholder="lanterns-nft.testnet"
+                        placeholder={
+                          mode === "mainnet"
+                            ? "collection.near"
+                            : "lanterns-nft.testnet"
+                        }
                         required
                         autoComplete="off"
                         value={target}
@@ -545,7 +550,10 @@ export default function Wrap() {
                       {completed.includes(index) ? (
                         transactions[index] ? (
                           <a
-                            href={`https://testnet.nearblocks.io/txns/${transactions[index]}`}
+                            href={transactionUrl(
+                              deployment.network,
+                              transactions[index]!,
+                            )}
                             target="_blank"
                             rel="noreferrer"
                           >

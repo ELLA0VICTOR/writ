@@ -25,6 +25,8 @@
 </p>
 
 <p align="center">
+  <a href="https://writ-app.vercel.app/">Live app</a> &middot;
+  <a href="submission/Writ-demo.mp4">Demo video</a> &middot;
   <a href="#getting-started">Getting started</a> &middot;
   <a href="#how-writ-works">How it works</a> &middot;
   <a href="#supported-integrations">Integrations</a> &middot;
@@ -221,7 +223,7 @@ Default release values live in [src/content/deployment.json](src/content/deploym
 
 When overriding the collection, supply the corresponding ABI and hashes from that deployment. Explicit configuration replaces the default identity rather than mixing releases. **Copying the example file with an empty `VITE_WRIT_CONTRACT` disables live transactions**; omit that variable to retain the checked-in release. Restart Vite after changing environment values.
 
-Every `VITE_` value is public and may be embedded in the browser bundle. Never put private keys, seed phrases or provider secrets there. This frontend checks the testnet chain ID and intentionally rejects mainnet RPCs.
+Every `VITE_` value is public and may be embedded in the browser bundle. Never put private keys, seed phrases or provider secrets there. These legacy environment overrides configure the **testnet default**. To use mainnet, choose **Network & deployment** in the app, select the network and verify your compatible Writ collection/controller account. Import/export of public configuration and browser persistence are supported; no frontend rebuild is needed. RPC chain ID, collection code, ABI, executor and template hashes must match. Mainnet remains unconfigured until an operator supplies a real deployment. See [mainnet/testnet setup](docs/NETWORKS.md).
 
 ## Transfers, lending and settlement
 
@@ -365,7 +367,9 @@ Private generated account material and journals stay under ignored `.local/`. Pu
 
 ### Mainnet status
 
-**The current release is testnet-only.** Mainnet requires a separate contract review, upgrade-authority decision, network/wallet/explorer configuration, approved funding and fresh deployments. Changing only the RPC URL is insufficient. Testnet NFTs and balances do not become mainnet assets.
+**The browser client and SDK support mainnet and testnet; our public demo deployment is on testnet.** Teams can use an existing compatible Writ controller on mainnet or deploy one themselves, then connect it in **Network & deployment**. Existing supported external contracts stay in place on that same network. Follow the [operator deployment and public-manifest guide](docs/NETWORKS.md). We have not deployed a mainnet controller or spent mainnet funds. Testnet NFTs and balances do not become mainnet assets. A mainnet operator still needs contract/target review, an upgrade-authority policy and a small-value signed rehearsal.
+
+The hackathon's [official Q-010](https://nearhackathon.com/HACKATHON.md) accepts testnet-only projects across all tracks, except integrations available only on mainnet. Writ's NFT-track demo can be submitted on testnet.
 
 See [release readiness](docs/RELEASE_READINESS.md) and the dated [mainnet cost estimate](docs/mainnet-cost-estimate.json). The estimate covers a stated small deployment topology, not every demo account or an approval to spend funds.
 

@@ -7,7 +7,11 @@ import type {
   WritPage,
 } from "./types";
 import { bindings } from "./contractBindings";
-import { deploymentConfig } from "./deployment";
+import {
+  deploymentConfig,
+  purchaseKey,
+  type DeploymentConfig,
+} from "./deployment";
 import { ChainError, PurchaseSubmissionError } from "./errors";
 import { mapCheck } from "./checks";
 import { templates, getTemplate } from "../templates/registry";
@@ -21,14 +25,17 @@ import {
   jsonValue,
 } from "./validation";
 type ObjectValue = Record<string, unknown>;
-export function createTestnetAdapter(): WritAdapter {
-  const deployment = deploymentConfig();
+export function createTestnetAdapter(
+  deployment: DeploymentConfig = deploymentConfig(),
+  isActive: () => boolean = () => true,
+): WritAdapter {
   const configuredHashes: Record<string, string> = deployment.templateHashes;
   const contractId = deployment.collection;
   const enabled = Boolean(
     contractId &&
     deployment.abiVersion === bindings.abiVersion &&
     deployment.executorCodeHash &&
+    (deployment.network === "testnet" || deployment.collectionCodeHash) &&
     configuredHashes["contract-owner"],
   );
   let providerPromise:
@@ -51,7 +58,7 @@ export function createTestnetAdapter(): WritAdapter {
     if (!enabled)
       throw new ChainError(
         "not_configured",
-        "The Writ testnet deployment is not connected yet. Explore the labelled examples while the contracts are being built.",
+        `No compatible Writ ${deployment.network} deployment is connected. Choose Network & deployment to connect one.`,
       );
   }
   async function query(
@@ -68,7 +75,7 @@ export function createTestnetAdapter(): WritAdapter {
       if (signal?.aborted) throw error;
       throw new ChainError(
         "rpc_unavailable",
-        "Can't reach NEAR testnet right now. Your Writ is unaffected. Retry.",
+        `Can't reach NEAR ${deployment.network} right now. Your Writ is unaffected. Retry.`,
       );
     }
   }
@@ -118,10 +125,10 @@ export function createTestnetAdapter(): WritAdapter {
     return (configPromise ??= provider()
       .then(async () => {
         const status = object(await readRpc("status", []));
-        if (status.chain_id !== "testnet")
+        if (status.chain_id !== deployment.network)
           throw new ChainError(
             "not_configured",
-            "This build is testnet-only. The RPC belongs to a different network; transactions are disabled.",
+            "The RPC belongs to a different network; transactions are disabled.",
           );
         return view(contractId, bindings.config);
       })
@@ -226,6 +233,11 @@ export function createTestnetAdapter(): WritAdapter {
     deposit = "0",
     receiver = contractId,
   ) {
+    if (!isActive())
+      throw new ChainError(
+        "not_configured",
+        "The deployment changed. Review the action again.",
+      );
     await ensureConfig();
     if (deployment.collectionCodeHash) {
       const code = await query({
@@ -244,11 +256,28 @@ export function createTestnetAdapter(): WritAdapter {
       method,
       args,
       deposit,
+      deployment,
+      isActive,
     );
   }
+  function checkHandle(handle: import("./types").PurchaseHandle) {
+    const legacyTestnet =
+      deployment.network === "testnet" &&
+      contractId === deploymentConfig().collection;
+    if (
+      handle.mock ||
+      (handle.network !== undefined && handle.network !== deployment.network) ||
+      (handle.collection !== undefined && handle.collection !== contractId) ||
+      ((!handle.network || !handle.collection) && !legacyTestnet)
+    )
+      throw new ChainError(
+        "invalid_input",
+        "This purchase belongs to a different network or Writ collection.",
+      );
+  }
   return {
-    mode: "testnet",
-    contractId: contractId || "writ-demo.testnet",
+    mode: deployment.network,
+    contractId,
     capabilities: {
       execute: enabled,
       lend: enabled,
@@ -258,15 +287,17 @@ export function createTestnetAdapter(): WritAdapter {
       wrap: enabled,
     },
     async getSession() {
-      return (await import("./wallet")).walletSession();
+      return (await import("./wallet")).walletSession(deployment);
     },
     async getWalletOptions() {
-      const connector = await (await import("./wallet")).getConnector();
+      const connector = await (
+        await import("./wallet")
+      ).getConnector(deployment.network);
       await connector.whenManifestLoaded;
       return connector.availableWallets
         .filter(
           (wallet) =>
-            wallet.manifest.features.testnet &&
+            wallet.manifest.features[deployment.network] &&
             wallet.manifest.features.signAndSendTransaction,
         )
         .map((wallet) => ({
@@ -281,7 +312,13 @@ export function createTestnetAdapter(): WritAdapter {
           "invalid_input",
           "Choose a wallet from the Writ connection dialog.",
         );
-      const connector = await (await import("./wallet")).getConnector();
+      const { getConnector, rememberWallet } = await import("./wallet");
+      const connector = await getConnector(deployment.network);
+      if (!isActive())
+        throw new ChainError(
+          "not_configured",
+          "The deployment changed. Connect again.",
+        );
       const wallet = await connector.connect({ walletId });
       const accounts = await wallet.getAccounts();
       if (!accounts[0])
@@ -289,13 +326,22 @@ export function createTestnetAdapter(): WritAdapter {
           "wallet_rejected",
           "No wallet account was selected.",
         );
+      if (!isActive())
+        throw new ChainError(
+          "not_configured",
+          "The deployment changed. Connect again.",
+        );
+      rememberWallet(deployment, true);
       return { accountId: accounts[0].accountId };
     },
     async disconnect() {
-      const connector = await (await import("./wallet")).getConnector();
+      const { getConnector, rememberWallet } = await import("./wallet");
+      const connector = await getConnector(deployment.network);
       await connector.disconnect();
+      rememberWallet(deployment, false);
     },
     async getSpendableBalance(accountId) {
+      await ensureConfig();
       const state = await query({
         request_type: "view_account",
         account_id: accountId,
@@ -313,6 +359,7 @@ export function createTestnetAdapter(): WritAdapter {
       return (available > 0n ? available : 0n).toString();
     },
     async getPurchaseFeeAllowance() {
+      await ensureConfig();
       const price = object(await readRpc("gas_price", [null]));
       const gasPrice = BigInt(String(price.gas_price));
       return ((gasPrice * 250000000000000n * 13n) / 10n).toString();
@@ -362,7 +409,14 @@ export function createTestnetAdapter(): WritAdapter {
       const session = await this.getSession();
       if (!session)
         throw new ChainError("unauthorized", "Connect your wallet first.");
-      const saved = `writ-practice:${contractId}:${session.accountId}:${templateId}`;
+      const saved = `writ-practice:${deployment.network}:${contractId}:${session.accountId}:${templateId}`;
+      const legacy = `writ-practice:${contractId}:${session.accountId}:${templateId}`;
+      if (
+        deployment.network === "testnet" &&
+        !sessionStorage.getItem(saved) &&
+        sessionStorage.getItem(legacy)
+      )
+        sessionStorage.setItem(saved, sessionStorage.getItem(legacy)!);
       let id = sessionStorage.getItem(saved);
       if (newRequest && id) {
         const previous = await view(contractId, "get_practice_target", {
@@ -529,7 +583,7 @@ export function createTestnetAdapter(): WritAdapter {
         blockHeight: String(state.block_height),
         blockHash: String(state.block_hash),
         observedAtMs: Date.now(),
-        source: "testnet",
+        source: deployment.network,
       };
       const writ = checkedWrit(
         await view(
@@ -654,7 +708,9 @@ export function createTestnetAdapter(): WritAdapter {
       return parseHistory(history);
     },
     async buy(request) {
-      const session = await (await import("./wallet")).walletSession();
+      const session = await (
+        await import("./wallet")
+      ).walletSession(deployment);
       if (!session)
         throw new ChainError("unauthorized", "Connect your wallet first.");
       const attemptId = request.clientAttemptId ?? crypto.randomUUID();
@@ -663,9 +719,15 @@ export function createTestnetAdapter(): WritAdapter {
         writId: request.writId,
         attemptId,
         buyerId: session.accountId,
+        network: deployment.network,
+        collection: contractId,
       };
       await ensureConfig();
-      const savedKey = `writ-purchase:testnet:${request.writId}`;
+      const savedKey = purchaseKey(
+        deployment.network,
+        contractId,
+        request.writId,
+      );
       sessionStorage.setItem(savedKey, JSON.stringify(handle));
       try {
         const result = await call(
@@ -690,6 +752,7 @@ export function createTestnetAdapter(): WritAdapter {
       }
     },
     async getPurchase(handle) {
+      checkHandle(handle);
       await ensureConfig();
       const result = object(
         await view(contractId, bindings.purchase, {
@@ -707,9 +770,18 @@ export function createTestnetAdapter(): WritAdapter {
           "outcome_unknown",
           "The purchase outcome is not confirmed yet.",
         );
-      return parsePurchase(result);
+      const purchase = parsePurchase(result);
+      // The v1 Wasm uses a legacy testnet label in settlement evidence. The
+      // independently checked RPC network is authoritative for its provenance.
+      if (purchase.status === "refused")
+        purchase.checks = purchase.checks.map((check) => ({
+          ...check,
+          read: { ...check.read, source: deployment.network },
+        }));
+      return purchase;
     },
     async releaseStuck(handle) {
+      checkHandle(handle);
       return call(bindings.release, {
         token_id: handle.writId,
         buyer_id: handle.buyerId ?? (await this.getSession())?.accountId,
@@ -717,6 +789,7 @@ export function createTestnetAdapter(): WritAdapter {
       });
     },
     async claimRefund(handle) {
+      checkHandle(handle);
       return call(bindings.refund, {
         token_id: handle.writId,
         buyer_id: handle.buyerId ?? (await this.getSession())?.accountId,
@@ -762,8 +835,10 @@ export function createTestnetAdapter(): WritAdapter {
       return call(bindings.withdraw, { token_id: id, amount });
     },
     async inspectWrap(request) {
-      configured();
-      const session = await (await import("./wallet")).walletSession();
+      await ensureConfig();
+      const session = await (
+        await import("./wallet")
+      ).walletSession(deployment);
       if (!session)
         throw new ChainError("unauthorized", "Connect your wallet first.");
       const state = await query({
@@ -826,7 +901,7 @@ export function createTestnetAdapter(): WritAdapter {
           blockHeight: String(state.block_height),
           blockHash: String(state.block_hash),
           observedAtMs: Date.now(),
-          source: "testnet",
+          source: deployment.network,
         },
       };
     },

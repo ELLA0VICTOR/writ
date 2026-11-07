@@ -27,7 +27,7 @@ Collection code, deployment identity, upgrade authority and the approved templat
 
 ## Remaining boundaries
 
-Hardening now rejects NFT recipients inside the collection namespace in direct transfers, transfer-call and purchases. The adapter and deployment helper also require RPC chain ID `testnet`; this prototype cannot be moved to mainnet by changing only an endpoint. Capacity evidence and unresolved release gates are recorded in [RELEASE_READINESS.md](RELEASE_READINESS.md).
+Hardening rejects NFT recipients inside the collection namespace in direct transfers, transfer-call and purchases. The browser adapter, SDK and wallet preflight require the RPC chain ID to match the selected network. Mainnet requires a compatible Writ controller deployed on mainnet, not merely a changed endpoint. Runtime configuration pins this reviewed release's code and template hashes; imports cannot replace them. Network/controller changes reset wallet sessions and forms, separate recovery records and invalidate stale requests before signing. Settings are blocked during an outstanding wallet request. The deployment helper remains testnet-only. See [NETWORKS.md](NETWORKS.md) and [RELEASE_READINESS.md](RELEASE_READINESS.md).
 
 Mock passes do not prove NEAR receipt execution, solvency, gas viability or secure executor behavior. The actual sandbox suite covers transfers, receiver reentry/rollback, pending locks, provisioning, segregated refunds, failed native payments, deadline release/late callbacks and retirement. Its results do not prove every possible schedule or global solvency.
 

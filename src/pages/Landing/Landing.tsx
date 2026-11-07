@@ -8,7 +8,6 @@ import { LedgerPaper } from "../../components/LedgerPaper/LedgerPaper";
 import { TechMarquee } from "../../components/TechMarquee/TechMarquee";
 import { exampleWrit, exampleHistory } from "../../chain/fixtures/writs";
 import { validatedTemplates } from "../../templates/registry";
-import release from "../../content/deployment.json";
 import { authoritySteps, sellerTricks } from "../../content/landing";
 import { useChain, useTitle } from "../../hooks/useChain";
 import s from "./Landing.module.css";
@@ -17,7 +16,7 @@ export default function Landing() {
   const [id, setId] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { mode } = useChain();
+  const { mode, deployment } = useChain();
   function check(event: FormEvent) {
     event.preventDefault();
     if (!/^\d{1,12}$/.test(id)) {
@@ -44,9 +43,12 @@ export default function Landing() {
             <ButtonLink to="/market">Explore Writs</ButtonLink>
           </div>
           <p className={s.testnetNote}>
-            Testnet build for NEAR HACKATHON 2026.
-            <br />
-            Nothing here holds real value.
+            {mode === "mainnet"
+              ? "NEAR mainnet. Transactions use real NEAR."
+              : "Testnet build for NEAR HACKATHON 2026. Nothing here holds real value."}
+            {mode === "mainnet" &&
+              !deployment.collection &&
+              " Connect a compatible Writ deployment to get started."}
           </p>
         </div>
         <div className={s.heroCard} data-reveal>
@@ -79,16 +81,11 @@ export default function Landing() {
                       <code key={check.id}>{check.method}</code>
                     ))}
                   </div>
-                  {mode !== "mock" &&
-                    release.examples[
-                      template.id as keyof typeof release.examples
-                    ] && (
-                      <ModeLink
-                        to={`/writ/${release.examples[template.id as keyof typeof release.examples]}`}
-                      >
-                        Inspect {template.name} example
-                      </ModeLink>
-                    )}
+                  {mode !== "mock" && deployment.examples?.[template.id] && (
+                    <ModeLink to={`/writ/${deployment.examples[template.id]}`}>
+                      Inspect {template.name} example
+                    </ModeLink>
+                  )}
                 </article>
               ))}
             </div>
@@ -223,7 +220,7 @@ export default function Landing() {
             <small>
               {mode === "mock"
                 ? "You are checking labelled example data."
-                : "Public checks use the configured NEAR testnet deployment."}
+                : `Public checks use the configured NEAR ${deployment.network} deployment.`}
             </small>
           </form>
         </div>

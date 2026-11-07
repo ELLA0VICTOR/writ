@@ -168,7 +168,7 @@ export default function WritDetail() {
         <div className="emptySheet">
           <h1>
             No Writ with that number exists on{" "}
-            {adapter?.contractId ?? "writ-demo.testnet"}.
+            {adapter?.contractId || "the selected Writ collection"}.
           </h1>
           <p>Check the number, or inspect a Writ from the market.</p>
           <ButtonLink to="/market" variant="primary">

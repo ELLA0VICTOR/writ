@@ -1,0 +1,207 @@
+{
+  "network": "testnet",
+  "verifiedAt": "2026-11-07T08:41:33.310Z",
+  "writId": "8",
+  "target": "p40.writ-collection-mw5cm75f.testnet",
+  "executor": "w8.writ-collection-mw5cm75f.testnet",
+  "receipts": [
+    {
+      "hash": "xdU31Z5Eks1mmnyQrSNpwoV7r6ukUMjopqcUvybpiMy",
+      "signer": "dontcare",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "method": "create_practice_target",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      }
+    },
+    {
+      "hash": "AS3pNnCyp9LUYoEZq5hur5A4DVsruxXCNRqMkZQnueaT",
+      "signer": "dontcare",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "method": "mint",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      }
+    },
+    {
+      "hash": "A25MJTENAgo8kFEqLSWzh13Qjy8LJJGSMNrjQVbPC735",
+      "signer": "dontcare",
+      "receiver": "p40.writ-collection-mw5cm75f.testnet",
+      "method": "own_propose_owner",
+      "status": {
+        "SuccessValue": ""
+      }
+    },
+    {
+      "hash": "FyCAujH2KfYv17KG6A8R9hFA33VtTk6MQrbyEkmgg1bc",
+      "signer": "dontcare",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "method": "wrap_step",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      }
+    },
+    {
+      "hash": "7ReeWWbRHuQQzPpbE3oFLDT7p9pC8ZFxzzcXNmF827Tz",
+      "signer": "dontcare",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "method": "confirm_wrap",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      }
+    },
+    {
+      "hash": "Ew87ejuoCb3Mc73EDfBTFqMhdJgYET5S7kXcjuE5QyqP",
+      "signer": "dontcare",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "method": "execute",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      }
+    },
+    {
+      "hash": "GkWbgyc1VYD4BgvTZXm7rfKZd9FWoHAhnfQPyy1aqRhs",
+      "signer": "dontcare",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "method": "lend",
+      "status": {
+        "SuccessValue": "IjQ0Ig=="
+      }
+    },
+    {
+      "hash": "BhbzZtHqMxc7dEUHWyLmatWNo46UVsJrJC1eLwYhdVu7",
+      "signer": "dontcare",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "method": "nft_transfer",
+      "status": {
+        "SuccessValue": ""
+      }
+    },
+    {
+      "hash": "FQeBWoKuoKAzJGL2F9eT5Cz1PZpdM9xE166QZqCYLB4N",
+      "signer": "dontcare",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "method": "buy",
+      "status": {
+        "SuccessValue": "ZmFsc2U="
+      }
+    },
+    {
+      "hash": "9RFqyGNYymzZLrXQprwZRTh5FazAxKc49JJ6R3fXxcrm",
+      "signer": "dontcare",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "method": "claim_refund",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      }
+    },
+    {
+      "hash": "5Ctg7dJNCkygvYGEz5Ro3jGJhztiEaj6fxV7zgPkqdBP",
+      "signer": "dontcare",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "method": "execute",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      }
+    },
+    {
+      "hash": "8Fgnh6DidFqPd5pN2GG8h9QvKsi5JZDSJjWzsymLYbFK",
+      "signer": "dontcare",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "method": "begin_unwrap",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      }
+    },
+    {
+      "hash": "8twnnexxbWXDr5YGXxadACxjWyPS9Nme6nXtZRkERvWK",
+      "signer": "dontcare",
+      "receiver": "p40.writ-collection-mw5cm75f.testnet",
+      "method": "own_accept_owner",
+      "status": {
+        "SuccessValue": ""
+      }
+    },
+    {
+      "hash": "2d3gvG4JP7uqc12RkPcxZu4e8DCFX9myqcgaApk99bny",
+      "signer": "dontcare",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "method": "finish_unwrap",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      }
+    },
+    {
+      "hash": "EdxuHbvxdJh7aHbkPnRswPLEDHX3aMnJzJMrEzyVifGL",
+      "signer": "dontcare",
+      "receiver": "writ-collection-mw5cm75f.testnet",
+      "method": "withdraw_retired_funds",
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      }
+    }
+  ],
+  "purchase": {
+    "status": "refused",
+    "refundStatus": "paid",
+    "checks": [
+      {
+        "id": "owner",
+        "label": "Owner is the Writ account",
+        "method": "own_get_owner",
+        "actual": "w2.writ-collection-mw5cm75f.testnet",
+        "expected": "w2.writ-collection-mw5cm75f.testnet",
+        "result": "pass",
+        "enforcedBy": "sale",
+        "read": {
+          "blockHeight": "276606973",
+          "blockHash": null,
+          "observedAtMs": 1794040261489,
+          "source": "testnet",
+          "phase": "settlement_callback"
+        }
+      },
+      {
+        "id": "proposed",
+        "label": "No next owner proposed",
+        "method": "own_get_proposed_owner",
+        "actual": "writ-alice-mw5cm75f.testnet",
+        "expected": null,
+        "result": "fail",
+        "enforcedBy": "sale",
+        "read": {
+          "blockHeight": "276606973",
+          "blockHash": null,
+          "observedAtMs": 1794040261489,
+          "source": "testnet",
+          "phase": "settlement_callback"
+        }
+      },
+      {
+        "id": "version",
+        "label": "Writ unchanged and no calls in flight",
+        "method": "get_writ",
+        "actual": "4",
+        "expected": "4",
+        "result": "pass",
+        "enforcedBy": "sale",
+        "read": {
+          "blockHeight": "276606973",
+          "blockHash": null,
+          "observedAtMs": 1794040261489,
+          "source": "testnet",
+          "phase": "settlement_callback"
+        }
+      }
+    ]
+  },
+  "finalState": {
+    "targetOwner": "writ-bob-mw5cm75f.testnet",
+    "writRetired": true,
+    "availableExecutorBalance": "0",
+    "collectibleOwners": {
+      "ada": "writ-alice-mw5cm75f.testnet",
+      "ben": "writ-bob-mw5cm75f.testnet"
+    }
+  }
+}

@@ -11,7 +11,7 @@ import s from "./AuthorityPanel.module.css";
 const fullKeys = (account: AuthoritySnapshot["target"]) =>
   account.keys?.filter((k) => k.permission === "FullAccess");
 export function AuthorityPanel({ writ }: { writ: Writ }) {
-  const { mode, revision } = useChain();
+  const { mode, deployment, revision } = useChain();
   const template = getTemplate(writ.templateId);
   const [report, setReport] = useState<AuthoritySnapshot | null>(null);
   const [nft, setNft] = useState<NftRecord | null>(null);
@@ -26,7 +26,7 @@ export function AuthorityPanel({ writ }: { writ: Writ }) {
     setReport(null);
     setNft(null);
     try {
-      const client = integrationClient();
+      const client = integrationClient(deployment);
       void client
         .inspect(writ.id, true)
         .then((result) => {
@@ -52,7 +52,7 @@ export function AuthorityPanel({ writ }: { writ: Writ }) {
     return () => {
       live = false;
     };
-  }, [writ.id, mode, revision, retry]);
+  }, [writ.id, mode, deployment, revision, retry]);
   const download = () => {
     if (!report) return;
     const url = URL.createObjectURL(
@@ -173,7 +173,7 @@ export function AuthorityPanel({ writ }: { writ: Writ }) {
       <dl className={s.facts}>
         <div>
           <dt>Network</dt>
-          <dd>{mode === "mock" ? "Example only" : "NEAR testnet"}</dd>
+          <dd>{mode === "mock" ? "Example only" : `NEAR ${mode}`}</dd>
         </div>
         <div>
           <dt>Collection</dt>
@@ -205,7 +205,8 @@ export function AuthorityPanel({ writ }: { writ: Writ }) {
         </div>
       </dl>
       <p>
-        Use the wallet account shown above on testnet. A wallet may need to
+        Use the wallet account shown above on{" "}
+        {mode === "mock" ? "the selected network" : mode}. A wallet may need to
         index the collection before showing it in Collectibles. Ownership is
         recorded on-chain even when a wallet has not displayed its picture.
         Wallets may cache older artwork.

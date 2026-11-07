@@ -1,4 +1,4 @@
-# Release readiness, 6 November 2026
+# Release readiness, updated 7 November 2026
 
 The feature checklist is not a mainnet safety approval. Work remains before a mainnet release. Testnet remains the demonstration network. No mainnet funds have been spent or deployment authorized by this document.
 
@@ -17,7 +17,7 @@ All five compiled template versions describe exact predicates, actions and hand-
 ## Findings addressed in this hardening pass
 
 - Reproduced a direct transfer into the NFT's own keyless executor. It could strand control. The patched contract rejects the collection and its entire internal namespace as NFT recipients. Both transfer paths and buyer validation share the guard. The frontend rejects such recipients before asking for a signature.
-- Added an explicit testnet chain-ID check in the adapter and deployment helper. A mainnet RPC accidentally supplied to this testnet-only build now fails before signing or deployment.
+- Added selected-network chain-ID checks in the browser adapter, standalone SDK and wallet preflight. A mainnet endpoint with a testnet selection (or the reverse) fails before signing. The deployment helper remains deliberately testnet-only.
 - Exercised 64 retained entries, 640-byte UTF-8 transfer notes, 64-byte account IDs, eight 4,091-byte loan arguments, refusal and successful settlement. Observed collection state increase: 78,617 bytes against 131,072 funded bytes. This is an actual capacity case, not an exhaustive proof of every state.
 - Regression suites now include recipient safety and capacity. Current run details and binary hashes are in `contract-verification.json`; storage measurements are in `storage-verification.json`. Older deployment evidence is retained separately rather than relabelled as the patched artifact.
 - Added and exercised three external application profiles, including actual collectible creation, fungible-token issuance, treasury payments, direct old-wallet rejection and verified hand-back.
@@ -28,7 +28,7 @@ All five compiled template versions describe exact predicates, actions and hand-
 
 - [x] Complete one end-to-end run through an actual app wallet. Intear Wallet approved mint, role grant, use, lending, transfer, purchase, refund, withdrawal and resumable hand-back with generated testnet accounts. The separate external app also executed a command. See [18 verified receipts](wallet-verification.json). Practice provisioning and wallet collectible display were inspected in the browser; their screenshots remain local.
 - [x] Close the wallet-run findings and match the demo build to the deployed collection, executor and five template hashes. Static deployment uses the public configuration in source; local signing credentials are excluded. Other wallet vendors have not completed this same signed rehearsal.
-- [ ] Prepare and rehearse the video: explain the authority transfer first; show a normal transfer, old-holder rejection, and an optional refused purchase/refund. Label every testnet transaction honestly.
+- [x] Prepare and rehearse the narrated video with real browser-wallet testnet transactions, transfer, optional refused purchase/refund, separate SDK application and hand-back. The final video and receipts are in `submission/`; private capture material remains ignored locally.
 
 ## Gates before mainnet
 
@@ -36,9 +36,10 @@ All five compiled template versions describe exact predicates, actions and hand-
 - [ ] Complete an independent contract review of the exact release artifact. Current automated scenarios and this review do not constitute an independent audit.
 - [ ] Decide collection upgrade authority. A full-access deployment key can replace collection code and change executor authorization. Mainnet must have a reviewed immutability or controlled-upgrade policy. Do not destroy keys during unfinished development.
 - [ ] Review actual target code, external upgrade keys, queued changes and sovereign governance. Declared predicate checks do not establish permanent or exclusive authority. External reads happen asynchronously.
-- [ ] Finish mainnet-specific wallet, RPC, explorer, network labels and evidence configuration. Changing only the RPC URL is insufficient; this build intentionally refuses mainnet.
+- [x] Add runtime mainnet/testnet wallet, RPC, explorer, labels and public deployment settings with release verification, session/recovery separation and stale-signature guards. Mainnet can use an operator-supplied compatible Writ deployment without rebuilding the app. Controlled mainnet tests do not replace a real signed rehearsal. See [NETWORKS.md](NETWORKS.md).
 - [x] Remeasure the tested release's code/storage costs. Current per-Writ record allocation is deliberately conservative and retained. Do not describe it as an automatically refundable deposit. Any later size or topology change requires a fresh quote.
-- [ ] Present the exact mainnet deployment topology, quoted funding and maximum spend for user approval. Current 15-18 NEAR planning range covers one small release with one Writ and optional practice target, not all demo accounts, a new DAO or multiple NFTs. See mainnet-cost-estimate.json for the dated read-only measurement.
-- [ ] Deploy fresh mainnet accounts/NFTs from the approved tested build, verify hashes, perform small-value checks, then publish the mainnet configuration. Testnet assets and balances do not become mainnet assets.
+- [ ] For an operator choosing to deploy mainnet: quote and fund their exact deployment topology, then verify hashes and perform a small-value signed lifecycle before publishing their configuration. The maintainers are not deploying or funding mainnet for this submission. See `mainnet-cost-estimate.json` for a dated planning-only estimate. Testnet assets and balances do not become mainnet assets.
+
+Mainnet deployment is not a hackathon submission gate: official Q-010 permits testnet-only projects except mainnet-only integrations. The NFT-track demo and video remain on testnet. Mainnet deployment/review gates apply to an operator's future mainnet release, not to an obligation to spend funds for this submission.
 
 No finite test suite establishes that software is perfect, cannot be improved or has no remaining loopholes. Release readiness means bounded claims, demonstrated scenarios, reviewed authority and no unresolved release-blocking findings.

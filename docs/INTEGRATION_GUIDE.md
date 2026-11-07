@@ -2,6 +2,8 @@
 
 Writ is a NEAR contract interface, not a website permission database. The external application assigns its supported role to a keyless executor. The current NFT holder can ask the collection contract to forward approved commands through that executor. Direct NFT transfer is available without a sale. The external application still enforces its own permission checks.
 
+The client supports both NEAR mainnet and testnet. An external target and a compatible Writ controller must exist on the same network. Use **Network & deployment** in the frontend to verify/select an operator's controller without a rebuild. See [NETWORKS.md](NETWORKS.md) for manifests, independent deployment instructions and the separate example app's `WRIT_EXAMPLE_DEPLOYMENT` option. Our published controller and signed demo remain on testnet.
+
 ## Tested profiles
 
 | Profile                      | External action             | Verification and limits                                                                                                        |

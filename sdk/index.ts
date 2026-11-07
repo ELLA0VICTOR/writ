@@ -247,6 +247,10 @@ export class WritClient {
       ),
     );
   }
+  /** Read-only release verification, including for an empty, newly deployed collection. */
+  async verifyDeployment() {
+    return this.anchor();
+  }
   private async anchor() {
     await this.network();
     const state = await this.rpc("query", {

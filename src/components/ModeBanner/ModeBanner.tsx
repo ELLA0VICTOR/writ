@@ -1,17 +1,48 @@
 import { Link, useLocation } from "react-router-dom";
 import { useChain } from "../../hooks/useChain";
+import { lazy, Suspense, useState } from "react";
 import s from "./ModeBanner.module.css";
+const DeploymentDialog = lazy(
+  () => import("../DeploymentDialog/DeploymentDialog"),
+);
 export function ModeBanner() {
-  const { mode, session, connect, disconnect, getAdapter, changed } =
-    useChain();
+  const [settings, setSettings] = useState(false);
+  const {
+    mode,
+    deployment,
+    session,
+    connect,
+    disconnect,
+    getAdapter,
+    changed,
+    requestPending,
+    walletBusy,
+  } = useChain();
   const location = useLocation();
   if (mode !== "mock")
     return (
       <aside className={s.testnet} aria-label="Network">
-        <span>NEAR testnet prototype. No real value.</span>
+        <span>
+          {mode === "testnet"
+            ? "NEAR testnet prototype. No real value."
+            : "NEAR mainnet. Real funds."}{" "}
+          {!deployment.collection && "No Writ deployment connected."}
+        </span>
+        <button
+          className={s.settings}
+          onClick={() => setSettings(true)}
+          disabled={requestPending || walletBusy}
+        >
+          Network & deployment
+        </button>
         <Link to={`${location.pathname}?mock=1`}>
           Try the interactive examples
         </Link>
+        {settings && (
+          <Suspense fallback={<span role="status">Opening settings…</span>}>
+            <DeploymentDialog onClose={() => setSettings(false)} />
+          </Suspense>
+        )}
       </aside>
     );
   return (

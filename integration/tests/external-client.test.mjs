@@ -36,6 +36,8 @@ test(
         templateHashes: config.template_hashes,
       });
       const before = await client.nft(w.id);
+      const verified = await client.verifyDeployment();
+      assert(verified.hash && /^\d+$/.test(verified.height));
       assert.equal(before.nft.owner_id, alice.accountId);
       assert(before.mediaHashVerified);
       await assert.rejects(

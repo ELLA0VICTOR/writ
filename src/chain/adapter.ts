@@ -23,7 +23,7 @@ import type {
 } from "./types";
 
 export interface WritAdapter {
-  readonly mode: "mock" | "testnet";
+  readonly mode: "mock" | "testnet" | "mainnet";
   readonly contractId: string;
   readonly capabilities: ActionCapabilities;
   getSession(): Promise<WalletSession | null>;

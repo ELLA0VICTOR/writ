@@ -1,0 +1,37 @@
+{
+  "originalVoiceoverSha256": "fcd78861f8ecec9f1ff1e42b97e142bc84537120cbec3fbd7fd72d8209ba500d",
+  "suppliedFileMatchesCopy": true,
+  "audioSpeed": 1,
+  "audioFilters": [],
+  "audioEncoding": "AAC, 192 kbps; original narration timeline",
+  "originalDecodedSeconds": 173.4008125,
+  "exportDecodedSeconds": 173.4008125,
+  "waveformChecks": [
+    {
+      "atSeconds": 5,
+      "correlation": 0.9999883810074522,
+      "offsetSamples16k": 0,
+      "rmsRatio": 0.999259073050318
+    },
+    {
+      "atSeconds": 150,
+      "correlation": 0.9999880120826344,
+      "offsetSamples16k": 0,
+      "rmsRatio": 0.9992161910187671
+    }
+  ],
+  "video": {
+    "codec": "h264",
+    "width": 1920,
+    "height": 1080,
+    "frames": 5203,
+    "duration": 173.433333,
+    "bytes": 14044927
+  },
+  "audio": {
+    "codec": "aac",
+    "sampleRate": "44100",
+    "channels": 1
+  },
+  "videoSha256": "a474f7c85e7ea30e3dfeabd53923d6e602bc954dd4d89601b32466100d2dc1f1"
+}

@@ -7,21 +7,35 @@ import {
   useRef,
   lazy,
   Suspense,
+  Fragment,
   type ReactNode,
 } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import type { WritAdapter } from "../chain/adapter";
 import type { WalletSession, WalletOption } from "../chain/types";
 import { messageOf } from "../chain/errors";
 import { Context } from "../chain/context";
-const adapters = new Map<string, Promise<WritAdapter>>();
+import {
+  deploymentConfig,
+  deploymentKey,
+  loadDeployment,
+  saveDeployment,
+  type DeploymentConfig,
+} from "../chain/deployment";
 const WalletDialog = lazy(
   () => import("../components/WalletDialog/WalletDialog"),
 );
 export function ChainProvider({ children }: { children: ReactNode }) {
   const { search } = useLocation();
-  const mode: "mock" | "testnet" =
-    new URLSearchParams(search).get("mock") === "1" ? "mock" : "testnet";
+  const navigate = useNavigate();
+  const [deployment, setDeployment] = useState(loadDeployment);
+  const [generation, setGeneration] = useState(0);
+  const [requestPending, setRequestPending] = useState(false);
+  const mode: "mock" | "testnet" | "mainnet" =
+    new URLSearchParams(search).get("mock") === "1"
+      ? "mock"
+      : deployment.network;
+  const identity = `${mode}:${deploymentKey(deployment)}:${generation}`;
   const [session, setSession] = useState<WalletSession | null>(null);
   const [walletBusy, setBusy] = useState(false);
   const [walletError, setError] = useState("");
@@ -29,70 +43,106 @@ export function ChainProvider({ children }: { children: ReactNode }) {
   const [walletOptions, setWalletOptions] = useState<WalletOption[] | null>(
     null,
   );
-  const modeRef = useRef(mode);
-  modeRef.current = mode;
-  const getAdapter = useCallback(() => {
-    let adapter = adapters.get(mode);
-    if (!adapter) {
-      adapter =
+  const modeRef = useRef(identity);
+  modeRef.current = identity;
+  const getAdapter = useMemo(() => {
+    let adapter: Promise<WritAdapter> | undefined;
+    return () =>
+      (adapter ??=
         mode === "mock"
           ? import("../chain/mockAdapter").then((m) => m.createMockAdapter())
           : import("../chain/testnetAdapter").then((m) =>
-              m.createTestnetAdapter(),
-            );
-      adapters.set(mode, adapter);
-    }
-    return adapter;
-  }, [mode]);
+              m.createTestnetAdapter(
+                deployment,
+                () => modeRef.current === identity,
+              ),
+            ));
+  }, [mode, deployment, identity]);
   const refreshSession = useCallback(async () => {
     const value = await (await getAdapter()).getSession();
-    if (modeRef.current === mode) setSession(value);
-  }, [getAdapter, mode]);
+    if (modeRef.current === identity) setSession(value);
+  }, [getAdapter, identity]);
   useEffect(() => {
     setSession(null);
     setError("");
     setWalletOptions(null);
     setBusy(false);
-    const listener = () => void refreshSession().catch(() => setSession(null));
+    const listener = () =>
+      void refreshSession().catch(() => {
+        if (modeRef.current === identity) setSession(null);
+      });
     listener();
     window.addEventListener("writ:wallet", listener);
     return () => window.removeEventListener("writ:wallet", listener);
-  }, [refreshSession]);
+  }, [refreshSession, identity]);
+  useEffect(() => {
+    const listener = () =>
+      void import("../chain/wallet").then((m) =>
+        setRequestPending(m.walletRequestPending()),
+      );
+    window.addEventListener("writ:wallet-request", listener);
+    return () => window.removeEventListener("writ:wallet-request", listener);
+  }, []);
+  const selectDeployment = useCallback(
+    async (config: DeploymentConfig | null) => {
+      const wallet = await import("../chain/wallet");
+      if (walletBusy || wallet.walletRequestPending())
+        throw new Error(
+          "Finish the pending wallet request before changing the network.",
+        );
+      saveDeployment(config);
+      const next = config ?? deploymentConfig();
+      // Immediately invalidate preflights, including a switch away and back to the same deployment.
+      modeRef.current = "switching";
+      wallet.rememberWallet(deployment, false);
+      wallet.rememberWallet(next, false);
+      setSession(null);
+      setWalletOptions(null);
+      setGeneration((value) => value + 1);
+      setDeployment(next);
+      navigate("/app");
+    },
+    [deployment, navigate, walletBusy],
+  );
   const connect = useCallback(
     async (accountId?: string) => {
       setBusy(true);
       setError("");
       try {
         const adapter = await getAdapter();
-        if (mode === "testnet" && !accountId) {
+        if (mode !== "mock" && !accountId) {
           const options = await adapter.getWalletOptions();
-          if (modeRef.current === mode) setWalletOptions(options);
+          if (modeRef.current === identity) setWalletOptions(options);
           return;
         }
         const result = await adapter.connect(accountId);
-        if (modeRef.current !== mode) return;
+        if (modeRef.current !== identity) return;
         setSession(result);
         setRevision((r) => r + 1);
       } catch (error) {
-        setError(messageOf(error));
+        if (modeRef.current === identity) setError(messageOf(error));
       } finally {
-        if (modeRef.current === mode) setBusy(false);
+        if (modeRef.current === identity) setBusy(false);
       }
     },
-    [getAdapter, mode],
+    [getAdapter, mode, identity],
   );
   const disconnect = useCallback(async () => {
     try {
       await (await getAdapter()).disconnect();
+      if (modeRef.current !== identity) return;
       setSession(null);
       setRevision((r) => r + 1);
     } catch (error) {
-      setError(messageOf(error));
+      if (modeRef.current === identity) setError(messageOf(error));
     }
-  }, [getAdapter]);
+  }, [getAdapter, identity]);
   const value = useMemo(
     () => ({
       mode,
+      deployment,
+      selectDeployment,
+      requestPending,
       session,
       getAdapter,
       connect,
@@ -106,6 +156,9 @@ export function ChainProvider({ children }: { children: ReactNode }) {
     }),
     [
       mode,
+      deployment,
+      selectDeployment,
+      requestPending,
       session,
       getAdapter,
       connect,
@@ -118,10 +171,11 @@ export function ChainProvider({ children }: { children: ReactNode }) {
   );
   return (
     <Context.Provider value={value}>
-      {children}
+      <Fragment key={identity}>{children}</Fragment>
       {walletOptions && (
         <Suspense fallback={<p role="status">Opening wallet choices…</p>}>
           <WalletDialog
+            network={deployment.network}
             wallets={walletOptions}
             onClose={() => setWalletOptions(null)}
             onSelect={(id) => {
@@ -142,19 +196,19 @@ export function useChain() {
 export function useAdapter() {
   const { getAdapter, mode } = useChain();
   const [loaded, setLoaded] = useState<{
-    mode: string;
+    getAdapter: typeof getAdapter;
     adapter: WritAdapter;
   } | null>(null);
   useEffect(() => {
     let active = true;
     void getAdapter().then((value) => {
-      if (active) setLoaded({ mode, adapter: value });
+      if (active) setLoaded({ getAdapter, adapter: value });
     });
     return () => {
       active = false;
     };
   }, [getAdapter, mode]);
-  return loaded?.mode === mode ? loaded.adapter : null;
+  return loaded?.getAdapter === getAdapter ? loaded.adapter : null;
 }
 export function useTitle(title: string) {
   useEffect(() => {

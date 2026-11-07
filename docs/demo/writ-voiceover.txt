@@ -1,0 +1,35 @@
+There is a problem with handing over a blockchain project. Passing over files or making an agreement does not transfer the permissions that make the project run. You need a clear way to pass on control and understand what access remains.
+
+Introducing Writ.
+
+Writ turns a supported project permission into a transferable digital key. That key is an NFT. Instead of only showing a picture, it lets its current holder carry out real actions.
+
+Here is a simple example, using NEAR Testnet and practice funds.
+
+Ada runs an NFT collection, and Ben is taking over. Ada opens Writ, chooses the collection administrator option, and creates her Writ NFT. She can use a compatible collection she already controls, or create a practice collection first.
+
+Writ then guides her through the wallet approvals that give the account behind the NFT permission to manage the collection. Creating the NFT and granting that permission are separate steps.
+
+Once that is complete, Ada can issue a real collectible through Writ.
+
+She can also inspect what the NFT allows, who holds it, what money is available in its control account, and what temporary permissions have been granted. The NFT can appear in a compatible wallet.
+
+If Ada only wants someone to perform a particular action, she can lend that permission with fixed details and an expiry. She can cancel it. It can be used repeatedly within those limits.
+
+Now Ada sends the NFT to Ben. No sale is required.
+
+Ben can use its approved actions. Ada loses her holder permission through Writ, and the old temporary permissions are cancelled. The collection itself stays in place, with Ben now able to manage it through Writ.
+
+This also works with the other supported profiles: service ownership, voting through a DAO council seat, token issuance, and a treasury that pays out native NEAR.
+
+Selling is optional. A buyer can require the declared conditions to pass before a purchase completes. In this example, they fail. The seller keeps the NFT, and the buyer withdraws the purchase-price refund. The disclosed record charge and network fees still apply.
+
+Developers can connect their own applications using Writ's SDK, a small integration toolkit. Here, Ben uses a separate application, connects his own wallet, and issues another collectible. He does not need Writ's website to exercise that permission.
+
+For supported ownership roles, Ben can also move control directly into his wallet. Writ checks the hand-back before retiring the NFT, then lets him recover the remaining available money in its control account.
+
+Underneath, NEAR smart contracts check the current holder before forwarding an approved command. The account behind the NFT has no access keys.
+
+Separate permissions outside Writ still matter, and this testnet release retains a collection upgrade key. The app explains these limits. Other contract interfaces need reviewed integrations.
+
+Writ. A digital key you can use, lend, and hand over.

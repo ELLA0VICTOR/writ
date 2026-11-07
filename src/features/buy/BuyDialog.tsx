@@ -17,9 +17,26 @@ import { FieldList } from "../../components/FieldList/FieldList";
 import { Loading } from "../../components/Loading/Loading";
 import { buyReducer, type BuyState } from "./machine";
 import s from "./BuyDialog.module.css";
-function initialState(mode: string, id: string): BuyState {
+import {
+  deploymentConfig,
+  purchaseKey,
+  transactionUrl,
+  type NearNetwork,
+} from "../../chain/deployment";
+function initialState(
+  mode: "mock" | NearNetwork,
+  collection: string,
+  id: string,
+): BuyState {
   try {
-    const saved = sessionStorage.getItem(`writ-purchase:${mode}:${id}`);
+    const key = purchaseKey(mode, collection, id);
+    const legacy = `writ-purchase:${mode}:${id}`;
+    const allowLegacy =
+      mode === "mock" ||
+      (mode === "testnet" && collection === deploymentConfig().collection);
+    const saved =
+      sessionStorage.getItem(key) ??
+      (allowLegacy ? sessionStorage.getItem(legacy) : null);
     if (saved) {
       const handle = JSON.parse(saved) as {
         writId: string;
@@ -45,9 +62,9 @@ export function BuyDialog({
 }) {
   const [writ] = useState(() => structuredClone(liveWrit));
   const adapter = useAdapter();
-  const { mode, session, connect, changed } = useChain();
+  const { mode, deployment, session, connect, changed } = useChain();
   const [state, dispatch] = useReducer(buyReducer, undefined, () =>
-    initialState(mode, writ.id),
+    initialState(mode, writ.collection, writ.id),
   );
   const template = getTemplate(writ.templateId);
   const [pins, setPins] = useState<
@@ -93,14 +110,14 @@ export function BuyDialog({
     if (handle) {
       try {
         sessionStorage.setItem(
-          `writ-purchase:${mode}:${writ.id}`,
+          purchaseKey(mode, writ.collection, writ.id),
           JSON.stringify(handle),
         );
       } catch {
         /* Wallet activity remains a recovery source. */
       }
     }
-  }, [handle, mode, writ.id]);
+  }, [handle, mode, writ.id, writ.collection]);
   useEffect(() => {
     if (state.step !== "reading" || !adapter) return;
     let active = true;
@@ -193,7 +210,13 @@ export function BuyDialog({
   }
   function finish() {
     try {
-      sessionStorage.removeItem(`writ-purchase:${mode}:${writ.id}`);
+      sessionStorage.removeItem(purchaseKey(mode, writ.collection, writ.id));
+      if (
+        mode === "mock" ||
+        (mode === "testnet" &&
+          writ.collection === deploymentConfig().collection)
+      )
+        sessionStorage.removeItem(`writ-purchase:${mode}:${writ.id}`);
     } catch {
       /* Safe to leave a completed attempt available for recovery. */
     }
@@ -463,11 +486,11 @@ export function BuyDialog({
               <footer>
                 {handle?.hash && (
                   <a
-                    href={`https://testnet.nearblocks.io/txns/${handle.hash}`}
+                    href={transactionUrl(deployment.network, handle.hash)}
                     target="_blank"
                     rel="noreferrer"
                   >
-                    View the sale on testnet
+                    View the sale on {deployment.network}
                   </a>
                 )}
                 <Button variant="primary" onClick={finish}>
@@ -524,11 +547,14 @@ export function BuyDialog({
                 {outcome.status === "refused" &&
                   outcome.refundTransactionHash && (
                     <a
-                      href={`https://testnet.nearblocks.io/txns/${outcome.refundTransactionHash}`}
+                      href={transactionUrl(
+                        deployment.network,
+                        outcome.refundTransactionHash,
+                      )}
                       target="_blank"
                       rel="noreferrer"
                     >
-                      View the refund on testnet
+                      View the refund on {deployment.network}
                     </a>
                   )}
                 <Button onClick={finish}>

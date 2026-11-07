@@ -1,0 +1,251 @@
+1
+00:00:00,060 --> 00:00:03,320
+There is a problem with handing
+over a blockchain project.
+
+2
+00:00:03,370 --> 00:00:06,475
+Passing over files or making
+an agreement does not transfer
+
+3
+00:00:06,500 --> 00:00:09,000
+the permissions that make the project run.
+
+4
+00:00:09,060 --> 00:00:12,495
+You need a clear way to pass
+on control and understand what
+
+5
+00:00:12,520 --> 00:00:17,035
+access remains. Introducing Writ.
+Writ turns a supported project
+
+6
+00:00:17,060 --> 00:00:20,120
+permission into a transferable digital key.
+
+7
+00:00:20,170 --> 00:00:22,190
+That key is an NFT.
+
+8
+00:00:22,250 --> 00:00:25,575
+Instead of only showing a picture,
+it lets its current holder
+
+9
+00:00:25,600 --> 00:00:29,245
+carry out real actions. Here is
+a simple example, using NEAR
+
+10
+00:00:29,270 --> 00:00:33,280
+Testnet and practice funds. Ada
+runs an NFT collection, and
+
+11
+00:00:33,360 --> 00:00:37,015
+Ben is taking over. Ada opens
+Writ, chooses the collection
+
+12
+00:00:37,040 --> 00:00:40,240
+administrator option, and
+creates her Writ NFT.
+
+13
+00:00:40,300 --> 00:00:43,305
+She can use a compatible collection
+she already controls, or
+
+14
+00:00:43,330 --> 00:00:45,560
+create a practice collection first.
+
+15
+00:00:45,610 --> 00:00:48,330
+Writ then guides her through
+the wallet approvals that give
+
+16
+00:00:48,550 --> 00:00:51,920
+the account behind the NFT
+permission to manage the collection.
+
+17
+00:00:51,970 --> 00:00:55,065
+Creating the NFT and granting
+that permission are separate
+
+18
+00:00:55,090 --> 00:00:58,710
+steps. Once that is complete,
+Ada can issue a real collectible
+
+19
+00:00:58,890 --> 00:01:02,735
+through Writ. She can also
+inspect what the NFT allows, who
+
+20
+00:01:02,760 --> 00:01:05,855
+holds it, what money is available
+in its control account, and
+
+21
+00:01:05,880 --> 00:01:08,240
+what temporary permissions have been granted.
+
+22
+00:01:08,300 --> 00:01:11,120
+The NFT can appear in a compatible wallet.
+
+23
+00:01:11,180 --> 00:01:14,495
+If Ada only wants someone to
+perform a particular action, she
+
+24
+00:01:14,520 --> 00:01:17,860
+can lend that permission with
+fixed details and an expiry.
+
+25
+00:01:17,980 --> 00:01:21,780
+She can cancel it. It can be used
+repeatedly within those limits.
+
+26
+00:01:21,860 --> 00:01:24,360
+Now Ada sends the NFT to Ben.
+
+27
+00:01:24,420 --> 00:01:28,260
+No sale is required. Ben can
+use its approved actions.
+
+28
+00:01:28,340 --> 00:01:31,665
+Ada loses her holder permission
+through Writ, and the old temporary
+
+29
+00:01:31,690 --> 00:01:35,240
+permissions are cancelled. The
+collection itself stays in place,
+
+30
+00:01:35,300 --> 00:01:37,960
+with Ben now able to manage it through Writ.
+
+31
+00:01:38,020 --> 00:01:41,085
+This also works with the other
+supported profiles: service
+
+32
+00:01:41,110 --> 00:01:44,735
+ownership, voting through a DAO
+council seat, token issuance,
+
+33
+00:01:44,760 --> 00:01:47,360
+and a treasury that pays out native NEAR.
+
+34
+00:01:47,410 --> 00:01:50,990
+Selling is optional. A buyer can
+require the declared conditions
+
+35
+00:01:51,080 --> 00:01:53,360
+to pass before a purchase completes.
+
+36
+00:01:53,420 --> 00:01:55,200
+In this example, they fail.
+
+37
+00:01:55,260 --> 00:01:58,635
+The seller keeps the NFT, and the
+buyer withdraws the purchase-price
+
+38
+00:01:59,040 --> 00:02:02,345
+refund. The disclosed record
+charge and network fees still
+
+39
+00:02:02,370 --> 00:02:05,435
+apply. Developers can connect
+their own applications using
+
+40
+00:02:05,460 --> 00:02:08,560
+Writ's SDK, a small integration toolkit.
+
+41
+00:02:08,620 --> 00:02:12,255
+Here, Ben uses a separate
+application, connects his own wallet,
+
+42
+00:02:12,280 --> 00:02:15,615
+and issues another collectible.
+He does not need Writ's website
+
+43
+00:02:15,640 --> 00:02:18,920
+to exercise that permission.
+For supported ownership roles,
+
+44
+00:02:18,980 --> 00:02:21,870
+Ben can also move control
+directly into his wallet.
+
+45
+00:02:22,020 --> 00:02:25,690
+Writ checks the hand-back before
+retiring the NFT, then lets
+
+46
+00:02:25,910 --> 00:02:29,280
+him recover the remaining available
+money in its control account.
+
+47
+00:02:29,340 --> 00:02:32,855
+Underneath, NEAR smart contracts
+check the current holder before
+
+48
+00:02:32,880 --> 00:02:36,605
+forwarding an approved command.
+The account behind the NFT
+
+49
+00:02:36,630 --> 00:02:40,375
+has no access keys. Separate
+permissions outside Writ still
+
+50
+00:02:40,400 --> 00:02:43,455
+matter, and this testnet release
+retains a collection upgrade
+
+51
+00:02:43,480 --> 00:02:45,990
+key. The app explains these limits.
+
+52
+00:02:46,060 --> 00:02:49,360
+Other contract interfaces
+need reviewed integrations.
+
+53
+00:02:49,420 --> 00:02:53,401
+Writ. A digital key you can
+use, lend, and hand over.

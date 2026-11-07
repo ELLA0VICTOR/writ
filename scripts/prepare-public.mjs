@@ -13,6 +13,7 @@ for (const name of [
   "live-verification.json",
   "storage-verification.json",
   "RELEASE_READINESS.md",
+  "NETWORKS.md",
   "mainnet-cost-estimate.json",
   "INTEGRATION_GUIDE.md",
   "wallet-verification.json",

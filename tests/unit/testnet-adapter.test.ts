@@ -21,6 +21,7 @@ vi.mock("../../sdk/index", () => ({
 }));
 import { createTestnetAdapter } from "../../src/chain/testnetAdapter";
 import { ChainError } from "../../src/chain/errors";
+import { releaseConfig } from "../../src/chain/deployment";
 const encoded = (value: unknown) => ({
   result: [...new TextEncoder().encode(JSON.stringify(value))],
 });
@@ -102,6 +103,15 @@ describe("real adapter wire contract with controlled RPC responses", () => {
     vi.stubEnv("VITE_ISSUER_TEMPLATE_HASH", "published-issuer");
     rpc.mockImplementation(
       async (_method: string, args: Record<string, unknown>) => {
+        if (args.method_name === "get_frontend_config")
+          return encoded({
+            abi_version: "writ-ui-v1",
+            executor_code_hash: "published-executor",
+            template_hashes: {
+              "contract-owner": "published-owner",
+              "token-issuer": "published-issuer",
+            },
+          });
         if (args.request_type === "view_account")
           return { block_hash: "pinned-block", block_height: 123 };
         if (args.method_name === "get_integration_profile")
@@ -239,11 +249,16 @@ describe("real adapter wire contract with controlled RPC responses", () => {
       "buy",
       expect.objectContaining({ client_attempt_id: "stable-request" }),
       "1500",
+      expect.objectContaining({
+        network: "testnet",
+        collection: "writ-demo.testnet",
+      }),
+      expect.any(Function),
     );
     expect(handle.buyerId).toBe("ben.testnet");
-    expect(sessionStorage.getItem("writ-purchase:testnet:7")).toContain(
-      "ben.testnet",
-    );
+    expect(
+      sessionStorage.getItem("writ-purchase:testnet:writ-demo.testnet:7"),
+    ).toContain("ben.testnet");
     await a.getPurchase(handle);
     await a.claimRefund(handle);
     expect(walletCall).toHaveBeenLastCalledWith(
@@ -255,6 +270,11 @@ describe("real adapter wire contract with controlled RPC responses", () => {
         client_attempt_id: "stable-request",
       },
       "0",
+      expect.objectContaining({
+        network: "testnet",
+        collection: "writ-demo.testnet",
+      }),
+      expect.any(Function),
     );
     const lookup = rpc.mock.calls.find(
       ([, p]) => p.method_name === "get_purchase",
@@ -292,6 +312,8 @@ describe("real adapter wire contract with controlled RPC responses", () => {
         expires_at_ms: String(Date.parse("2026-11-07T00:00:00Z")),
       }),
       "0",
+      expect.objectContaining({ network: "testnet" }),
+      expect.any(Function),
     );
     await a.transfer("7", "sam.testnet");
     expect(walletCall).toHaveBeenLastCalledWith(
@@ -299,6 +321,8 @@ describe("real adapter wire contract with controlled RPC responses", () => {
       "nft_transfer",
       { token_id: "7", receiver_id: "sam.testnet" },
       "1",
+      expect.objectContaining({ network: "testnet" }),
+      expect.any(Function),
     );
   });
   it("keeps native-fund controls observable when the external Owner target disappears", async () => {
@@ -351,15 +375,126 @@ describe("real adapter wire contract with controlled RPC responses", () => {
       new ChainError("invalid_input", "Confirmed on-chain failure"),
     );
     await expect(a.buy(request)).rejects.toThrow("Confirmed on-chain failure");
-    expect(sessionStorage.getItem("writ-purchase:testnet:7")).toBeNull();
+    expect(
+      sessionStorage.getItem("writ-purchase:testnet:writ-demo.testnet:7"),
+    ).toBeNull();
     walletCall.mockRejectedValueOnce(
       new ChainError("outcome_unknown", "RPC interrupted"),
     );
     await expect(a.buy(request)).rejects.toMatchObject({
       code: "outcome_unknown",
     });
-    expect(sessionStorage.getItem("writ-purchase:testnet:7")).toContain(
-      "known-attempt",
+    expect(
+      sessionStorage.getItem("writ-purchase:testnet:writ-demo.testnet:7"),
+    ).toContain("known-attempt");
+  });
+  it("routes mainnet writes to the configured controller and rejects a purchase from another deployment", async () => {
+    const config = releaseConfig("mainnet", "writ.team.near");
+    statusRpc.mockResolvedValue({ chain_id: "mainnet" });
+    rpc.mockImplementation(
+      async (_method: string, args: Record<string, unknown>) =>
+        args.request_type === "view_account"
+          ? { code_hash: config.collectionCodeHash }
+          : encoded({
+              abi_version: config.abiVersion,
+              executor_code_hash: config.executorCodeHash,
+              template_hashes: config.templateHashes,
+            }),
     );
+    const adapter = createTestnetAdapter(config);
+    await adapter.transfer("1", "ben.near");
+    expect(walletCall).toHaveBeenCalledWith(
+      "writ.team.near",
+      "nft_transfer",
+      { token_id: "1", receiver_id: "ben.near" },
+      "1",
+      config,
+      expect.any(Function),
+    );
+    const foreign = {
+      mock: false,
+      writId: "1",
+      attemptId: "attempt",
+      network: "testnet" as const,
+      collection: "writ.team.near",
+    };
+    await expect(adapter.getPurchase(foreign)).rejects.toMatchObject({
+      code: "invalid_input",
+    });
+    await expect(
+      adapter.claimRefund({
+        ...foreign,
+        network: "mainnet",
+        collection: "other.near",
+      }),
+    ).rejects.toMatchObject({ code: "invalid_input" });
+    await expect(
+      adapter.releaseStuck({ mock: false, writId: "1", attemptId: "legacy" }),
+    ).rejects.toMatchObject({ code: "invalid_input" });
+    expect(walletCall).toHaveBeenCalledTimes(1);
+  });
+  it("rejects stale adapters before querying or signing", async () => {
+    const adapter = createTestnetAdapter(
+      releaseConfig("mainnet", "writ.team.near"),
+      () => false,
+    );
+    await expect(adapter.transfer("1", "ben.near")).rejects.toMatchObject({
+      code: "not_configured",
+    });
+    expect(statusRpc).not.toHaveBeenCalled();
+    expect(walletCall).not.toHaveBeenCalled();
+  });
+  it("labels legacy settlement evidence with the independently checked mainnet network", async () => {
+    const config = releaseConfig("mainnet", "writ.team.near");
+    statusRpc.mockResolvedValue({ chain_id: "mainnet" });
+    rpc.mockImplementation(
+      async (_method: string, args: Record<string, unknown>) =>
+        encoded(
+          args.method_name === "get_frontend_config"
+            ? {
+                abi_version: config.abiVersion,
+                executor_code_hash: config.executorCodeHash,
+                template_hashes: config.templateHashes,
+              }
+            : {
+                status: "refused",
+                refundStatus: "claimable",
+                checks: [
+                  {
+                    id: "proposed",
+                    label: "No next owner",
+                    method: "own_get_proposed_owner",
+                    result: "fail",
+                    enforcedBy: "sale",
+                    read: {
+                      blockHeight: "123",
+                      blockHash: null,
+                      observedAtMs: 1000,
+                      source: "testnet",
+                      phase: "settlement_callback",
+                    },
+                  },
+                ],
+              },
+        ),
+    );
+    const result = await createTestnetAdapter(config).getPurchase({
+      mock: false,
+      network: "mainnet",
+      collection: config.collection,
+      writId: "1",
+      attemptId: "attempt",
+      buyerId: "ben.near",
+    });
+    expect(result.status).toBe("refused");
+    if (result.status === "refused")
+      expect(result.checks[0].read).toEqual({
+        blockHeight: "123",
+        blockHash: null,
+        observedAtMs: 1000,
+        source: "mainnet",
+        phase: "settlement_callback",
+      });
+    expect(walletCall).not.toHaveBeenCalled();
   });
 });
